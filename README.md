@@ -19,7 +19,7 @@ Getting Started
 
 To set up and run the application locally, follow these steps: Set Up the Backend API: Clone the backend API repository from FitnessAppAPI. Follow the instructions in the backend repository to set up and run the API.
 
-Configure the Frontend Application: Clone this repository: git clone https://github.com/YuTaral/FitnessApp.git
+Configure the Frontend Application: Clone this repository: git clone https://github.com/YuTaral/WorkoutTracker
 
 Open the project in Android Studio. Ensure a local.properties file exists in the root folder. If it's missing, create one. Add the following line to local.properties, replacing 192.168.0.0 and 1111 with the appropriate values from your backend API's launchSettings.json:
 
