@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Workout Tracker</string>
+    <string name="login_lbl">Login</string>
+    <string name="register_lbl">Register</string>
+    <string name="email_lbl">Email</string>
+    <string name="password_lbl">Password</string>
+    <string name="confirm_pass_lbl">Confirm password</string>
+    <string name="click_for_register_lbl">Swipe right to register</string>
+    <string name="click_for_login_lbl">Swipe left to login</string>
+    <string name="login_btn">Login</string>
+    <string name="register_btn">Register</string>
+    <string name="invalid_email_format">Invalid email format</string>
+    <string name="blank_password">Password cannot be blank</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="error_msg_no_internet">Please check your Internet connection</string>
+    <string name="error_msg_unexpected">Unexpected error occurred while processing the request. Please try again</string>
+    <string name="error_msg_unexpected_network_problem">Unexpected network error occurred while processing the request. Please try again</string>
+    <string name="success">Success</string>
+    <string name="request_loading">Request in progress, please wait…</string>
+    <string name="exercise_default_values">Exercise default values</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="change_password">Change password</string>
+    <string name="logout">Logout</string>
+    <string name="profile">Profile</string>
+    <string name="notifications">Notifications</string>
+    <string name="actions">Actions</string>
+
+</resources>
