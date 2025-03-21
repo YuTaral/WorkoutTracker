@@ -1,15 +1,16 @@
 FitnessApp
 
-FitnessApp is a mobile application developed in Kotlin that allows users to save and manage their workouts. The application utilizes a .NET Web API as its backend service. The app follows MVVM architecture and is built using Jetpack Compose for UI, Retrofit2 to handle network requests and Hilt for Dependency Injection 
+FitnessApp is a mobile application developed in Kotlin that allows users to save and manage their workouts. The application utilizes a .NET Web API as its backend service. The app follows MVVM architecture and is built using Jetpack Compose for UI, Retrofit2 to handle network requests and Hilt for Dependency Injection.
 
 Features
 
-Log and track workouts
-View workout history
-Create different exercises for muscle group and add them to your workout
-Create workout templates, which can be easily reused
-User profile and exercise default values (sets, reps, weight and rest) global for the user or specific for exercise
-Team management - designed for coaches to create teams, invite members and assign workouts to them, so they can easily track the client's progress
+- Log and track workouts
+- View workout history
+- Create different exercises for muscle group and add them to your workout
+- Create workout templates, which can be easily reused
+- User profile and exercise default values (sets, reps, weight and rest) global for the user or specific for exercise
+- Team management - designed for coaches to create teams, invite members and assign workouts to them, so they can easily track the client's progress
+
 Prerequisites
 
 Before running the application, ensure you have the following installed: Android Studio
