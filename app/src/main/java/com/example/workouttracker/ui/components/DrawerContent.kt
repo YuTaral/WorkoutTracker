@@ -43,8 +43,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouttracker.R
-import com.example.workouttracker.data.models.UserDefaultValuesModel
-import com.example.workouttracker.data.models.UserModel
 import com.example.workouttracker.ui.components.reusable.AppBackground
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.ColorBorder
@@ -67,8 +65,13 @@ data class NavItemData (
 
 /** The drawer content */
 @Composable
-fun DrawerContent(user: UserModel, drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)) {
-    val vm = hiltViewModel<DrawerViewModel>()
+fun DrawerContent(
+        email: String,
+        fullName: String,
+        profileImage: String,
+        drawerState: DrawerState,
+        vm: DrawerViewModel = hiltViewModel()
+) {
     var selectedItemIndex by rememberSaveable {
         mutableIntStateOf(-1)
     }
@@ -91,7 +94,11 @@ fun DrawerContent(user: UserModel, drawerState: DrawerState = rememberDrawerStat
                     .fillMaxSize()
                     .padding(PaddingSmall)
             ) {
-                DrawerHeader(user)
+                DrawerHeader(
+                    email = email,
+                    fullName = fullName,
+                    profileImage = profileImage
+                )
 
                 HorizontalDivider(
                     modifier = Modifier.padding(bottom = PaddingSmall),
@@ -99,7 +106,7 @@ fun DrawerContent(user: UserModel, drawerState: DrawerState = rememberDrawerStat
                     thickness = 2.dp
                 )
 
-                getNavItems(vm).forEachIndexed { index, item ->
+                getNavItems(onLogout = {vm.logout() }).forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         label = {
                             Label(text = item.text, style = LabelNavItem)
@@ -132,19 +139,18 @@ fun DrawerContent(user: UserModel, drawerState: DrawerState = rememberDrawerStat
 }
 
 @Composable
-fun DrawerHeader(u: UserModel) {
-    val userEmail = rememberSaveable { u.email }
-    val userImage = rememberSaveable { u.profileImage }
-    val userFullName = rememberSaveable { u.fullName }
-
+fun DrawerHeader(
+        email: String,
+        fullName: String,
+        profileImage: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
             .padding(bottom = PaddingSmall)
     ) {
-
-        if (userImage.isEmpty()) {
+        if (profileImage.isEmpty()) {
             Image(
                 imageVector = Icons.Default.Person,
                 colorFilter = ColorFilter.tint(color = ColorWhite),
@@ -157,8 +163,8 @@ fun DrawerHeader(u: UserModel) {
                 contentDescription = "Profile image",
             )
         } else {
-            val profileImagePainter = remember(userImage) {
-                val bitmap = Utils.convertStringToBitmap(userImage)
+            val profileImagePainter = remember(profileImage) {
+                val bitmap = Utils.convertStringToBitmap(profileImage)
                 BitmapPainter(bitmap.asImageBitmap())
             }
 
@@ -181,11 +187,11 @@ fun DrawerHeader(u: UserModel) {
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Label(
-                text = userEmail,
+                text = email,
                 style = MaterialTheme.typography.labelLarge
             )
             Label(
-                text = userFullName,
+                text = fullName,
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -193,7 +199,7 @@ fun DrawerHeader(u: UserModel) {
 }
 
 @Composable
-fun getNavItems(vm: DrawerViewModel): List<NavItemData> {
+fun getNavItems(onLogout: () -> Unit): List<NavItemData> {
     return listOf(
         NavItemData(
             text = stringResource(id = R.string.exercise_default_values),
@@ -213,7 +219,7 @@ fun getNavItems(vm: DrawerViewModel): List<NavItemData> {
         NavItemData(
             text = stringResource(id = R.string.logout),
             icon = painterResource(id = R.drawable.icon_log_out),
-            onClick = { vm.logout() }
+            onClick = { onLogout() }
         ),
     )
 }
@@ -222,12 +228,11 @@ fun getNavItems(vm: DrawerViewModel): List<NavItemData> {
 @Composable
 private fun DrawerContentPreview() {
     WorkoutTrackerTheme {
-        DrawerContent(UserModel(
-                        idVal = "",
-                        emailVal = "test@abv.bg",
-                        fullNameVal = "Test user",
-                        profileImageVal = "",
-                        defaultValuesVal = UserDefaultValuesModel(""))
+        DrawerContent(
+            email = "test@abv.bg",
+            fullName = "Test user",
+            profileImage = "",
+            rememberDrawerState(DrawerValue.Closed)
         )
     }
 }

@@ -5,10 +5,6 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Patterns
 import com.google.gson.Gson
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 
 /** Object with common methods */
 object Utils {
@@ -26,16 +22,6 @@ object Utils {
     fun serializeObject(obj: Any): String {
         val gson = Gson()
         return gson.toJson(obj)
-    }
-
-
-    /** Return ISO08601 formatted date from the Date object
-     * @param date the date
-     */
-    fun formatDateToISO8601(date: Date): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-        sdf.timeZone = TimeZone.getTimeZone("UTC")
-        return sdf.format(date)
     }
 
     /** Return bitmap from the provided string

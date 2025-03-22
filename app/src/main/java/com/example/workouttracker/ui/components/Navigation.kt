@@ -4,14 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.workouttracker.ui.screens.AuthScreen
 import com.example.workouttracker.ui.screens.MainScreen
-import com.example.workouttracker.viewmodel.AuthViewModel
 import com.example.workouttracker.viewmodel.MainViewModel
 
 /** Navigation destinations */
@@ -48,12 +46,22 @@ fun Navigation(modifier: Modifier, vm: MainViewModel) {
         }
     }
 
-    NavHost(navController = navController, startDestination = Destinations.AUTH.name) {
+    NavHost(
+        navController = navController,
+        startDestination = Destinations.AUTH.name,
+        modifier = modifier
+    ) {
         composable(route = Destinations.AUTH.name) {
-            AuthScreen(hiltViewModel<AuthViewModel>())
+            AuthScreen()
         }
         composable(route = Destinations.MAIN.name) {
-            MainScreen(vm)
+            user?.let {
+                MainScreen(
+                    email = it.email,
+                    fullName = it.fullName,
+                    profileImage = it.profileImage
+                )
+            }
         }
     }
 }

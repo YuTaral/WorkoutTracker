@@ -3,7 +3,6 @@ package com.example.workouttracker.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
-import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.utils.Utils

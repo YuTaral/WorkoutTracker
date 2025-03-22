@@ -15,7 +15,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getString
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouttracker.ui.components.reusable.RequestInProgressSpinner
 import com.example.workouttracker.ui.components.Navigation
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme

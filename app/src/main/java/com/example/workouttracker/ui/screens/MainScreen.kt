@@ -7,50 +7,51 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouttracker.ui.components.DrawerContent
 import com.example.workouttracker.ui.components.TopBar
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.viewmodel.MainViewModel
 
 /** The application main screen displayed after login */
 @Composable
-fun MainScreen(vm: MainViewModel) {
+fun MainScreen(
+        email: String,
+        fullName: String,
+        profileImage: String
+) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
             .navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        MainContent(vm = vm)
-    }
-}
+        val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-/** The application main content */
-@Composable
-fun MainContent(vm: MainViewModel) {
-    val user = remember { vm.user.value }
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = { DrawerContent(user!!, drawerState) }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .navigationBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                    DrawerContent(
+                        email = email,
+                        fullName = fullName,
+                        profileImage = profileImage,
+                        drawerState
+                    )
+            }
         ) {
-            TopBar(drawerState)
-            AppLogo()
-            Label(text = "HELLO ${user?.fullName}, YOU LOGGED IN SUCCESSFULLY", modifier = Modifier.fillMaxWidth())
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .navigationBarsPadding(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                TopBar(drawerState)
+                AppLogo()
+                Label(text = "HELLO, YOU LOGGED IN SUCCESSFULLY", modifier = Modifier.fillMaxWidth())
+            }
         }
     }
 }
@@ -59,6 +60,6 @@ fun MainContent(vm: MainViewModel) {
 @Composable
 private fun DefaultPreview() {
     WorkoutTrackerTheme {
-        MainScreen(vm = hiltViewModel())
+        MainScreen("test@abv.bg", "Test user", "")
     }
 }
