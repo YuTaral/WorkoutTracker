@@ -64,7 +64,7 @@ val LabelMediumGrey = TextStyle(
     fontSize = 16.sp,
     lineHeight = 22.sp,
     letterSpacing = 0.5.sp,
-    color = ColorTextSecondary
+    color = ColorSecondary
 )
 
 val LabelNavItem = TextStyle(

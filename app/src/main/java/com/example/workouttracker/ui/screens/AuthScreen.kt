@@ -262,7 +262,7 @@ fun AppLogo() {
     Image(
         painter = painterResource(id = R.drawable.icon_app_logo),
         contentDescription = "App logo",
-        modifier = Modifier.size(150.dp)
+        modifier = Modifier.size(100.dp)
     )
 }
 

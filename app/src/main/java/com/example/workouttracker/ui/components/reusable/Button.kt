@@ -2,6 +2,7 @@ package com.example.workouttracker.ui.components.reusable
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ fun Button(
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(containerColor = ColorAccent),
         border = null,
+        shape = MaterialTheme.shapes.medium
     )
     {
         Text(text = text, color = ColorWhite)

@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.workouttracker.ui.theme.ColorAccent
-import com.example.workouttracker.ui.theme.ColorTextSecondary
+import com.example.workouttracker.ui.theme.ColorBorder
+import com.example.workouttracker.ui.theme.ColorSecondary
 import com.example.workouttracker.ui.theme.ColorWhite
 
 /**
@@ -45,14 +45,14 @@ fun InputField(
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedLabelColor = ColorTextSecondary,
-            focusedLabelColor = ColorAccent,
-            unfocusedBorderColor = ColorTextSecondary,
-            focusedBorderColor = ColorAccent,
+            unfocusedLabelColor = ColorSecondary,
+            focusedLabelColor = ColorBorder,
+            unfocusedBorderColor = ColorSecondary,
+            focusedBorderColor = ColorBorder,
             focusedTextColor = ColorWhite,
             unfocusedTextColor = ColorWhite,
-            cursorColor = ColorAccent,
-            selectionColors = TextSelectionColors(ColorAccent,ColorAccent),
+            cursorColor = ColorBorder,
+            selectionColors = TextSelectionColors(ColorBorder,ColorBorder),
             errorTextColor = ColorWhite
         ),
         singleLine = true,

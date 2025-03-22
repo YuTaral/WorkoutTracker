@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.components.reusable.Label
-import com.example.workouttracker.ui.theme.ColorAccent
+import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingSmall
 import kotlinx.coroutines.launch
@@ -37,7 +37,7 @@ fun TopBar(drawerState: DrawerState) {
 
     Row(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = PaddingSmall),
+                    .padding(PaddingSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -80,7 +80,7 @@ fun TopBar(drawerState: DrawerState) {
             )
         }
     }
-    HorizontalDivider(color = ColorAccent, thickness = 2.dp)
+    HorizontalDivider(color = ColorBorder, thickness = 2.dp)
 }
 
 @Preview(widthDp = 360)

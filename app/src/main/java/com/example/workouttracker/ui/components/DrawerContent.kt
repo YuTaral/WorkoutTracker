@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
@@ -30,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
@@ -44,11 +47,12 @@ import com.example.workouttracker.data.models.UserDefaultValuesModel
 import com.example.workouttracker.data.models.UserModel
 import com.example.workouttracker.ui.components.reusable.AppBackground
 import com.example.workouttracker.ui.components.reusable.Label
-import com.example.workouttracker.ui.theme.ColorAccent
+import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorDrawer
+import com.example.workouttracker.ui.theme.ColorGrey
+import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.LabelNavItem
 import com.example.workouttracker.ui.theme.PaddingLarge
-import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.utils.Utils
@@ -85,14 +89,14 @@ fun DrawerContent(user: UserModel, drawerState: DrawerState = rememberDrawerStat
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(PaddingMedium)
+                    .padding(PaddingSmall)
             ) {
                 DrawerHeader(user)
 
                 HorizontalDivider(
                     modifier = Modifier.padding(bottom = PaddingSmall),
-                    color = ColorAccent,
-                    thickness = 3.dp
+                    color = ColorBorder,
+                    thickness = 2.dp
                 )
 
                 getNavItems(vm).forEachIndexed { index, item ->
@@ -118,7 +122,7 @@ fun DrawerContent(user: UserModel, drawerState: DrawerState = rememberDrawerStat
                             contentDescription = "Action icon"
                         )},
                         colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = ColorAccent
+                            selectedContainerColor = ColorGrey
                         ),
                     )
                 }
@@ -128,16 +132,10 @@ fun DrawerContent(user: UserModel, drawerState: DrawerState = rememberDrawerStat
 }
 
 @Composable
-fun DrawerHeader(user: UserModel) {
-    val defaultImagePainter = painterResource(R.drawable.icon_profile)
-    val profileImagePainter = remember(user.profileImage) {
-        if (user.profileImage.isNotEmpty()) {
-            val bitmap = Utils.convertStringToBitmap(user.profileImage)
-            BitmapPainter(bitmap.asImageBitmap())
-        } else {
-            defaultImagePainter
-        }
-    }
+fun DrawerHeader(u: UserModel) {
+    val userEmail = rememberSaveable { u.email }
+    val userImage = rememberSaveable { u.profileImage }
+    val userFullName = rememberSaveable { u.fullName }
 
     Row(
         modifier = Modifier
@@ -145,15 +143,36 @@ fun DrawerHeader(user: UserModel) {
             .height(80.dp)
             .padding(bottom = PaddingSmall)
     ) {
-        Image(
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(70.dp)
-                .clip(CircleShape)
-                .border(2.dp, ColorAccent, CircleShape),
-            painter = profileImagePainter,
-            contentDescription = "Profile image"
-        )
+
+        if (userImage.isEmpty()) {
+            Image(
+                imageVector = Icons.Default.Person,
+                colorFilter = ColorFilter.tint(color = ColorWhite),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(70.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, ColorBorder, CircleShape)
+                    .padding(PaddingSmall/2),
+                contentDescription = "Profile image",
+            )
+        } else {
+            val profileImagePainter = remember(userImage) {
+                val bitmap = Utils.convertStringToBitmap(userImage)
+                BitmapPainter(bitmap.asImageBitmap())
+            }
+
+            Image(
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(70.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, ColorBorder, CircleShape),
+                painter = profileImagePainter,
+                contentDescription = "Profile image"
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -162,11 +181,11 @@ fun DrawerHeader(user: UserModel) {
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Label(
-                text = user.email,
+                text = userEmail,
                 style = MaterialTheme.typography.labelLarge
             )
             Label(
-                text = user.fullName,
+                text = userFullName,
                 style = MaterialTheme.typography.labelLarge
             )
         }

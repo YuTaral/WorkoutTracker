@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
@@ -17,7 +16,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouttracker.ui.components.DrawerContent
 import com.example.workouttracker.ui.components.TopBar
 import com.example.workouttracker.ui.components.reusable.Label
-import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.MainViewModel
 
@@ -27,8 +25,7 @@ fun MainScreen(vm: MainViewModel) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .navigationBarsPadding()
-            .padding(top = PaddingSmall),
+            .navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         MainContent(vm = vm)
@@ -48,8 +45,7 @@ fun MainContent(vm: MainViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .navigationBarsPadding()
-                .padding(top = PaddingSmall),
+                .navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TopBar(drawerState)
