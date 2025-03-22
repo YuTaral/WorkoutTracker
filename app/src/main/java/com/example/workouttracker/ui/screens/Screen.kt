@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getString
-import com.example.workouttracker.ui.components.reusable.RequestInProgressSpinner
+import com.example.workouttracker.ui.components.dialogs.RequestInProgressSpinner
 import com.example.workouttracker.ui.components.Navigation
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.managers.LoadingManager
@@ -30,8 +30,8 @@ import com.example.workouttracker.viewmodel.MainViewModel
 @Composable
 fun Screen(vm: MainViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
     var showLoading by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

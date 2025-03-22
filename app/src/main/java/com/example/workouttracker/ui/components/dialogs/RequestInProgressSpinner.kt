@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.components.dialogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +18,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.commandiron.compose_loading.ChasingDots
 import com.example.workouttracker.R
+import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.ColorLoadingDialogBackground
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingLarge
