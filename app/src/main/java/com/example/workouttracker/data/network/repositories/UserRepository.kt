@@ -36,6 +36,7 @@ class UserRepository @Inject constructor(
             onSuccessCallback = { response ->
                 updateUser(UserModel(response.data[0]))
                 apiService.updateToken(response.data[1])
+                sharedPrefsManager.updateTokenInPrefs(response.data[1])
             }
         )
     }
