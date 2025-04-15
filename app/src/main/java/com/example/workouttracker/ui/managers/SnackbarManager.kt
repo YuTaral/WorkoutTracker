@@ -1,8 +1,8 @@
 package com.example.workouttracker.ui.managers
 
 import android.support.annotation.StringRes
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 /** Snackbar event class */
 data class SnackbarEvent(
@@ -12,17 +12,17 @@ data class SnackbarEvent(
 
 /** Class to handle snackbar to show message to the user */
 object SnackbarManager {
-    private val _events = Channel<SnackbarEvent>()
-    val events = _events.receiveAsFlow()
+    private val _events = MutableSharedFlow<SnackbarEvent>(replay = 0, extraBufferCapacity = 1)
+    val events = _events.asSharedFlow()
 
     /** Show snackbar snackbar with by providing message id */
     suspend fun showSnackbar(messageId: Int) {
-        _events.send(SnackbarEvent(messageId = messageId))
+        _events.emit(SnackbarEvent(messageId = messageId))
     }
 
     /** SShow snackbar snackbar with by providing message */
     suspend fun showSnackbar(message: String) {
-        _events.send(SnackbarEvent(messageId = 0, message = message))
+        _events.emit(SnackbarEvent(messageId = 0, message = message))
     }
 
 }

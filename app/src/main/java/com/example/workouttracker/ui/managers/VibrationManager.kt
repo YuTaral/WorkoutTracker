@@ -5,8 +5,8 @@ import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.VibratorManager
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 /** Vibration event class */
 data class VibrationEvent(
@@ -17,12 +17,12 @@ data class VibrationEvent(
 /** Class to handle vibrations logic to warn the user when needed */
 object VibrationManager {
 
-    private val _events = Channel<VibrationEvent>()
-    val events = _events.receiveAsFlow()
+    private val _events = MutableSharedFlow<VibrationEvent>(replay = 0, extraBufferCapacity = 1)
+    val events = _events.asSharedFlow()
 
     /** Make vibration with the specified pattern */
     suspend fun makeVibration(event: VibrationEvent = VibrationEvent(pattern = VALIDATION_FAILED_VIBRATION)) {
-        _events.send(event)
+        _events.emit(event)
     }
 
     /** Make vibration with the specified pattern */

@@ -1,19 +1,19 @@
 package com.example.workouttracker.ui.managers
 
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 /** Class to handle showing loading dialog when needed (e.g request in progress) */
 object LoadingManager {
-    private val _events = Channel<Boolean>()
-    val events = _events.receiveAsFlow()
+    private val _events = MutableSharedFlow<Boolean>(replay = 0, extraBufferCapacity = 1)
+    val events = _events.asSharedFlow()
 
     /** Send event to show loading dialog */
     suspend fun showLoading() {
-        _events.send(true)
+        _events.emit(true)
     }
 
     suspend fun hideLoading() {
-        _events.send( false)
+        _events.emit( false)
     }
 }
