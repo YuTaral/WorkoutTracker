@@ -43,16 +43,28 @@ data class ShowHideDialogEvent(
 @Suppress("UNCHECKED_CAST")
 val ShowHideDialogEventSaver = Saver<ShowHideDialogEvent, List<Any>>(
     save = { event ->
-        listOf(listOf(event.question?.name, event.show, event.onCancel, event.onConfirm))
+        var name = ""
+
+        if (event.question != null) {
+            name = event.question.name
+        }
+
+        listOf(name, event.show, event.onCancel, event.onConfirm)
     },
     restore = { savedState ->
-        val questionName = savedState[0] as? String
+        val questionName = savedState[0] as String
         val show = savedState[1] as Boolean
         val cancelCallback = savedState[2] as () -> Unit
         val confirmCallback = savedState[3] as () -> Unit
 
+        val question = if (questionName.isEmpty()) {
+            null
+        } else {
+            Question.valueOf(questionName)
+        }
+
         ShowHideDialogEvent(
-            question = questionName?.let { Question.valueOf(it) },
+            question = question,
             show = show,
             onCancel = cancelCallback,
             onConfirm = confirmCallback
