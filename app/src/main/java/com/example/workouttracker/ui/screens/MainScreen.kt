@@ -2,7 +2,6 @@ package com.example.workouttracker.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
@@ -13,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.workouttracker.ui.components.DrawerContent
 import com.example.workouttracker.ui.components.TopBar
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.components.Pager
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 
 /** The application main screen displayed after login */
@@ -49,8 +48,7 @@ fun MainScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TopBar(drawerState)
-                AppLogo()
-                Label(text = "HELLO, YOU LOGGED IN SUCCESSFULLY", modifier = Modifier.fillMaxWidth())
+                Pager()
             }
         }
     }

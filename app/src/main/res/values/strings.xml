@@ -28,4 +28,7 @@
     <string name="q_log_out_text">Are you sure you want to Log out ?</string>
     <string name="no_btn">No</string>
     <string name="yes_btn">Yes</string>
+    <string name="workouts_panel_title">Workouts</string>
+    <string name="workout_panel_title">Current Workout</string>
+
 </resources>

@@ -165,7 +165,6 @@ class AuthViewModel @Inject constructor(
 
                 viewModelScope.launch {
                     _registerSuccessEvent.emit(Unit)
-
                 }
             })
         }
