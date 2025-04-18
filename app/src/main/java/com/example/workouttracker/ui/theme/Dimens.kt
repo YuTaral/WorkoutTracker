@@ -7,3 +7,4 @@ val PaddingSmall = 10.dp
 val PaddingMedium = 15.dp
 val PaddingLarge = 20.dp
 
+val DialogFooterSize = 40.dp

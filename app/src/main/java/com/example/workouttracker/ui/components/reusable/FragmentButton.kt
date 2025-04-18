@@ -19,7 +19,7 @@ import com.example.workouttracker.ui.theme.ColorWhite
  * @param enabled whether the button is enabled
  **/
 @Composable
-fun Button(
+fun FragmentButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit = {},
@@ -42,5 +42,5 @@ fun Button(
 @Preview(widthDp = 360)
 @Composable
 fun ButtonPreview() {
-    Button(text = "Save")
+    FragmentButton(text = "Save")
 }

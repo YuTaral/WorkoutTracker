@@ -18,8 +18,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getString
 import com.example.workouttracker.ui.components.dialogs.RequestInProgressSpinner
 import com.example.workouttracker.ui.components.Navigation
+import com.example.workouttracker.ui.components.dialogs.AskQuestionDialog
+import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.managers.LoadingManager
+import com.example.workouttracker.ui.managers.ShowHideDialogEvent
+import com.example.workouttracker.ui.managers.ShowHideDialogEventSaver
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.viewmodel.MainViewModel
@@ -41,6 +45,7 @@ fun Screen(vm: MainViewModel) {
             ShowLoading()
             ShowSnackbar(snackbarHostState, context)
             MakeVibration(context)
+            AskQuestion()
 
             Navigation(modifier = Modifier.padding(innerPadding), vm = vm)
         }
@@ -91,5 +96,23 @@ private fun MakeVibration(context: Context) {
         VibrationManager.events.collect { event ->
             VibrationManager.makeVibration(context, event)
         }
+    }
+}
+
+/** Composable to show/hide ask question dialog */
+@Composable
+private fun AskQuestion() {
+    var showQuestionDialog by rememberSaveable(stateSaver = ShowHideDialogEventSaver) {
+        mutableStateOf(ShowHideDialogEvent(null, false))
+    }
+
+    LaunchedEffect(Unit) {
+        AskQuestionDialogManager.events.collect { event ->
+            showQuestionDialog = event
+        }
+    }
+
+    if (showQuestionDialog.show) {
+        AskQuestionDialog(showQuestionDialog)
     }
 }

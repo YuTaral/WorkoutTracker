@@ -24,5 +24,4 @@ object SnackbarManager {
     suspend fun showSnackbar(message: String) {
         _events.emit(SnackbarEvent(messageId = 0, message = message))
     }
-
 }

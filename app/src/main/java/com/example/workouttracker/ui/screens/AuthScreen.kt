@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.reusable.Button
+import com.example.workouttracker.ui.components.reusable.FragmentButton
 import com.example.workouttracker.ui.components.reusable.ErrorLabel
 import com.example.workouttracker.ui.components.reusable.InputField
 import com.example.workouttracker.ui.components.reusable.Label
@@ -252,7 +252,7 @@ private fun AuthForm(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Button(text = buttonText, onClick = onButtonClick)
+        FragmentButton(text = buttonText, onClick = onButtonClick)
     }
 }
 

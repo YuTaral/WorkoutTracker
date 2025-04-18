@@ -19,7 +19,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.commandiron.compose_loading.ChasingDots
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.components.reusable.Label
-import com.example.workouttracker.ui.theme.ColorLoadingDialogBackground
+import com.example.workouttracker.ui.theme.ColorDialogBackground
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingMedium
@@ -36,11 +36,11 @@ fun RequestInProgressSpinner() {
         Column(
             modifier = Modifier.border(
                 width = 1.dp,
-                color = ColorLoadingDialogBackground,
+                color = ColorDialogBackground,
                 shape = RoundedCornerShape(16.dp)
             )
             .clip(RoundedCornerShape(16.dp))
-            .background(ColorLoadingDialogBackground)
+            .background(ColorDialogBackground)
             .padding(PaddingMedium * 2),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,

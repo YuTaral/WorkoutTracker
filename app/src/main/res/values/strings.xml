@@ -24,5 +24,8 @@
     <string name="profile">Profile</string>
     <string name="notifications">Notifications</string>
     <string name="actions">Actions</string>
-
+    <string name="q_log_out_title">Log out</string>
+    <string name="q_log_out_text">Are you sure you want to Log out ?</string>
+    <string name="no_btn">No</string>
+    <string name="yes_btn">Yes</string>
 </resources>
