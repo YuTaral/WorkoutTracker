@@ -40,6 +40,7 @@ data class ShowHideDialogEvent(
     val onConfirm: () -> Unit = {}
 )
 
+@Suppress("UNCHECKED_CAST")
 val ShowHideDialogEventSaver = Saver<ShowHideDialogEvent, List<Any>>(
     save = { event ->
         listOf(listOf(event.question?.name, event.show, event.onCancel, event.onConfirm))
