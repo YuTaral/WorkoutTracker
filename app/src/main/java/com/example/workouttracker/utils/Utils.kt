@@ -1,10 +1,15 @@
 package com.example.workouttracker.utils
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Patterns
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 /** Object with common methods */
 object Utils {
@@ -31,5 +36,33 @@ object Utils {
         val imageBytes = Base64.decode(image, Base64.DEFAULT)
 
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+    }
+
+    /** Convert the date to default app format date and time - dd/MMM/yyyy
+     * @param date the date to format
+     */
+    fun defaultFormatDateTime(date: Date): String {
+        return SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.US).format(date)
+    }
+
+    /** Format a double value depending on the value after the decimal point.
+     * @param value the value
+     */
+    @SuppressLint("DefaultLocale")
+    fun formatDouble(value: Double): String {
+        return if (value % 1 == 0.0) {
+            String.format("%.0f", value)
+        } else {
+            String.format("%.3f", value)
+        }
+    }
+
+    /** Return ISO08601 formatted date from the Date object
+     * @param date the date
+     */
+    fun formatDateToISO8601(date: Date): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        return sdf.format(date)
     }
 }

@@ -33,7 +33,6 @@ class DrawerViewModel @Inject constructor(
                     onConfirm = {
                         viewModelScope.launch(Dispatchers.IO) {
                             userRepository.logout(onSuccess = {
-                                userRepository.updateUser(null)
                                 viewModelScope.launch {
                                     AskQuestionDialogManager.hideQuestion()
                                 }

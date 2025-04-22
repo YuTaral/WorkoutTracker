@@ -1,0 +1,86 @@
+package com.example.workouttracker.data.network.repositories
+
+import com.example.workouttracker.data.managers.NetworkManager
+import com.example.workouttracker.data.models.WeightUnitModel
+import com.example.workouttracker.data.network.APIService
+import com.example.workouttracker.data.models.WorkoutModel
+import com.example.workouttracker.utils.Utils
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import java.util.Date
+import javax.inject.Inject
+
+
+/** WorkoutRepository class, used to execute all requests related to workouts */
+class WorkoutRepository @Inject constructor(
+    private val apiService: APIService,
+    private val networkManager: NetworkManager
+) {
+    /** The latest user's workouts */
+    private var _workouts = MutableStateFlow<MutableList<WorkoutModel>>(mutableListOf())
+    var workouts = _workouts.asStateFlow()
+
+    /** The weigh units */
+    private var _weighUnits = MutableStateFlow<MutableList<WeightUnitModel>>(mutableListOf())
+    var weighUnits = _weighUnits.asStateFlow()
+
+    /** Add new workout
+     * @param workout the workout data
+     * @param onSuccess callback to execute if request is successful
+     */
+    suspend fun addWorkout(workout: WorkoutModel, onSuccess: (WorkoutModel) -> Unit) {
+        // Send a request to add the workout
+        val params = mapOf("workout" to Utils.serializeObject(workout))
+
+        networkManager.sendRequest(
+            request = { apiService.getInstance().addWorkout(params) },
+            onSuccessCallback = { response -> onSuccess(WorkoutModel(response.data[0])) }
+        )
+    }
+
+    /** Edit the workout
+     * @param workout the workout data
+     * @param onSuccess callback to execute if request is successful
+     */
+    suspend fun updateWorkout(workout: WorkoutModel, onSuccess: (WorkoutModel) -> Unit) {
+        // Send a request to add the workout
+        val params = mapOf("workout" to Utils.serializeObject(workout))
+
+        networkManager.sendRequest(
+            request = { apiService.getInstance().updateWorkout(params) },
+            onSuccessCallback = { response -> onSuccess(WorkoutModel(response.data[0])) }
+        )
+    }
+
+    /** Delete the workout
+     * @param workoutId the workout id
+     * @param onSuccess callback to execute if request is successful
+     */
+    suspend fun deleteWorkout(workoutId: Long, onSuccess: () -> Unit) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().deleteWorkout(workoutId) },
+            onSuccessCallback = { onSuccess() })
+    }
+
+    /** Update the latest the workouts
+     * @param startDate the start date
+     */
+    suspend fun updateWorkouts(startDate: Date) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().getWorkouts(Utils.formatDateToISO8601(startDate)) },
+            onSuccessCallback = { response ->
+                _workouts.value = response.data.map { WorkoutModel(it) }.toMutableList()
+            }
+        )
+    }
+
+    /** Send a request to fetch the weight units */
+    suspend fun updateWeightUnits() {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().getWeightUnits() },
+            onSuccessCallback = { response ->
+                _weighUnits.value = response.data.map{ WeightUnitModel(it) }.toMutableList()
+            }
+        )
+    }
+}

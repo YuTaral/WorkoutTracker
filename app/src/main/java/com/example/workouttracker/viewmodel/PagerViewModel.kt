@@ -1,22 +1,26 @@
 package com.example.workouttracker.viewmodel
 
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
+import com.example.workouttracker.ui.components.fragments.WorkoutsScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-/** The indices of each panel - used because the temporary panels are displayed on equal index */
-enum class PanelIndices {
+/** The indices of each screen - used because the temporary screens are displayed on equal index */
+enum class PageIndices {
     WORKOUTS,
     SELECTED_WORKOUT
 }
 
-/** Class representing a page */
-sealed class Page(val title: Int, val icon: Int, val index: Int) {
-    data object Workouts : Page(R.string.workouts_panel_title, R.drawable.icon_tab_workouts, PanelIndices.WORKOUTS.ordinal)
-    data object SelectedWorkout : Page(R.string.workout_panel_title, R.drawable.icon_tab_selected_workout, PanelIndices.SELECTED_WORKOUT.ordinal)
+/** Class representing a screen in the main pager */
+sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @Composable () -> Unit ) {
+    data object Workouts : Page(R.string.workouts_screen_title, R.drawable.icon_screen_workouts,
+                                PageIndices.WORKOUTS.ordinal, content = { WorkoutsScreen() })
+    data object SelectedWorkout : Page(R.string.workout_screen_title, R.drawable.icon_screen_selected_workout,
+                                        PageIndices.SELECTED_WORKOUT.ordinal, content = { })
 }
 
 /** PagerViewModel to manage the state of the pages of the main screen */

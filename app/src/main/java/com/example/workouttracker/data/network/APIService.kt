@@ -19,7 +19,7 @@ import javax.inject.Singleton
 class APIService @Inject constructor(
     private val sharedPrefsManager: SharedPrefsManager
 ) {
-    private val retrofit: Retrofit = createRetrofitClient(sharedPrefsManager.getStoredToken())
+    private var retrofit: Retrofit = createRetrofitClient(sharedPrefsManager.getStoredToken())
 
     /**
      * Creates a Retrofit client with a custom OkHttpClient. The client includes an interceptor
@@ -47,11 +47,9 @@ class APIService @Inject constructor(
      * Updates the current authorization token used in the API service. This will reinitialize
      * the Retrofit client with a new OkHttpClient that includes the new token.
      * @param token The new JWT token to be included in the Authorization header.
-     * @return A new IAPIService instance configured with the updated token.
      */
-    fun updateToken(token: String): IAPIService {
-        val newRetrofit = createRetrofitClient(token)
-        return newRetrofit.create(IAPIService::class.java)
+    fun updateToken(token: String) {
+        retrofit = createRetrofitClient(token)
     }
 
     /**

@@ -25,6 +25,12 @@ class UserRepository @Inject constructor(
         sharedPrefsManager.updateUserInPrefs(_user.value)
     }
 
+    /** Update the JWT bearer token */
+    private fun updateToken(token: String) {
+        apiService.updateToken(token)
+        sharedPrefsManager.updateTokenInPrefs(token)
+    }
+
     /**
      * Login the user with the given email and password
      * @param email the email
@@ -35,8 +41,7 @@ class UserRepository @Inject constructor(
             request = { apiService.getInstance().login(mapOf("email" to email, "password" to password)) },
             onSuccessCallback = { response ->
                 updateUser(UserModel(response.data[0]))
-                apiService.updateToken(response.data[1])
-                sharedPrefsManager.updateTokenInPrefs(response.data[1])
+                updateToken(response.data[1])
             }
         )
     }
@@ -59,6 +64,8 @@ class UserRepository @Inject constructor(
         networkManager.sendRequest(
             request = { apiService.getInstance().logout() },
             onSuccessCallback = {
+                updateUser(null)
+                updateToken("")
                 onSuccess()
             })
     }
