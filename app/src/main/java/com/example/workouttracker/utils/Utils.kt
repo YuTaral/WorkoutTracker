@@ -65,4 +65,11 @@ object Utils {
         sdf.timeZone = TimeZone.getTimeZone("UTC")
         return sdf.format(date)
     }
+
+    /** Convert the date to default app format date - dd/MMM/yyyy
+     * @param date the date to format
+     */
+    fun defaultFormatDate(date: Date): String {
+        return SimpleDateFormat("dd MMM yyyy", Locale.US).format(date)
+    }
 }

@@ -21,16 +21,16 @@ import com.example.workouttracker.ui.components.extensions.customBorder
 import com.example.workouttracker.ui.components.reusable.DialogButton
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
-import com.example.workouttracker.ui.managers.ShowHideDialogEvent
+import com.example.workouttracker.ui.managers.AskQuestionEvent
 import com.example.workouttracker.ui.theme.ColorDialogBackground
-import com.example.workouttracker.ui.theme.DialogFooterSize
+import com.example.workouttracker.ui.theme.BottomSheetsDialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingLarge
 import kotlinx.coroutines.launch
 
 /** Bottom sheets dialog to ask user for confirmation */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AskQuestionDialog(event: ShowHideDialogEvent) {
+fun AskQuestionDialog(event: AskQuestionEvent) {
     val q = event.question!!
     val state = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -62,7 +62,7 @@ fun AskQuestionDialog(event: ShowHideDialogEvent) {
                 text = stringResource(id = q.getQuestionText()),
             )
 
-            Row(modifier = Modifier.fillMaxWidth().height(DialogFooterSize)) {
+            Row(modifier = Modifier.fillMaxWidth().height(BottomSheetsDialogFooterSize)) {
                 DialogButton(
                     modifier = Modifier
                         .weight(1f)

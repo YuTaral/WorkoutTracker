@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
+import com.example.workouttracker.ui.managers.DatePickerDialogManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,8 +36,30 @@ class WorkoutsViewModel @Inject constructor(
      * Update the workouts start date
      * @param newDate the new start date
      */
-    fun updateStartDate(newDate: Date) {
+    private fun updateStartDate(newDate: Date) {
         _startDate.value = newDate
+
+        viewModelScope.launch(Dispatchers.IO) {
+            workoutRepository.updateWorkouts(_startDate.value)
+        }
+    }
+
+    /** Display the date picker dialog */
+    suspend fun showDatePicker() {
+        DatePickerDialogManager.showDialog(
+            onCancel = {
+                viewModelScope.launch {
+                    DatePickerDialogManager.hideDialog()
+                }
+            },
+            onDatePick = { newDate ->
+                viewModelScope.launch {
+                    DatePickerDialogManager.hideDialog()
+                }
+
+                updateStartDate(newDate)
+            }
+        )
     }
 
     /** Return the default workouts start date - 1 month backwards */
