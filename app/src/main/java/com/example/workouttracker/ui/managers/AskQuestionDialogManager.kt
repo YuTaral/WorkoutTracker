@@ -33,7 +33,7 @@ enum class Question(private val titleId: Int, private val questionId: Int,
 }
 
 /** Data class containing the show/hide dialog event */
-data class AskQuestionEvent(
+data class DisplayAskQuestionDialogEvent(
     val question: Question?,
     val show: Boolean = false,
     val onCancel: () -> Unit = {},
@@ -41,7 +41,7 @@ data class AskQuestionEvent(
 )
 
 @Suppress("UNCHECKED_CAST")
-val AskQuestionEventSaver = Saver<AskQuestionEvent, List<Any>>(
+val DisplayAskQuestionDialogEventSaver = Saver<DisplayAskQuestionDialogEvent, List<Any>>(
     save = { event ->
         var name = ""
 
@@ -63,7 +63,7 @@ val AskQuestionEventSaver = Saver<AskQuestionEvent, List<Any>>(
             Question.valueOf(questionName)
         }
 
-        AskQuestionEvent(
+        DisplayAskQuestionDialogEvent(
             question = question,
             show = show,
             onCancel = cancelCallback,
@@ -74,16 +74,16 @@ val AskQuestionEventSaver = Saver<AskQuestionEvent, List<Any>>(
 
 /** Class to trigger events when we need to ask user for confirmation */
 object AskQuestionDialogManager {
-    private val _events = MutableSharedFlow<AskQuestionEvent>(replay = 0, extraBufferCapacity = 1)
+    private val _events = MutableSharedFlow<DisplayAskQuestionDialogEvent>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 
     /** Show Ask Question dialog */
-    suspend fun askQuestion(event: AskQuestionEvent) {
+    suspend fun askQuestion(event: DisplayAskQuestionDialogEvent) {
         _events.emit(event)
     }
 
     /** Hide Ask Question dialog */
     suspend fun hideQuestion() {
-        _events.emit(AskQuestionEvent(null, false))
+        _events.emit(DisplayAskQuestionDialogEvent(null, false))
     }
 }

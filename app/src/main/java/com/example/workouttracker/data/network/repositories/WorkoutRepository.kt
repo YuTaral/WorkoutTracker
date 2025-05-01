@@ -24,6 +24,9 @@ class WorkoutRepository @Inject constructor(
     private var _weighUnits = MutableStateFlow<MutableList<WeightUnitModel>>(mutableListOf())
     var weighUnits = _weighUnits.asStateFlow()
 
+    /** The workout start date. Optionally updated when update workouts is called */
+    private lateinit var startDate: Date
+
     /** Add new workout
      * @param workout the workout data
      * @param onSuccess callback to execute if request is successful
@@ -63,9 +66,13 @@ class WorkoutRepository @Inject constructor(
     }
 
     /** Update the latest the workouts
-     * @param startDate the start date
+     * @param newStartDate the start date
      */
-    suspend fun updateWorkouts(startDate: Date) {
+    suspend fun updateWorkouts(newStartDate: Date?) {
+        if (newStartDate != null) {
+            startDate = newStartDate
+        }
+
         networkManager.sendRequest(
             request = { apiService.getInstance().getWorkouts(Utils.formatDateToISO8601(startDate)) },
             onSuccessCallback = { response ->

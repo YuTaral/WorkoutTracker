@@ -25,6 +25,9 @@ import com.example.workouttracker.ui.theme.ColorWhite
  * @param isError whether the field value is invalid
  * @param keyboardOptions the input type - text / number, default is text
  * @param visualTransformation the text visual transformation (e.g for password), default is none
+ * @param singleLine whether the field is single line
+ * @param minLines the minimum lines count
+ * @param maxLines the minimum lines count
  **/
 @Composable
 fun InputField(
@@ -35,7 +38,10 @@ fun InputField(
         isError: Boolean = false,
         keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         visualTransformation: VisualTransformation = VisualTransformation.None,
-        keyboardActions: KeyboardActions = KeyboardActions.Default
+        keyboardActions: KeyboardActions = KeyboardActions.Default,
+        singleLine: Boolean = true,
+        minLines: Int = 1,
+        maxLines: Int = 1
 ) {
     OutlinedTextField(
         value = value,
@@ -55,9 +61,11 @@ fun InputField(
             selectionColors = TextSelectionColors(ColorBorder,ColorBorder),
             errorTextColor = ColorWhite
         ),
-        singleLine = true,
+        singleLine = singleLine,
         keyboardActions = keyboardActions,
-        isError = isError
+        isError = isError,
+        minLines = minLines,
+        maxLines = maxLines,
     )
 }
 

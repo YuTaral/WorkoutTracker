@@ -1,7 +1,7 @@
 package com.example.workouttracker.ui.components.reusable
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ fun DialogButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.then(Modifier.fillMaxHeight()),
+        modifier = modifier.then(Modifier.fillMaxSize()),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
         ),

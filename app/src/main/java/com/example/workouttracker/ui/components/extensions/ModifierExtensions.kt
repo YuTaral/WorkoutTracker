@@ -6,7 +6,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.workouttracker.ui.theme.ColorAccent
+import com.example.workouttracker.ui.theme.ColorBorder
 
 /**
 * Extension to the Modifier class to add custom border which is displayed only on the specified sides -
@@ -17,7 +17,7 @@ import com.example.workouttracker.ui.theme.ColorAccent
 fun Modifier.customBorder (
     start: Boolean = false,
     end: Boolean = false,
-    color: Color = ColorAccent,
+    color: Color = ColorBorder,
     strokeWidth: Dp = 1.dp
 ): Modifier = then(
     Modifier.drawBehind {

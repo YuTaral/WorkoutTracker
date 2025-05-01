@@ -6,19 +6,19 @@ import java.util.Date
 import androidx.compose.runtime.saveable.Saver
 
 /** Show date picker event class */
-data class DatePickerEvent(
+data class DisplayDatePickerEvent(
     var show: Boolean = false,
     val onCancel: () -> Unit = {},
     val onDatePick: (Date) -> Unit = {}
 )
 
 @Suppress("UNCHECKED_CAST")
-val DatePickerEventSaver = Saver<DatePickerEvent, List<Any>>(
+val DisplayDatePickerEventSaver = Saver<DisplayDatePickerEvent, List<Any>>(
     save = { event ->
         listOf(event.show, event.onCancel, event.onDatePick)
     },
     restore = { savedState ->
-        DatePickerEvent(
+        DisplayDatePickerEvent(
             show = savedState[0] as Boolean,
             onCancel = savedState[1] as () -> Unit,
             onDatePick = savedState[2] as (Date) -> Unit
@@ -28,7 +28,7 @@ val DatePickerEventSaver = Saver<DatePickerEvent, List<Any>>(
 
 /** Class to handle showing date picker dialog */
 object DatePickerDialogManager {
-    private val _events = MutableSharedFlow<DatePickerEvent>(replay = 0, extraBufferCapacity = 1)
+    private val _events = MutableSharedFlow<DisplayDatePickerEvent>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 
     /**
@@ -36,7 +36,7 @@ object DatePickerDialogManager {
      * @param onDatePick the callback to execute when date has been selected
      */
     suspend fun showDialog(onCancel: () -> Unit, onDatePick: (Date) -> Unit) {
-        _events.emit(DatePickerEvent(
+        _events.emit(DisplayDatePickerEvent(
             show = true,
             onCancel = onCancel,
             onDatePick = onDatePick)
@@ -45,6 +45,6 @@ object DatePickerDialogManager {
 
     /** Send event to hide date picker dialog */
     suspend fun hideDialog() {
-        _events.emit(DatePickerEvent(show = false))
+        _events.emit(DisplayDatePickerEvent(show = false))
     }
 }

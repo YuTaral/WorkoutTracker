@@ -18,3 +18,5 @@ val labelMediumLetterSpacing = 0.5.sp
 val labelLargeSize = 18.sp
 val labelLargeLineHeight = 24.sp
 val labelLargeLetterSpacing = 0.5.sp
+
+val ImageButtonSize = 40.dp

@@ -88,7 +88,7 @@ fun DatePickerDialog(onDismiss: () -> Unit, onDatePick: (Date) -> Unit) {
                     DialogButton(
                         modifier = Modifier
                             .weight(1f)
-                            .customBorder(),
+                            .customBorder(end = true),
                         text = stringResource(id = R.string.cancel_btn),
                         onClick = onDismiss
                     )

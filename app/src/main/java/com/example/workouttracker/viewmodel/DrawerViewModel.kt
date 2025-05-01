@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.Question
-import com.example.workouttracker.ui.managers.AskQuestionEvent
+import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ class DrawerViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             AskQuestionDialogManager.askQuestion(
-                AskQuestionEvent(
+                DisplayAskQuestionDialogEvent(
                     question = Question.LOG_OUT,
                     show = true,
                     onCancel = {

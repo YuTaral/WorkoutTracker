@@ -1,20 +1,18 @@
 package com.example.workouttracker.ui.components.fragments
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,8 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,11 +30,12 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.SetModel
 import com.example.workouttracker.data.models.WorkoutModel
+import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.Label
-import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.LabelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingMedium
+import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelLargeBold
@@ -58,68 +55,79 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Label(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Label(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = PaddingVerySmall),
+                    text = stringResource(id = R.string.latest_workouts_lbl),
+                    style = labelLargeBold
+                )
+            }
+
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = PaddingVerySmall),
-                text = stringResource(id = R.string.latest_workouts_lbl),
-                style = labelLargeBold
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(PaddingVerySmall),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Label(
-                text = String.format(stringResource(id = R.string.workouts_filter_lbl),
-                    Utils.defaultFormatDate(startDate)),
-            )
-
-            Button(
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                onClick = {
-                    scope.launch {
-                        vm.showDatePicker()
-                    }
-                }
-            ) {
-                Image(
-                    modifier = Modifier.size(25.dp),
-                    imageVector = Icons.Default.DateRange,
-                    colorFilter = ColorFilter.tint(color = ColorAccent),
-                    contentDescription = "Date picker",
-                )
-            }
-        }
-
-        if (workouts.isEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(PaddingMedium)
+                    .padding(horizontal = PaddingSmall),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Label(
-                    text = stringResource(id = R.string.no_workouts),
-                    style = LabelMediumGrey,
-                    maxLines = 2
+                    text = String.format(
+                        stringResource(id = R.string.workouts_filter_lbl),
+                        Utils.defaultFormatDate(startDate)
+                    ),
+                )
+
+                ImageButton(
+                    onClick = {
+                        scope.launch {
+                            vm.showDatePicker()
+                        }
+                    },
+                    image = Icons.Default.DateRange
                 )
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-            ) {
-                items(workouts) { item ->
-                    WorkoutItem(item, user!!.defaultValues.weightUnit.text)
+
+            HorizontalDivider(color = ColorBorder, thickness = 1.dp)
+
+            if (workouts.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(PaddingMedium)
+                ) {
+                    Label(
+                        text = stringResource(id = R.string.no_workouts),
+                        style = LabelMediumGrey,
+                        maxLines = 2
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                ) {
+                    items(workouts) { item ->
+                        WorkoutItem(item, user!!.defaultValues.weightUnit.text)
+                    }
                 }
             }
         }
+
+        ImageButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = PaddingSmall),
+            onClick = {
+                scope.launch {
+                    vm.showAddWorkoutDialog()
+                }
+            },
+            image = Icons.Default.Add
+        )
     }
 }
 

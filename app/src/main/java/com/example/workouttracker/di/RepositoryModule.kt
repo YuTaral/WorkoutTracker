@@ -4,6 +4,8 @@ import com.example.workouttracker.data.managers.NetworkManager
 import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.network.repositories.UserRepository
+import com.example.workouttracker.data.network.repositories.WorkoutRepository
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,4 +24,12 @@ object RepositoryModule {
         return UserRepository(sharedPrefsManager, apiService, networkManager)
     }
 
+    @Provides
+    @Singleton
+    fun provideWorkoutRepository(
+        apiService: APIService,
+        networkManager: NetworkManager
+    ): WorkoutRepository {
+        return WorkoutRepository(apiService, networkManager)
+    }
 }
