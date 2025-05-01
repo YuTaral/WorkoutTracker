@@ -11,6 +11,10 @@ val PaddingLarge = 20.dp
 val BottomSheetsDialogFooterSize = 40.dp
 val DialogFooterSize = 60.dp
 
+val labelSmallSize = 12.sp
+val labelSmallLineHeight = 18.sp
+val labelSmallLetterSpacing = 0.5.sp
+
 val labelMediumSize = 16.sp
 val labelMediumLineHeight = 22.sp
 val labelMediumLetterSpacing = 0.5.sp

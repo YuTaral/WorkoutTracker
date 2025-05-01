@@ -26,7 +26,7 @@ enum class Destinations {
 @Composable
 fun Navigation(modifier: Modifier, vm: MainViewModel) {
     val navController = rememberNavController()
-    val user by vm.user.collectAsStateWithLifecycle()
+    val user by vm.userRepository.user.collectAsStateWithLifecycle()
 
     LaunchedEffect(user) {
         // Check if the current destination is already the one we're trying to navigate to

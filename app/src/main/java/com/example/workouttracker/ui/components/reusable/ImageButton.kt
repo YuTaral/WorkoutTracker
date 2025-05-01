@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorWhite
@@ -20,8 +21,9 @@ import com.example.workouttracker.ui.theme.ImageButtonSize
  * @param modifier the modifier
  * @param onClick callback to execute on click
  * @param image the image
+ * @param size the image size
  */
-fun ImageButton(modifier: Modifier = Modifier, onClick: () -> Unit, image: ImageVector) {
+fun ImageButton(modifier: Modifier = Modifier, onClick: () -> Unit, image: ImageVector, size: Dp = ImageButtonSize) {
     Button(
         shape = MaterialTheme.shapes.small,
         modifier = modifier,
@@ -30,7 +32,7 @@ fun ImageButton(modifier: Modifier = Modifier, onClick: () -> Unit, image: Image
         onClick = onClick
     ) {
         Image(
-            modifier = Modifier.size(ImageButtonSize),
+            modifier = Modifier.size(size),
             imageVector = image,
             colorFilter = ColorFilter.tint(color = ColorWhite),
             contentDescription = "",

@@ -15,12 +15,10 @@ import javax.inject.Inject
 /** MainViewModel to manage the state of the main screen */
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private var userRepository: UserRepository,
+    var userRepository: UserRepository,
     private var sharedPrefsManager: SharedPrefsManager
 
 ): ViewModel() {
-    val user = userRepository.user
-
     private val _tokenValidated = MutableStateFlow(false)
     val tokenValidated = _tokenValidated.asStateFlow()
 

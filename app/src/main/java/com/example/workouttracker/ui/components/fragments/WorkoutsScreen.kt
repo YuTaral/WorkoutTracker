@@ -1,5 +1,6 @@
 package com.example.workouttracker.ui.components.fragments
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,7 +48,9 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 @Composable
-/** Main Screen to display the latest workouts */
+/**
+ * Main Screen to display the latest workouts
+ */
 fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
     val workouts by vm.workoutRepository.workouts.collectAsStateWithLifecycle()
     val user by vm.userRepository.user.collectAsStateWithLifecycle()
@@ -111,7 +114,15 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
                     state = lazyListState,
                 ) {
                     items(workouts) { item ->
-                        WorkoutItem(item, user!!.defaultValues.weightUnit.text)
+                        WorkoutItem(
+                            workout = item,
+                            weightUnit = user!!.defaultValues.weightUnit.text,
+                            onClick = {
+                                scope.launch {
+                                    vm.selectWorkout(item)
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -132,7 +143,7 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun WorkoutItem(workout: WorkoutModel, weightUnit: String) {
+fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutModel) -> Unit) {
     var exercisesText = ""
     var totalWeight = 0.0
     var totalReps = 0
@@ -142,7 +153,12 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(PaddingVerySmall),
+            .padding(PaddingVerySmall)
+            .clickable(
+                enabled = true,
+                onClick = {
+                    onClick(workout)
+                }),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Label(
@@ -247,6 +263,8 @@ fun WorkoutItemPreview() {
             finishDateTimeVal = Date(),
             notesVal = "This is the best back day",
             durationVal = null,
-        ), "kgs")
+        ),
+        "kgs",
+        onClick = {})
     }
 }

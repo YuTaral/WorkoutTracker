@@ -34,6 +34,7 @@
     <string name="workouts_screen_title">Workouts</string>
     <string name="workout_screen_title">Current Workout</string>
     <string name="status_lbl">Status:</string>
+    <string name="notes_lbl">Notes:</string>
     <string name="in_progress_lbl">In progress</string>
     <string name="finished_lbl">Finished</string>
     <string name="exercises_lbl">Exercises:</string>
@@ -46,5 +47,8 @@
     <string name="workout_name_lbl">Workout name</string>
     <string name="additional_notes_lbl">Additional notes</string>
     <string name="error_msg_enter_workout_name">Please enter workout name</string>
+    <string name="no_workout_selected_lbl">You have not selected workout. Go to Main panel or click here to start new workout</string>
+    <string name="show_notes_lbl">Show notes</string>
+    <string name="hide_notes_lbl">Hide notes</string>
 
 </resources>

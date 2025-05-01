@@ -20,6 +20,10 @@ class WorkoutRepository @Inject constructor(
     private var _workouts = MutableStateFlow<MutableList<WorkoutModel>>(mutableListOf())
     var workouts = _workouts.asStateFlow()
 
+    /** The currently selected workout */
+    private var _selectedWorkout = MutableStateFlow<WorkoutModel?>(null)
+    var selectedWorkout = _selectedWorkout.asStateFlow()
+
     /** The weigh units */
     private var _weighUnits = MutableStateFlow<MutableList<WeightUnitModel>>(mutableListOf())
     var weighUnits = _weighUnits.asStateFlow()
@@ -89,5 +93,13 @@ class WorkoutRepository @Inject constructor(
                 _weighUnits.value = response.data.map{ WeightUnitModel(it) }.toMutableList()
             }
         )
+    }
+
+    /**
+     * Mark the workout as selected
+     * @param workout selected workout, may be null (when deleted)
+     */
+    fun updateSelectedWorkout(workout: WorkoutModel?) {
+        _selectedWorkout.value = workout
     }
 }

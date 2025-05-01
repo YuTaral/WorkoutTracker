@@ -3,6 +3,7 @@ package com.example.workouttracker.viewmodel
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
+import com.example.workouttracker.ui.components.fragments.SelectedWorkoutScreen
 import com.example.workouttracker.ui.components.fragments.WorkoutsScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,7 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
     data object Workouts : Page(R.string.workouts_screen_title, R.drawable.icon_screen_workouts,
                                 PageIndices.WORKOUTS.ordinal, content = { WorkoutsScreen() })
     data object SelectedWorkout : Page(R.string.workout_screen_title, R.drawable.icon_screen_selected_workout,
-                                        PageIndices.SELECTED_WORKOUT.ordinal, content = { })
+                                        PageIndices.SELECTED_WORKOUT.ordinal, content = { SelectedWorkoutScreen() })
 }
 
 /** PagerViewModel to manage the state of the pages of the main screen */

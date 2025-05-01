@@ -27,6 +27,7 @@ import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorWhite
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -42,6 +43,15 @@ fun Pager(vm: PagerViewModel = hiltViewModel()) {
 
     LaunchedEffect(pagerState.currentPage) {
         vm.changeSelection(pages[pagerState.currentPage])
+    }
+
+    LaunchedEffect(Unit) {
+        PagerManager.events.collect { page ->
+            vm.changeSelection(pages[page.index])
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(page.index)
+            }
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

@@ -5,7 +5,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Patterns
+import com.example.workouttracker.R
+import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.managers.DialogManager
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -71,5 +76,15 @@ object Utils {
      */
     fun defaultFormatDate(date: Date): String {
         return SimpleDateFormat("dd MMM yyyy", Locale.US).format(date)
+    }
+
+    /** Display the add workout dialog */
+    fun showAddWorkoutDialog(viewModelScope: CoroutineScope, resourceProvider: ResourceProvider) {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.add_workout_title),
+                content = { AddEditWorkoutDialog(null) }
+            )
+        }
     }
 }

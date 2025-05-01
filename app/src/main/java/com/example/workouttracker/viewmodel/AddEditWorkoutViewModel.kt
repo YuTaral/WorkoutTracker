@@ -6,6 +6,7 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.managers.DialogManager
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -64,10 +65,12 @@ class AddEditWorkoutViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             workoutsRepository.addWorkout(
                 workout = WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0),
-                onSuccess = {
+                onSuccess = { createdWorkout ->
                     viewModelScope.launch {
                         workoutsRepository.updateWorkouts(null)
+                        workoutsRepository.updateSelectedWorkout(createdWorkout)
                         DialogManager.hideDialog()
+                        PagerManager.changePageSelection(Page.SelectedWorkout)
                     }
                 }
             )

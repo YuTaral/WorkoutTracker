@@ -2,13 +2,13 @@ package com.example.workouttracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workouttracker.R
+import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
-import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
-import com.example.workouttracker.ui.managers.DialogManager
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
+import com.example.workouttracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class WorkoutsViewModel @Inject constructor(
     var userRepository: UserRepository,
     var workoutRepository: WorkoutRepository,
-    var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
     /** Selected workouts start date */
@@ -34,6 +34,7 @@ class WorkoutsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             workoutRepository.updateWeightUnits()
             workoutRepository.updateWorkouts(_startDate.value)
+            workoutRepository.updateSelectedWorkout(null)
         }
     }
 
@@ -69,12 +70,16 @@ class WorkoutsViewModel @Inject constructor(
 
     /** Display the add workout dialog */
     fun showAddWorkoutDialog() {
-        viewModelScope.launch {
-            DialogManager.showDialog(
-                title = resourceProvider.getString(R.string.add_workout_title),
-                content = { AddEditWorkoutDialog(null) }
-            )
-        }
+        Utils.showAddWorkoutDialog(viewModelScope, resourceProvider)
+    }
+
+    /**
+     * Mark the workout as selected
+     * @param workout selected workout, may be null (when deleted)
+     */
+    suspend fun selectWorkout(workout: WorkoutModel?) {
+        workoutRepository.updateSelectedWorkout(workout)
+        PagerManager.changePageSelection(Page.SelectedWorkout)
     }
 
     /** Return the default workouts start date - 1 month backwards */

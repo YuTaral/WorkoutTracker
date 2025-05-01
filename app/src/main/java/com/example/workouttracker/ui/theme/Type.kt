@@ -51,9 +51,9 @@ val Typography = Typography(
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 18.sp,
-        letterSpacing = 0.5.sp,
+        fontSize = labelSmallSize,
+        lineHeight = labelSmallLineHeight,
+        letterSpacing = labelSmallLetterSpacing,
         color = ColorWhite
     )
 )
@@ -90,7 +90,7 @@ val labelMediumGreen = TextStyle(
     fontWeight = FontWeight.Normal,
     fontSize = labelMediumSize,
     lineHeight = labelMediumLineHeight,
-    letterSpacing = 0.5.sp,
+    letterSpacing = labelMediumLetterSpacing,
     color = ColorGreen
 )
 
@@ -101,4 +101,13 @@ val LabelNavItem = TextStyle(
     lineHeight = 22.sp,
     letterSpacing = 0.5.sp,
     color = ColorWhite
+)
+
+val labelMediumAccent = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = labelMediumSize,
+    lineHeight = labelMediumLineHeight,
+    letterSpacing = labelMediumLetterSpacing,
+    color = ColorAccent
 )
