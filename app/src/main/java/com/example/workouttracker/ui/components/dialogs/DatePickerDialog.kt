@@ -99,7 +99,28 @@ fun DatePickerDialog(onDismiss: () -> Unit, onDatePick: (Date) -> Unit) {
                         text = stringResource(id = R.string.select_date_btn),
                         onClick = {
                             val selected = datePickerState.selectedDateMillis
-                            onDatePick(selected?.let { Date(it) } ?: Date())
+
+                            val date = if (selected != null) {
+                                // Selected date midnight
+                                Calendar.getInstance().apply {
+                                    timeInMillis = selected
+                                    set(Calendar.HOUR_OF_DAY, 0)
+                                    set(Calendar.MINUTE, 0)
+                                    set(Calendar.SECOND, 0)
+                                    set(Calendar.MILLISECOND, 0)
+                                }.time
+                            } else {
+                                // Today midnight if no date selected
+                                Calendar.getInstance().apply {
+                                    timeInMillis = System.currentTimeMillis()
+                                    set(Calendar.HOUR_OF_DAY, 0)
+                                    set(Calendar.MINUTE, 0)
+                                    set(Calendar.SECOND, 0)
+                                    set(Calendar.MILLISECOND, 0)
+                                }.time
+                            }
+
+                            onDatePick(date)
                         }
                     )
                 }
