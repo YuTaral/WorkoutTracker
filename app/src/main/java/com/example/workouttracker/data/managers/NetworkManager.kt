@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.workouttracker.R
+import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.network.CustomResponse
 import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.SnackbarManager
@@ -23,7 +24,8 @@ import javax.inject.Singleton
 /** Class to handle each request and execute the common errors logic when error occurs */
 @Singleton
 class NetworkManager @Inject constructor(
-    private val context: Context
+    private val context: Context,
+    private val apiService: APIService
 ) {
     /** Use Factory pattern to create the call object. This is needed, because when
      * we need to refresh the token, the new token is returned as response from the server.
@@ -95,7 +97,7 @@ class NetworkManager @Inject constructor(
 
                     if (responseContent.data.size == 1) {
                         // Update the token using the returned token
-                        //APIService.updateToken(responseContent.data[0])
+                        apiService.updateToken(responseContent.data[0])
 
                         // Remove the progress dialog from the "first" request before resending it
                         LoadingManager.hideLoading()

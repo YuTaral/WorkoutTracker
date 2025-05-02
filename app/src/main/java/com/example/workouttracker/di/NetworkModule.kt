@@ -25,7 +25,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNetworkManager(@ApplicationContext context: Context): NetworkManager {
-        return NetworkManager(context)
+    fun provideNetworkManager(@ApplicationContext context: Context, apiService: APIService): NetworkManager {
+        return NetworkManager(context, apiService)
     }
 }
