@@ -25,7 +25,6 @@ import com.example.workouttracker.viewmodel.SelectedWorkoutViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,7 +46,6 @@ import com.example.workouttracker.ui.theme.labelMediumAccent
 import com.example.workouttracker.ui.theme.labelMediumGreen
 import com.example.workouttracker.ui.theme.labelMediumOrange
 import com.example.workouttracker.utils.Utils
-import kotlinx.coroutines.launch
 import java.util.Date
 
 @Composable
@@ -56,7 +54,10 @@ fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedW
     val selectedWorkout by vm.workoutRepository.selectedWorkout.collectAsStateWithLifecycle()
 
     if (selectedWorkout != null) {
-        WorkoutScreen(workout = selectedWorkout!!)
+        WorkoutScreen(
+            workout = selectedWorkout!!,
+            onEditClick =  { vm.showEditWorkoutDialog() }
+        )
     } else {
         NoWorkoutScreen(onClick = { vm.showAddWorkoutDialog() })
     }
@@ -65,10 +66,10 @@ fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedW
 /**
  * Screen to display when workout is selected
  * @param workout the selected workout
+ * @param onEditClick callback to execute on edit button click
  */
 @Composable
-private fun WorkoutScreen(workout: WorkoutModel) {
-    val scope = rememberCoroutineScope()
+private fun WorkoutScreen(workout: WorkoutModel, onEditClick: () -> Unit) {
     var showNotes by rememberSaveable{ mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -176,11 +177,7 @@ private fun WorkoutScreen(workout: WorkoutModel) {
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = PaddingSmall),
-            onClick = {
-                scope.launch {
-
-                }
-            },
+            onClick = { onEditClick() },
             image = Icons.Default.Edit,
             size = 35.dp
         )
@@ -189,11 +186,7 @@ private fun WorkoutScreen(workout: WorkoutModel) {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = PaddingSmall),
-            onClick = {
-                scope.launch {
-
-                }
-            },
+            onClick = {},
             image = Icons.Default.Add
         )
     }
@@ -231,7 +224,7 @@ fun WorkoutScreenPreview() {
                 finishDateTimeVal = Date(),
                 notesVal = "This is the best back day",
                 durationVal = null,
-            )
+            ), onEditClick = {}
         )
     }
 }

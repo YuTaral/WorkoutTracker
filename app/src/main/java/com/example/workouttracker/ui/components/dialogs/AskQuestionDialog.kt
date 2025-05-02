@@ -27,13 +27,21 @@ import com.example.workouttracker.ui.theme.BottomSheetsDialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingLarge
 import kotlinx.coroutines.launch
 
-/** Bottom sheets dialog to ask user for confirmation */
+/**
+ * Bottom sheets dialog to ask user for confirmation
+ * @param event the event containing the question and any data needed to ask the question
+ * and execute the callback
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
     val q = event.question!!
     val state = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+    val questionText = String.format(
+        stringResource(id = q.getQuestionText()),
+        *event.formatQValues.toTypedArray()
+    )
 
     ModalBottomSheet(
         sheetState = state,
@@ -59,7 +67,8 @@ fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
                 style = MaterialTheme.typography.titleLarge
             )
             Label(
-                text = stringResource(id = q.getQuestionText()),
+                text = questionText,
+                maxLines = 10
             )
 
             Row(modifier = Modifier.fillMaxWidth().height(BottomSheetsDialogFooterSize)) {

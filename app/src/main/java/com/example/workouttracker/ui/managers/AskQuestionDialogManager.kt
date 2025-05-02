@@ -9,7 +9,8 @@ import androidx.compose.runtime.saveable.Saver
 enum class Question(private val titleId: Int, private val questionId: Int,
                     private val confirmButtonTextId: Int, private val cancelBtnTextId: Int) {
 
-    LOG_OUT(R.string.q_log_out_title, R.string.q_log_out_text, R.string.yes_btn, R.string.no_btn);
+    LOG_OUT(R.string.q_log_out_title, R.string.q_log_out_text, R.string.yes_btn, R.string.no_btn),
+    DELETE_WORKOUT(R.string.question_delete_workout_title, R.string.question_delete_workout_text, R.string.yes_btn, R.string.no_btn);
 
     /** Returns the question title */
     fun getTitle(): Int {
@@ -37,7 +38,8 @@ data class DisplayAskQuestionDialogEvent(
     val question: Question?,
     val show: Boolean = false,
     val onCancel: () -> Unit = {},
-    val onConfirm: () -> Unit = {}
+    val onConfirm: () -> Unit = {},
+    val formatQValues: List<String> = listOf()
 )
 
 @Suppress("UNCHECKED_CAST")
@@ -49,13 +51,14 @@ val DisplayAskQuestionDialogEventSaver = Saver<DisplayAskQuestionDialogEvent, Li
             name = event.question.name
         }
 
-        listOf(name, event.show, event.onCancel, event.onConfirm)
+        listOf(name, event.show, event.onCancel, event.onConfirm, event.formatQValues)
     },
     restore = { savedState ->
         val questionName = savedState[0] as String
         val show = savedState[1] as Boolean
         val cancelCallback = savedState[2] as () -> Unit
         val confirmCallback = savedState[3] as () -> Unit
+        val formatQValues = savedState[4] as List<String>
 
         val question = if (questionName.isEmpty()) {
             null
@@ -67,7 +70,8 @@ val DisplayAskQuestionDialogEventSaver = Saver<DisplayAskQuestionDialogEvent, Li
             question = question,
             show = show,
             onCancel = cancelCallback,
-            onConfirm = confirmCallback
+            onConfirm = confirmCallback,
+            formatQValues = formatQValues
         )
     }
 )

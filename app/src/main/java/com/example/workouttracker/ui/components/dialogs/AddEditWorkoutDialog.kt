@@ -44,8 +44,8 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = h
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(workout?.id) {
-        // Initialize to empty fields
+    LaunchedEffect(workout == null) {
+        // Initialize the fields
         vm.initialize()
     }
 
@@ -99,12 +99,23 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = h
             .padding(top = PaddingMedium),
             horizontalArrangement = Arrangement.Center
         ) {
+            if (workout != null) {
+                DialogButton(
+
+                    modifier = Modifier
+                        .customBorder(end = true)
+                        .weight(1f),
+                    text = stringResource(R.string.delete_btn),
+                    onClick = { vm.deleteWorkout() }
+                )
+            }
+
             DialogButton(
-                modifier = Modifier.customBorder(),
+                modifier = Modifier
+                    .customBorder()
+                    .weight(1f),
                 text = stringResource(R.string.save_btn),
-                onClick = {
-                    vm.addWorkout()
-                }
+                onClick = { vm.saveWorkout() }
             )
         }
     }

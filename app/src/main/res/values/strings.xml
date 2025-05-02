@@ -31,6 +31,7 @@
     <string name="select_date_btn">Select</string>
     <string name="cancel_btn">Cancel</string>
     <string name="save_btn">Save</string>
+    <string name="delete_btn">Delete</string>
     <string name="workouts_screen_title">Workouts</string>
     <string name="workout_screen_title">Current Workout</string>
     <string name="status_lbl">Status:</string>
@@ -44,11 +45,14 @@
     <string name="latest_workouts_lbl">Latest Workouts</string>
     <string name="select_date_lbl">Select Date</string>
     <string name="add_workout_title">Add workout</string>
+    <string name="edit_workout_title">Edit workout</string>
     <string name="workout_name_lbl">Workout name</string>
     <string name="additional_notes_lbl">Additional notes</string>
     <string name="error_msg_enter_workout_name">Please enter workout name</string>
     <string name="no_workout_selected_lbl">You have not selected workout. Go to Main panel or click here to start new workout</string>
     <string name="show_notes_lbl">Show notes</string>
     <string name="hide_notes_lbl">Hide notes</string>
+    <string name="question_delete_workout_title">Delete Workout</string>
+    <string name="question_delete_workout_text">Are you sure you want to delete workout \"%s\" ?</string>
 
 </resources>

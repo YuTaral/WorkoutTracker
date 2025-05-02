@@ -51,21 +51,23 @@ class WorkoutsViewModel @Inject constructor(
     }
 
     /** Display the date picker dialog */
-    suspend fun showDatePicker() {
-        DatePickerDialogManager.showDialog(
-            onCancel = {
-                viewModelScope.launch {
-                    DatePickerDialogManager.hideDialog()
-                }
-            },
-            onDatePick = { newDate ->
-                viewModelScope.launch {
-                    DatePickerDialogManager.hideDialog()
-                }
+    fun showDatePicker() {
+        viewModelScope.launch {
+            DatePickerDialogManager.showDialog(
+                onCancel = {
+                    viewModelScope.launch {
+                        DatePickerDialogManager.hideDialog()
+                    }
+                },
+                onDatePick = { newDate ->
+                    viewModelScope.launch {
+                        DatePickerDialogManager.hideDialog()
+                    }
 
-                updateStartDate(newDate)
-            }
-        )
+                    updateStartDate(newDate)
+                }
+            )
+        }
     }
 
     /** Display the add workout dialog */
@@ -77,9 +79,11 @@ class WorkoutsViewModel @Inject constructor(
      * Mark the workout as selected
      * @param workout selected workout, may be null (when deleted)
      */
-    suspend fun selectWorkout(workout: WorkoutModel?) {
-        workoutRepository.updateSelectedWorkout(workout)
-        PagerManager.changePageSelection(Page.SelectedWorkout)
+    fun selectWorkout(workout: WorkoutModel?) {
+        viewModelScope.launch {
+            workoutRepository.updateSelectedWorkout(workout)
+            PagerManager.changePageSelection(Page.SelectedWorkout)
+        }
     }
 
     /** Return the default workouts start date - 1 month backwards */

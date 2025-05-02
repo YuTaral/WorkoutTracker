@@ -106,7 +106,7 @@ fun DrawerContent(
                     thickness = 2.dp
                 )
 
-                getNavItems(onLogout = {vm.logout() }).forEachIndexed { index, item ->
+                getNavItems(onLogout = { vm.logout() }).forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         label = {
                             Label(text = item.text, style = LabelNavItem)

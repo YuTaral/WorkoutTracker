@@ -18,7 +18,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,7 +43,6 @@ import com.example.workouttracker.ui.theme.labelMediumGreen
 import com.example.workouttracker.ui.theme.labelMediumOrange
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.WorkoutsViewModel
-import kotlinx.coroutines.launch
 import java.util.Date
 
 @Composable
@@ -56,7 +54,6 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
     val user by vm.userRepository.user.collectAsStateWithLifecycle()
     val startDate by vm.startDate.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -85,11 +82,7 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
                 )
 
                 ImageButton(
-                    onClick = {
-                        scope.launch {
-                            vm.showDatePicker()
-                        }
-                    },
+                    onClick = { vm.showDatePicker() },
                     image = Icons.Default.DateRange
                 )
             }
@@ -117,11 +110,7 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
                         WorkoutItem(
                             workout = item,
                             weightUnit = user!!.defaultValues.weightUnit.text,
-                            onClick = {
-                                scope.launch {
-                                    vm.selectWorkout(item)
-                                }
-                            }
+                            onClick = { vm.selectWorkout(item) }
                         )
                     }
                 }
@@ -132,11 +121,7 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = PaddingSmall),
-            onClick = {
-                scope.launch {
-                    vm.showAddWorkoutDialog()
-                }
-            },
+            onClick = { vm.showAddWorkoutDialog() },
             image = Icons.Default.Add
         )
     }

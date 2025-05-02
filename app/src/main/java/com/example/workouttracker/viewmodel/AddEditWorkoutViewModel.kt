@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
+import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
+import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.PagerManager
+import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +40,13 @@ class AddEditWorkoutViewModel @Inject constructor(
      * HiltViewModel and is created only once per activity lifetime
      **/
     fun initialize() {
-        updateName("")
-        updateNotes("")
+        if (workoutsRepository.selectedWorkout.value == null) {
+            updateName("")
+            updateNotes("")
+        } else {
+            updateName(workoutsRepository.selectedWorkout.value!!.name)
+            updateNotes(workoutsRepository.selectedWorkout.value!!.notes)
+        }
     }
 
     /** Update the name in the UI with the provided value */
@@ -56,24 +64,77 @@ class AddEditWorkoutViewModel @Inject constructor(
         _uiState.update { it.copy(nameError = value) }
     }
 
-    /** Add the workout if it's valid */
-    fun addWorkout() {
+    /** Add/edit the workout if it's valid */
+    fun saveWorkout() {
         if (!validate()) {
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            workoutsRepository.addWorkout(
-                workout = WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0),
-                onSuccess = { createdWorkout ->
-                    viewModelScope.launch {
-                        workoutsRepository.updateWorkouts(null)
-                        workoutsRepository.updateSelectedWorkout(createdWorkout)
-                        DialogManager.hideDialog()
-                        PagerManager.changePageSelection(Page.SelectedWorkout)
+        if (workoutsRepository.selectedWorkout.value == null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                workoutsRepository.addWorkout(
+                    workout = WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0),
+                    onSuccess = { createdWorkout ->
+                        onWorkoutActionSuccess(createdWorkout, Page.SelectedWorkout)
                     }
-                }
-            )
+                )
+            }
+        } else {
+            val workout = workoutsRepository.selectedWorkout.value!!
+            workout.name = _uiState.value.name
+            workout.notes = _uiState.value.notes
+
+            viewModelScope.launch(Dispatchers.IO) {
+                workoutsRepository.updateWorkout (
+                    workout = workout,
+                    onSuccess = { updatedWorkout ->
+                        onWorkoutActionSuccess(updatedWorkout, Page.SelectedWorkout)
+                    }
+                )
+            }
+        }
+    }
+
+    /** Delete the workout */
+    fun deleteWorkout() {
+        viewModelScope.launch {
+            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+                question = Question.DELETE_WORKOUT,
+                show = true,
+                onCancel = {
+                    viewModelScope.launch {
+                        AskQuestionDialogManager.hideQuestion()
+                    }
+                },
+                onConfirm = {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        workoutsRepository.deleteWorkout(
+                            workoutId = workoutsRepository.selectedWorkout.value!!.id,
+                            onSuccess = {
+                                viewModelScope.launch {
+                                    AskQuestionDialogManager.hideQuestion()
+                                    onWorkoutActionSuccess(null, Page.Workouts)
+                                }
+                            }
+                        )
+                    }
+                },
+                formatQValues = listOf(workoutsRepository.selectedWorkout.value!!.name)
+            ))
+        }
+    }
+
+    /**
+     * Execute the logic when workout CRUD operation has been executed successfully
+     * @param workout the workout to set as selected, may be null
+     * @param redirectToPage the page to redirect to
+     */
+    private fun onWorkoutActionSuccess(workout: WorkoutModel?, redirectToPage: Page) {
+        viewModelScope.launch {
+            workoutsRepository.updateWorkouts(null)
+            workoutsRepository.updateSelectedWorkout(workout)
+            DialogManager.hideDialog()
+            PagerManager.changePageSelection(redirectToPage)
         }
     }
 
