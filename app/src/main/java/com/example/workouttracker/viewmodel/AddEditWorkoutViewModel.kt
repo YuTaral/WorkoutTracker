@@ -38,14 +38,15 @@ class AddEditWorkoutViewModel @Inject constructor(
     /**
      * Update the UI sate to empty upon dialog recreation, as the view model is
      * HiltViewModel and is created only once per activity lifetime
-     **/
-    fun initialize() {
-        if (workoutsRepository.selectedWorkout.value == null) {
+     * @param workout the selected workout if any, null otherwise
+     */
+    fun initialize(workout: WorkoutModel?) {
+        if (workout == null) {
             updateName("")
             updateNotes("")
         } else {
-            updateName(workoutsRepository.selectedWorkout.value!!.name)
-            updateNotes(workoutsRepository.selectedWorkout.value!!.notes)
+            updateName(workout.name)
+            updateNotes(workout.notes)
         }
     }
 
@@ -64,13 +65,16 @@ class AddEditWorkoutViewModel @Inject constructor(
         _uiState.update { it.copy(nameError = value) }
     }
 
-    /** Add/edit the workout if it's valid */
-    fun saveWorkout() {
+    /**
+     * Add/edit the workout if it's valid
+     * @param add true to add the workout, false to edit
+     */
+    fun saveWorkout(add: Boolean) {
         if (!validate()) {
             return
         }
 
-        if (workoutsRepository.selectedWorkout.value == null) {
+        if (add) {
             viewModelScope.launch(Dispatchers.IO) {
                 workoutsRepository.addWorkout(
                     workout = WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0),

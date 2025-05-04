@@ -1,5 +1,6 @@
 package com.example.workouttracker.ui.components.fragments
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -46,7 +47,10 @@ import com.example.workouttracker.ui.theme.labelMediumAccent
 import com.example.workouttracker.ui.theme.labelMediumGreen
 import com.example.workouttracker.ui.theme.labelMediumOrange
 import com.example.workouttracker.utils.Utils
+import kotlinx.coroutines.flow.StateFlow
 import java.util.Date
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
 /** The screen displaying the currently selected workout */
@@ -54,11 +58,14 @@ fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedW
     val selectedWorkout by vm.workoutRepository.selectedWorkout.collectAsStateWithLifecycle()
 
     if (selectedWorkout != null) {
+        vm.triggerTimer(start = selectedWorkout!!.finishDateTime == null)
         WorkoutScreen(
             workout = selectedWorkout!!,
-            onEditClick =  { vm.showEditWorkoutDialog() }
+            onEditClick =  { vm.showEditWorkoutDialog() },
+            secondsStateFlow = vm.secondsElapsed
         )
     } else {
+        vm.stopTimer()
         NoWorkoutScreen(onClick = { vm.showAddWorkoutDialog() })
     }
 }
@@ -67,10 +74,17 @@ fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedW
  * Screen to display when workout is selected
  * @param workout the selected workout
  * @param onEditClick callback to execute on edit button click
+ * @param secondsStateFlow the state flow of the seconds elapsed
+ * since the start of the workout
  */
 @Composable
-private fun WorkoutScreen(workout: WorkoutModel, onEditClick: () -> Unit) {
-    var showNotes by rememberSaveable{ mutableStateOf(false) }
+private fun WorkoutScreen(
+    workout: WorkoutModel,
+    onEditClick: () -> Unit,
+    secondsStateFlow: StateFlow<Int>
+) {
+    var showNotes by rememberSaveable { mutableStateOf(false) }
+    val secondsElapsed by secondsStateFlow.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -78,6 +92,8 @@ private fun WorkoutScreen(workout: WorkoutModel, onEditClick: () -> Unit) {
                 .fillMaxSize()
                 .padding(PaddingSmall),
         ) {
+            WorkoutDurationTimer(secondsElapsed = secondsElapsed)
+
             Row(modifier = Modifier.fillMaxWidth()) {
                 Label(
                     modifier = Modifier
@@ -210,6 +226,26 @@ private fun NoWorkoutScreen(onClick: () -> Unit) {
     )
 }
 
+/**
+ * Label to display the workout duration
+ * @param secondsElapsed the seconds since the start of the workout
+ */
+@SuppressLint("DefaultLocale")
+@Composable
+fun WorkoutDurationTimer(secondsElapsed: Int) {
+    val hours = secondsElapsed / 3600
+    val minutes = (secondsElapsed % 3600) / 60
+    val seconds = secondsElapsed % 60
+
+    Label(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = PaddingVerySmall),
+        text = String.format("%02d:%02d:%02d", hours, minutes, seconds),
+        style = MaterialTheme.typography.titleMedium
+    )
+}
+
 
 @Preview
 @Composable
@@ -224,7 +260,9 @@ fun WorkoutScreenPreview() {
                 finishDateTimeVal = Date(),
                 notesVal = "This is the best back day",
                 durationVal = null,
-            ), onEditClick = {}
+            ),
+            onEditClick = {},
+            secondsStateFlow = MutableStateFlow(120).asStateFlow()
         )
     }
 }

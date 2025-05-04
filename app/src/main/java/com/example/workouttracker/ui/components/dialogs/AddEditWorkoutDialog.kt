@@ -46,7 +46,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = h
 
     LaunchedEffect(workout == null) {
         // Initialize the fields
-        vm.initialize()
+        vm.initialize(workout)
     }
 
     Column(
@@ -115,7 +115,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = h
                     .customBorder()
                     .weight(1f),
                 text = stringResource(R.string.save_btn),
-                onClick = { vm.saveWorkout() }
+                onClick = { vm.saveWorkout(workout == null) }
             )
         }
     }

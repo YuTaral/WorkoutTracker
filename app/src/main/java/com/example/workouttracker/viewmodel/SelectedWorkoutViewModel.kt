@@ -10,7 +10,13 @@ import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -20,6 +26,34 @@ class SelectedWorkoutViewModel @Inject constructor(
     var workoutRepository: WorkoutRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
+
+    /** Seconds elapsed since the start of the workout */
+    private val _secondsElapsed = MutableStateFlow(getWorkoutElapsedSeconds())
+    val secondsElapsed = _secondsElapsed.asStateFlow()
+
+    /** Timer to update the UI on each second */
+    private var timerJob: Job? = null
+
+    /**
+     * Trigger the timer, calculating the seconds elapsed and optionally starting the timer job
+     * @param start true to start the timer, false to set only the seconds elapsed value
+     */
+    fun triggerTimer(start: Boolean) {
+        _secondsElapsed.value = getWorkoutElapsedSeconds()
+
+        if (start) {
+            restartTimer()
+        } else {
+            stopTimer()
+        }
+    }
+
+    /** Cancel the timer */
+    fun stopTimer() {
+        if (timerJob != null) {
+            timerJob!!.cancel()
+        }
+    }
 
     /** Display the add workout dialog */
     fun showAddWorkoutDialog() {
@@ -34,6 +68,42 @@ class SelectedWorkoutViewModel @Inject constructor(
                 title = resourceProvider.getString(R.string.edit_workout_title),
                 content = { AddEditWorkoutDialog(workout = workoutRepository.selectedWorkout.value!!) }
             )
+        }
+    }
+
+    /** Get the selected workout elapsed seconds */
+    private fun getWorkoutElapsedSeconds(): Int {
+        val workout = workoutRepository.selectedWorkout.value!!
+
+        return if (workout.durationSeconds != null && workout.durationSeconds!! > 0) {
+            workout.durationSeconds!!
+        } else if (workout.startDateTime != null) {
+            val now = Date()
+            var elapsedMillis = now.time - workout.startDateTime.time
+
+            if (elapsedMillis < 0) {
+                // Make sure the value is not negative, some times there is offset
+                // between the device and the server with ~20seconds
+                elapsedMillis = 0
+            }
+
+            (elapsedMillis / 1000).toInt()
+        } else {
+            0
+        }
+    }
+
+    /** Restart the timer and generate new value on each second */
+    private fun restartTimer() {
+        if (timerJob != null) {
+            timerJob!!.cancel()
+        }
+
+        timerJob = viewModelScope.launch {
+            while (isActive) {
+                delay(1000)
+                _secondsElapsed.value += 1
+            }
         }
     }
 }
