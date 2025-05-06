@@ -76,7 +76,7 @@ val labelLargeBold = TextStyle(
     color = ColorWhite
 )
 
-val labelMediumOrange= TextStyle(
+val labelMediumOrange = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
     fontSize = labelMediumSize,

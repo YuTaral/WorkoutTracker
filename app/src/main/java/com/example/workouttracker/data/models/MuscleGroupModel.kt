@@ -25,17 +25,10 @@ class MuscleGroupModel: BaseModel {
         imageName = model.imageName
     }
 
-    /** Constructor to set only the id
-     * @param idVal the id
-     */
-    constructor(idVal: Long) : super(idVal) {
-        name = "Unknown"
-        imageName = ""
-    }
 
-    /** Empty constructor */
-    constructor() : super(0) {
-        name = "Unknown"
-        imageName = ""
+    /** Preview constructor */
+    constructor(nameVal: String, imageVal: String) : super(0) {
+        name = nameVal
+        imageName = imageVal
     }
 }

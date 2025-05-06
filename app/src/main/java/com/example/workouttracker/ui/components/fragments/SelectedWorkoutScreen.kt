@@ -10,10 +10,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+
 import androidx.compose.foundation.layout.Row
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
@@ -35,10 +43,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.data.models.WorkoutModel
+import com.example.workouttracker.ui.components.reusable.ExerciseItem
 import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
@@ -56,13 +66,15 @@ import kotlinx.coroutines.flow.asStateFlow
 /** The screen displaying the currently selected workout */
 fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedWorkoutViewModel>()) {
     val selectedWorkout by vm.workoutRepository.selectedWorkout.collectAsStateWithLifecycle()
+    val user by vm.userRepository.user.collectAsStateWithLifecycle()
 
     if (selectedWorkout != null) {
         vm.triggerTimer(start = selectedWorkout!!.finishDateTime == null)
         WorkoutScreen(
             workout = selectedWorkout!!,
             onEditClick =  { vm.showEditWorkoutDialog() },
-            secondsStateFlow = vm.secondsElapsed
+            secondsStateFlow = vm.secondsElapsed,
+            weightUnit = user!!.defaultValues.weightUnit.text
         )
     } else {
         vm.stopTimer()
@@ -75,16 +87,19 @@ fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedW
  * @param workout the selected workout
  * @param onEditClick callback to execute on edit button click
  * @param secondsStateFlow the state flow of the seconds elapsed
+ * @param weightUnit the selected weight unit
  * since the start of the workout
  */
 @Composable
 private fun WorkoutScreen(
     workout: WorkoutModel,
     onEditClick: () -> Unit,
-    secondsStateFlow: StateFlow<Int>
+    secondsStateFlow: StateFlow<Int>,
+    weightUnit: String
 ) {
     var showNotes by rememberSaveable { mutableStateOf(false) }
     val secondsElapsed by secondsStateFlow.collectAsStateWithLifecycle()
+    val lazyListState = rememberLazyListState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -187,6 +202,19 @@ private fun WorkoutScreen(
                 color = ColorBorder,
                 thickness = 1.dp
             )
+
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                state = lazyListState,
+                contentPadding = PaddingValues(bottom = LazyListBottomPadding)
+            ) {
+                items(workout.exercises) {  item ->
+                    ExerciseItem(
+                        exercise = item,
+                        weightUnit = weightUnit
+                    )
+                }
+            }
         }
 
         ImageButton(
@@ -262,7 +290,8 @@ fun WorkoutScreenPreview() {
                 durationVal = null,
             ),
             onEditClick = {},
-            secondsStateFlow = MutableStateFlow(120).asStateFlow()
+            secondsStateFlow = MutableStateFlow(120).asStateFlow(),
+            weightUnit = "Kg"
         )
     }
 }

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorWhite
-import com.example.workouttracker.ui.theme.ImageButtonSize
+import com.example.workouttracker.ui.theme.MediumImageButtonSize
 
 @Composable
 /** Custom button with image inside
@@ -23,7 +23,7 @@ import com.example.workouttracker.ui.theme.ImageButtonSize
  * @param image the image
  * @param size the image size
  */
-fun ImageButton(modifier: Modifier = Modifier, onClick: () -> Unit, image: ImageVector, size: Dp = ImageButtonSize) {
+fun ImageButton(modifier: Modifier = Modifier, onClick: () -> Unit, image: ImageVector, size: Dp = MediumImageButtonSize) {
     Button(
         shape = MaterialTheme.shapes.small,
         modifier = modifier,

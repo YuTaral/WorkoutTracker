@@ -54,5 +54,10 @@
     <string name="hide_notes_lbl">Hide notes</string>
     <string name="question_delete_workout_title">Delete Workout</string>
     <string name="question_delete_workout_text">Are you sure you want to delete workout \"%s\" ?</string>
+    <string name="target_lbl">Target: %s</string>
+    <string name="set_sequence_lbl">#</string>
+    <string name="reps_lbl">Reps</string>
+    <string name="weight_lbl">Weight (%s)</string>
+    <string name="rest_lbl">Rest(s)</string>
 
 </resources>

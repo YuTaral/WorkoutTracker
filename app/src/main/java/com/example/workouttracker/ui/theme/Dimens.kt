@@ -23,4 +23,7 @@ val labelLargeSize = 18.sp
 val labelLargeLineHeight = 24.sp
 val labelLargeLetterSpacing = 0.5.sp
 
-val ImageButtonSize = 40.dp
+val SmallImageButtonSize = 25.dp
+val MediumImageButtonSize = 40.dp
+
+val LazyListBottomPadding = 40.dp

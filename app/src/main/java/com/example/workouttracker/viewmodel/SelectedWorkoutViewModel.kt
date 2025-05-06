@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
+import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.managers.DialogManager
@@ -24,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectedWorkoutViewModel @Inject constructor(
     var workoutRepository: WorkoutRepository,
+    var userRepository: UserRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
@@ -73,6 +75,10 @@ class SelectedWorkoutViewModel @Inject constructor(
 
     /** Get the selected workout elapsed seconds */
     private fun getWorkoutElapsedSeconds(): Int {
+        if (workoutRepository.selectedWorkout.value == null) {
+            return 0
+        }
+
         val workout = workoutRepository.selectedWorkout.value!!
 
         return if (workout.durationSeconds != null && workout.durationSeconds!! > 0) {

@@ -37,7 +37,7 @@ class ExerciseModel: BaseModel {
     }
 
     /** Constructor used when exercise is updated */
-    constructor(idVal:Long, nameVal:  String, muscleGroupVal: MuscleGroupModel, setsVal: MutableList<SetModel>,
+    constructor(idVal: Long, nameVal:  String, muscleGroupVal: MuscleGroupModel, setsVal: MutableList<SetModel>,
                 mGExerciseIdVal: Long?, notesVal: String) : super(idVal) {
         name = nameVal
         muscleGroup = muscleGroupVal
