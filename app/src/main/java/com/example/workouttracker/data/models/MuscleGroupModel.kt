@@ -25,9 +25,9 @@ class MuscleGroupModel: BaseModel {
         imageName = model.imageName
     }
 
-
     /** Preview constructor */
-    constructor(nameVal: String, imageVal: String) : super(0) {
+    constructor(idVal: Long, nameVal: String, imageVal: String) : super(idVal) {
+        id = idVal
         name = nameVal
         imageName = imageVal
     }

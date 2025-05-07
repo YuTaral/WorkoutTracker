@@ -34,6 +34,7 @@ import com.example.workouttracker.viewmodel.SelectedWorkoutViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,6 +47,7 @@ import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.components.reusable.ExerciseItem
 import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.LabelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
@@ -57,10 +59,12 @@ import com.example.workouttracker.ui.theme.labelMediumAccent
 import com.example.workouttracker.ui.theme.labelMediumGreen
 import com.example.workouttracker.ui.theme.labelMediumOrange
 import com.example.workouttracker.utils.Utils
+import com.example.workouttracker.viewmodel.Page
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 @Composable
 /** The screen displaying the currently selected workout */
@@ -100,6 +104,7 @@ private fun WorkoutScreen(
     var showNotes by rememberSaveable { mutableStateOf(false) }
     val secondsElapsed by secondsStateFlow.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -230,7 +235,11 @@ private fun WorkoutScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = PaddingSmall),
-            onClick = {},
+            onClick = {
+                scope.launch {
+                    PagerManager.changePageSelection(Page.SelectExercise)
+                }
+            },
             image = Icons.Default.Add
         )
     }
@@ -273,7 +282,6 @@ fun WorkoutDurationTimer(secondsElapsed: Int) {
         style = MaterialTheme.typography.titleMedium
     )
 }
-
 
 @Preview
 @Composable

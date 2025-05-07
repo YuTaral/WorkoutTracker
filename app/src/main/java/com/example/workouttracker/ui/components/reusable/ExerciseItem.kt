@@ -22,7 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -101,7 +101,7 @@ fun ExerciseItem(exercise: ExerciseModel, weightUnit: String) {
                     .size(SmallImageButtonSize)
                     .rotate(rotationAngle),
                 onClick = { showSets = !showSets },
-                image = Icons.Default.KeyboardArrowUp,
+                image = Icons.Default.KeyboardArrowDown,
                 size = SmallImageButtonSize
             )
         }
@@ -231,7 +231,7 @@ fun ExerciseItemPreview() {
         ExerciseItem(ExerciseModel(
             idVal = 1L,
             nameVal = "Wide pull ups",
-            muscleGroupVal = MuscleGroupModel(nameVal = "Back", imageVal = ""),
+            muscleGroupVal = MuscleGroupModel(idVal = 1, nameVal = "Back", imageVal = ""),
             setsVal = mutableListOf<SetModel>(
                 SetModel(idVal = 1, repsVal = 12, weightVal = 40.0, restVal = 120, completedVal = true, deletableVal = false),
                 SetModel(idVal = 1, repsVal = 8, weightVal = 45.0, restVal = 120, completedVal = true, deletableVal = false),

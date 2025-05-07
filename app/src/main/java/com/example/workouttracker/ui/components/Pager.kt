@@ -20,6 +20,7 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +32,8 @@ import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -40,6 +43,7 @@ fun Pager(vm: PagerViewModel = hiltViewModel()) {
     val pages by vm.pages.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
+    val selectedTabIndex = pages.indexOf(selectedPage).takeIf { it >= 0 } ?: 0
 
     LaunchedEffect(pagerState.currentPage) {
         vm.changeSelection(pages[pagerState.currentPage])
@@ -47,10 +51,18 @@ fun Pager(vm: PagerViewModel = hiltViewModel()) {
 
     LaunchedEffect(Unit) {
         PagerManager.events.collect { page ->
-            vm.changeSelection(pages[page.index])
-            coroutineScope.launch {
-                pagerState.animateScrollToPage(page.index)
-            }
+            vm.changeSelection(page)
+
+            // Use flow, waiting for the page to exist
+            // in the pages list, as we have temporary pages
+            snapshotFlow { vm.pages.value }
+                .map { it.indexOf(page) }
+                .first { it != -1 }
+                .let { pageIndex ->
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(pageIndex)
+                    }
+                }
         }
     }
 
@@ -59,42 +71,39 @@ fun Pager(vm: PagerViewModel = hiltViewModel()) {
             count = pages.size,
             state = pagerState,
             modifier = Modifier.weight(1f),
-        ) {
-            selectedPage.content()
+        ) { pageIndex ->
+            pages[pageIndex].content()
         }
 
         HorizontalDivider(color = ColorBorder, thickness = 2.dp)
 
         TabRow(
             containerColor = Color.Transparent,
-            selectedTabIndex = selectedPage.index,
+            selectedTabIndex = selectedTabIndex,
             indicator = { tabPositions: List<TabPosition> ->
-                SecondaryIndicator(
-                    Modifier.tabIndicatorOffset(tabPositions[selectedPage.index]),
-                    color = ColorAccent,
-                    height = 1.dp
-                )
+                if (selectedTabIndex < tabPositions.size) {
+                    SecondaryIndicator(
+                        Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                        color = ColorAccent,
+                        height = 1.dp
+                    )
+                }
             },
             divider = {}
         ) {
             pages.forEachIndexed { index, tab ->
-                val isSelected = selectedPage.index == index
+                val isSelected = selectedTabIndex == index
 
                 Tab(
-                    selected = selectedPage.index == index,
+                    selected = isSelected,
                     onClick = {
                         vm.changeSelection(pages[index])
                         coroutineScope.launch {
-                            pagerState.animateScrollToPage(selectedPage.index)
+                            pagerState.animateScrollToPage(index)
                         }
                     },
                     text = {
-                        val color = if (isSelected) {
-                            ColorAccent
-                        } else {
-                            ColorWhite
-                        }
-
+                        val color = if (isSelected) ColorAccent else ColorWhite
                         Text(
                             text = stringResource(id = tab.title),
                             style = MaterialTheme.typography.labelSmall,

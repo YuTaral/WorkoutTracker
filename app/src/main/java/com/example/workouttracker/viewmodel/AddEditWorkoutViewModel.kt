@@ -25,6 +25,7 @@ data class AddEditWorkoutUiState(
     val nameError: String? = null
 )
 
+/** View model to control the UI state of Add / Edit workout dialog */
 @HiltViewModel
 class AddEditWorkoutViewModel @Inject constructor(
     private var workoutsRepository: WorkoutRepository,

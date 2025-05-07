@@ -33,7 +33,10 @@
     <string name="save_btn">Save</string>
     <string name="delete_btn">Delete</string>
     <string name="workouts_screen_title">Workouts</string>
-    <string name="workout_screen_title">Current Workout</string>
+    <string name="workout_screen_title">Current</string>
+    <string name="select_exercise_title">Exercise</string>
+    <string name="select_muscle_group_lbl">Select muscle group</string>
+    <string name="select_exercise_lbl">Select exercise</string>
     <string name="status_lbl">Status:</string>
     <string name="notes_lbl">Notes:</string>
     <string name="in_progress_lbl">In progress</string>
@@ -59,5 +62,6 @@
     <string name="reps_lbl">Reps</string>
     <string name="weight_lbl">Weight (%s)</string>
     <string name="rest_lbl">Rest(s)</string>
+    <string name="search_lbl">Search…</string>
 
 </resources>

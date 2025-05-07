@@ -3,6 +3,7 @@ package com.example.workouttracker.viewmodel
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
+import com.example.workouttracker.ui.components.fragments.SelectExerciseScreen
 import com.example.workouttracker.ui.components.fragments.SelectedWorkoutScreen
 import com.example.workouttracker.ui.components.fragments.WorkoutsScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 /** The indices of each screen - used because the temporary screens are displayed on equal index */
 enum class PageIndices {
     WORKOUTS,
-    SELECTED_WORKOUT
+    SELECTED_WORKOUT,
+    FIRST_TEMPORARY
 }
 
 /** Class representing a screen in the main pager */
@@ -22,6 +24,8 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
                                 PageIndices.WORKOUTS.ordinal, content = { WorkoutsScreen() })
     data object SelectedWorkout : Page(R.string.workout_screen_title, R.drawable.icon_screen_selected_workout,
                                         PageIndices.SELECTED_WORKOUT.ordinal, content = { SelectedWorkoutScreen() })
+    data object SelectExercise : Page(R.string.select_exercise_title, R.drawable.icon_screen_add_exercise,
+        PageIndices.FIRST_TEMPORARY.ordinal, content = { SelectExerciseScreen() })
 }
 
 /** PagerViewModel to manage the state of the pages of the main screen */
@@ -46,6 +50,22 @@ class PagerViewModel @Inject constructor(): ViewModel() {
      * @param page the newly selected page
      */
     fun changeSelection(page: Page) {
+        // Add the page if it's temporary
+        if (!_pages.value.contains(page)) {
+            _pages.value = _pages.value + page
+        }
+
         _selectedPage.value = page
+
+        // Remove the temporary page if there is
+        if (_pages.value.size > PageIndices.FIRST_TEMPORARY.ordinal &&
+            _selectedPage.value.index < PageIndices.FIRST_TEMPORARY.ordinal) {
+            removeTemporaryPage()
+        }
+    }
+
+    /** Remove the temporary page */
+    private fun removeTemporaryPage() {
+        _pages.value = _pages.value.filter { it.index < PageIndices.FIRST_TEMPORARY.ordinal }
     }
 }

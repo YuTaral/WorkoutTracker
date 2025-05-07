@@ -8,6 +8,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
@@ -22,19 +23,22 @@ import com.example.workouttracker.ui.theme.MediumImageButtonSize
  * @param onClick callback to execute on click
  * @param image the image
  * @param size the image size
+ * @param buttonColor the button color
+ * @param imageColor the image color
  */
-fun ImageButton(modifier: Modifier = Modifier, onClick: () -> Unit, image: ImageVector, size: Dp = MediumImageButtonSize) {
+fun ImageButton(modifier: Modifier = Modifier, onClick: () -> Unit, image: ImageVector, size: Dp = MediumImageButtonSize,
+                buttonColor: Color = ColorAccent, imageColor: Color = ColorWhite) {
     Button(
         shape = MaterialTheme.shapes.small,
         modifier = modifier,
         contentPadding = PaddingValues(0.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = ColorAccent),
+        colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
         onClick = onClick
     ) {
         Image(
             modifier = Modifier.size(size),
             imageVector = image,
-            colorFilter = ColorFilter.tint(color = ColorWhite),
+            colorFilter = ColorFilter.tint(color = imageColor),
             contentDescription = "",
         )
     }
