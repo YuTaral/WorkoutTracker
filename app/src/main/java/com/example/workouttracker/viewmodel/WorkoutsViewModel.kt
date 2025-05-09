@@ -34,8 +34,8 @@ class WorkoutsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             workoutRepository.updateWeightUnits()
             workoutRepository.updateWorkouts(_startDate.value)
-            workoutRepository.updateSelectedWorkout(null)
         }
+        workoutRepository.updateSelectedWorkout(null)
     }
 
     /**
@@ -80,8 +80,9 @@ class WorkoutsViewModel @Inject constructor(
      * @param workout selected workout, may be null (when deleted)
      */
     fun selectWorkout(workout: WorkoutModel?) {
+        workoutRepository.updateSelectedWorkout(workout)
+
         viewModelScope.launch {
-            workoutRepository.updateSelectedWorkout(workout)
             PagerManager.changePageSelection(Page.SelectedWorkout)
         }
     }

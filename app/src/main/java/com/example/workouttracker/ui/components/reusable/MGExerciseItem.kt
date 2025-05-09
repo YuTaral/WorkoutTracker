@@ -6,6 +6,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,7 +38,7 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
  * @param onClick callback to execute on muscle group exercise item click
  */
 @Composable
-fun MGExerciseItem(mgExerciseModel: MGExerciseModel, onClick: (Long) -> Unit) {
+fun MGExerciseItem(mgExerciseModel: MGExerciseModel, onClick: (MGExerciseModel) -> Unit) {
     var showDescription by rememberSaveable { mutableStateOf(true) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (showDescription) 180f else 0f,
@@ -46,7 +47,14 @@ fun MGExerciseItem(mgExerciseModel: MGExerciseModel, onClick: (Long) -> Unit) {
 
     Column(modifier = Modifier
         .fillMaxWidth()
-        .padding(PaddingVerySmall)) {
+        .padding(PaddingVerySmall)
+        .clickable(
+            enabled = true,
+            onClick = {
+                onClick(mgExerciseModel)
+            }
+        )
+    ) {
 
         Row(modifier = Modifier
             .fillMaxWidth()

@@ -63,5 +63,8 @@
     <string name="weight_lbl">Weight (%s)</string>
     <string name="rest_lbl">Rest(s)</string>
     <string name="search_lbl">Search…</string>
+    <string name="sets_lbl">Sets</string>
+    <string name="exercise_completed_lbl">Exercise completed</string>
+
 
 </resources>

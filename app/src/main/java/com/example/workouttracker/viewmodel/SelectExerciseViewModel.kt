@@ -6,6 +6,9 @@ import com.example.workouttracker.data.models.MGExerciseModel
 import com.example.workouttracker.data.models.MuscleGroupModel
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.MuscleGroupRepository
+import com.example.workouttracker.data.network.repositories.UserRepository
+import com.example.workouttracker.ui.components.dialogs.AddExerciseToWorkoutDialog
+import com.example.workouttracker.ui.managers.DialogManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +28,8 @@ enum class Mode {
 @HiltViewModel
 class SelectExerciseViewModel @Inject constructor(
     var muscleGroupsRepository: MuscleGroupRepository,
-    var exerciseRepository: ExerciseRepository
+    var exerciseRepository: ExerciseRepository,
+    private var userRepository: UserRepository
 ): ViewModel() {
     /** Use job with slight delay to avoid filtering the data on each letter */
     private val debounceTime = 500L
@@ -126,10 +130,20 @@ class SelectExerciseViewModel @Inject constructor(
     /**
      * Select the muscle group exercise and open the dialog to add this exercise
      * to the workout
-     * @param mgExerciseId the muscle group exercise id
+     * @param mGExercise the muscle group exercise
      */
-    fun selectMGExercise(mgExerciseId: Long) {
+    fun selectMGExercise(mGExercise: MGExerciseModel) {
+        viewModelScope.launch {
+            val weightUnit =  userRepository.user.value!!.defaultValues.weightUnit.text
 
+            DialogManager.showDialog(
+                title = mGExercise.name,
+                content = { AddExerciseToWorkoutDialog(
+                    mGExercise = mGExercise,
+                    weightUnit = weightUnit
+                ) }
+            )
+        }
     }
 
     /** Populate the muscle groups */

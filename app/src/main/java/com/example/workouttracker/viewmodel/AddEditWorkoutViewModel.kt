@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class AddEditWorkoutUiState(
     val name: String = "",
@@ -135,11 +136,15 @@ class AddEditWorkoutViewModel @Inject constructor(
      * @param redirectToPage the page to redirect to
      */
     private fun onWorkoutActionSuccess(workout: WorkoutModel?, redirectToPage: Page) {
-        viewModelScope.launch {
+        workoutsRepository.updateSelectedWorkout(workout)
+
+        viewModelScope.launch(Dispatchers.IO) {
             workoutsRepository.updateWorkouts(null)
-            workoutsRepository.updateSelectedWorkout(workout)
-            DialogManager.hideDialog()
-            PagerManager.changePageSelection(redirectToPage)
+
+            withContext(Dispatchers.Main) {
+                DialogManager.hideDialog()
+                PagerManager.changePageSelection(redirectToPage)
+            }
         }
     }
 

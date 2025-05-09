@@ -34,11 +34,11 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel
 import java.util.Date
 
-@Composable
 /**
  * Add / edit workout dialog content
  * @param workout the workout to edit if in edit mode, null otherwise
  */
+@Composable
 fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = hiltViewModel<AddEditWorkoutViewModel>()) {
     val notesFocusReq = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -58,7 +58,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = h
             label = stringResource(id = R.string.workout_name_lbl),
             value = uiState.name,
             onValueChange = {
-                if (it.length <= 50) {
+                if (it.length < 50) {
                     vm.updateName(it)
                 }
             },
@@ -81,7 +81,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = h
             label = stringResource(id = R.string.additional_notes_lbl),
             value = uiState.notes,
             onValueChange = {
-                if (it.length <= 4000) {
+                if (it.length < 4000) {
                     vm.updateNotes(it)
                 }
             },

@@ -112,7 +112,7 @@ private fun MuscleGroupsScreen(data: StateFlow<MutableList<MuscleGroupModel>>, o
  * @param onBackClick callback to execute on back button click
  */
 @Composable
-private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>, onClick: (Long) -> Unit, onBackClick: () -> Unit) {
+private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>, onClick: (MGExerciseModel) -> Unit, onBackClick: () -> Unit) {
     val mGExercises by data.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
 
