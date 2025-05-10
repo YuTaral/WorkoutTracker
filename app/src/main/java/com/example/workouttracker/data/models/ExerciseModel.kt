@@ -13,7 +13,7 @@ class ExerciseModel: BaseModel {
     val muscleGroup: MuscleGroupModel
 
     @SerializedName("Sets")
-    val sets: MutableList<SetModel>
+    var sets: MutableList<SetModel>
 
     @SerializedName("MGExerciseId")
     val mGExerciseId: Long?

@@ -31,4 +31,10 @@ class MuscleGroupModel: BaseModel {
         name = nameVal
         imageName = imageVal
     }
+
+    /** Empty constructor */
+    constructor() : super(0) {
+        name = "Unknown"
+        imageName = ""
+    }
 }

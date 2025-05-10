@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,9 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingVerySmall
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 
@@ -36,17 +32,15 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
  * @param text the text to add next to the checkbox
  */
 @Composable
-fun CheckboxWithLabel(modifier: Modifier = Modifier, checked: Boolean = false, onValueChange: (Boolean) -> Unit, text: String) {
-    var checkedVal by rememberSaveable { mutableStateOf(checked) }
-    val backgroundColor = if (checkedVal) ColorAccent else ColorWhite
+fun CustomCheckbox(modifier: Modifier = Modifier, checked: Boolean, onValueChange: (Boolean) -> Unit, text: String) {
+    val backgroundColor = if (checked) ColorAccent else ColorWhite
 
     Row(
         modifier = modifier
             .clickable(
                 enabled = true,
                 onClick = {
-                    checkedVal = !checkedVal
-                    onValueChange(checkedVal)
+                    onValueChange(!checked)
                 }
             ),
         verticalAlignment = Alignment.CenterVertically,
@@ -60,7 +54,7 @@ fun CheckboxWithLabel(modifier: Modifier = Modifier, checked: Boolean = false, o
                 .border(1.dp, ColorAccent, CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            if (checkedVal) {
+            if (checked) {
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = "",
@@ -81,9 +75,9 @@ fun CheckboxWithLabel(modifier: Modifier = Modifier, checked: Boolean = false, o
 
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
-private fun CheckboxPreview() {
+private fun CustomCheckboxPreview() {
     WorkoutTrackerTheme {
-        CheckboxWithLabel(
+        CustomCheckbox(
             modifier = Modifier.fillMaxWidth(),
             checked = true,
             onValueChange = {},

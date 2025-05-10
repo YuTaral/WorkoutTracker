@@ -30,7 +30,7 @@ import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.MGExerciseModel
 import com.example.workouttracker.ui.components.extensions.customBorder
-import com.example.workouttracker.ui.components.reusable.CheckboxWithLabel
+import com.example.workouttracker.ui.components.reusable.CustomCheckbox
 import com.example.workouttracker.ui.components.reusable.DialogButton
 import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingLarge
@@ -146,7 +146,7 @@ fun AddExerciseToWorkoutDialog(mGExercise: MGExerciseModel,
             )
         }
 
-        CheckboxWithLabel(
+        CustomCheckbox(
             modifier = Modifier.padding(horizontal = PaddingSmall),
             checked = uiState.completed,
             onValueChange = { vm.updateCompleted(it) },
