@@ -78,7 +78,8 @@ fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedW
             workout = selectedWorkout!!,
             onEditClick =  { vm.showEditWorkoutDialog() },
             secondsStateFlow = vm.secondsElapsed,
-            weightUnit = user!!.defaultValues.weightUnit.text
+            weightUnit = user!!.defaultValues.weightUnit.text,
+            onRestClick = { seconds, id -> vm.startTimer(seconds, id) }
         )
     } else {
         vm.stopTimer()
@@ -99,7 +100,8 @@ private fun WorkoutScreen(
     workout: WorkoutModel,
     onEditClick: () -> Unit,
     secondsStateFlow: StateFlow<Int>,
-    weightUnit: String
+    weightUnit: String,
+    onRestClick: (Long, Long) -> Unit
 ) {
     var showNotes by rememberSaveable { mutableStateOf(false) }
     val secondsElapsed by secondsStateFlow.collectAsStateWithLifecycle()
@@ -216,7 +218,8 @@ private fun WorkoutScreen(
                 items(workout.exercises) {  item ->
                     ExerciseItem(
                         exercise = item,
-                        weightUnit = weightUnit
+                        weightUnit = weightUnit,
+                        onRestClick = { seconds, id -> onRestClick(seconds, id) }
                     )
                 }
             }
@@ -285,6 +288,7 @@ fun WorkoutDurationTimer(secondsElapsed: Int) {
 
 @Preview
 @Composable
+@Suppress("UNCHECKED_CAST")
 fun WorkoutScreenPreview() {
     WorkoutTrackerTheme {
         WorkoutScreen(
@@ -299,7 +303,7 @@ fun WorkoutScreenPreview() {
             ),
             onEditClick = {},
             secondsStateFlow = MutableStateFlow(120).asStateFlow(),
-            weightUnit = "Kg"
+            weightUnit = "Kg", {} as (Long, Long) -> Unit
         )
     }
 }

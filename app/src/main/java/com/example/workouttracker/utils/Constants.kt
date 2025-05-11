@@ -11,6 +11,7 @@ object Constants {
     const val FIRST_START_KEY = "first_start"
     val VALIDATION_FAILED_VIBRATION = longArrayOf(0, 350)
     val REQUEST_ERROR_VIBRATION = longArrayOf(0, 250)
+    val TIMER_END_VIBRATION = longArrayOf(0, 500, 500, 500, 500, 500)
 
     /** Object with all custom HTTP status codes defined server-side */
     object CustomHttpStatusCode {

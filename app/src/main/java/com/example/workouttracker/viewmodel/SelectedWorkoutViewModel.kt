@@ -4,13 +4,16 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
+import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.components.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +29,7 @@ import javax.inject.Inject
 class SelectedWorkoutViewModel @Inject constructor(
     var workoutRepository: WorkoutRepository,
     var userRepository: UserRepository,
+    private var exerciseRepository: ExerciseRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
@@ -70,6 +74,43 @@ class SelectedWorkoutViewModel @Inject constructor(
                 title = resourceProvider.getString(R.string.edit_workout_title),
                 dialogName = "AddEditWorkoutDialog",
                 content = { AddEditWorkoutDialog(workout = workoutRepository.selectedWorkout.value!!) }
+            )
+        }
+    }
+
+    /**
+     * Start the timer
+     * @param seconds the seconds to start the timer with
+     * @param setId the set id for which rest timer was called
+     */
+    fun startTimer(seconds: Long, setId: Long) {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.timer_lbl),
+                dialogName = "TimerDialog",
+                content = { TimerDialog(
+                    seconds = seconds,
+                    autoStart = true,
+                    onDone = {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            exerciseRepository.completeSet(
+                                id = setId,
+                                workoutId = workoutRepository.selectedWorkout.value!!.id,
+                                onSuccess = {
+                                    workoutRepository.updateSelectedWorkout(it)
+
+                                    viewModelScope.launch(Dispatchers.IO) {
+                                        workoutRepository.updateWorkouts(null)
+                                    }
+
+                                    viewModelScope.launch {
+                                        DialogManager.hideDialog("TimerDialog")
+                                    }
+                                }
+                            )
+                        }
+                    })
+                }
             )
         }
     }

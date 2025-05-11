@@ -48,9 +48,10 @@ import kotlinx.coroutines.launch
  * Single exercise item to display exercise as part of workout
  * @param exercise the exercise model
  * @param weightUnit the selected weight unit
+ * @param onRestClick callback to execute on the rest timer click
  */
 @Composable
-fun ExerciseItem(exercise: ExerciseModel, weightUnit: String) {
+fun ExerciseItem(exercise: ExerciseModel, weightUnit: String, onRestClick: (Long, Long) -> Unit) {
     var showSets by rememberSaveable { mutableStateOf(true) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (showSets) 180f else 0f,
@@ -152,7 +153,7 @@ fun ExerciseItem(exercise: ExerciseModel, weightUnit: String) {
                     SetItem(
                         set = item,
                         rowNumber = index + 1,
-                        onRestClick = {}
+                        onRestClick = { onRestClick(item.rest.toLong(), item.id) }
                     )
                 }
             }
@@ -162,6 +163,7 @@ fun ExerciseItem(exercise: ExerciseModel, weightUnit: String) {
 
 @Preview
 @Composable
+@Suppress("UNCHECKED_CAST")
 fun ExerciseItemPreview() {
     WorkoutTrackerTheme {
         ExerciseItem(ExerciseModel(
@@ -176,6 +178,6 @@ fun ExerciseItemPreview() {
             ),
             mGExerciseIdVal = 1L,
             notesVal = "Additional notes to exercise"
-        ), weightUnit = "Kg")
+        ), weightUnit = "Kg", {} as (Long, Long) -> Unit)
     }
 }
