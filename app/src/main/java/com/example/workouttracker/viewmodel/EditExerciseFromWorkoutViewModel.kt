@@ -9,6 +9,7 @@ import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
+import com.example.workouttracker.ui.components.dialogs.MGExerciseDescDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -194,6 +195,25 @@ class EditExerciseFromWorkoutViewModel @Inject constructor(
         }
     }
 
+    /** Show the exercise description as separate dialog */
+    fun showDescription() {
+        viewModelScope.launch(Dispatchers.IO) {
+            exerciseRepository.getMGExercise(
+                mGExerciseId = editExercise.mGExerciseId!!,
+                onSuccess = {
+                    viewModelScope.launch {
+                        DialogManager.showDialog(
+                            title = editExercise.name,
+                            dialogName = "MGExerciseDescDialog",
+                            content = { MGExerciseDescDialog(it) }
+                        )
+                    }
+                }
+            )
+        }
+
+    }
+
     /**
      * Execute the logic to update the app after save/delete has been successful
      * @param updatedWorkout the updated workout
@@ -206,7 +226,7 @@ class EditExerciseFromWorkoutViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            DialogManager.hideDialog()
+            DialogManager.hideDialog("EditExerciseFromWorkoutDialog")
         }
     }
 

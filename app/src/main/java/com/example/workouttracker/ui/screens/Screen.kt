@@ -24,14 +24,14 @@ import com.example.workouttracker.ui.components.dialogs.DatePickerDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DisplayDatePickerEvent
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
+import com.example.workouttracker.ui.managers.DialogAction
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayDatePickerEventSaver
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEventSaver
-import com.example.workouttracker.ui.managers.DisplayDialogEvent
-import com.example.workouttracker.ui.managers.DisplayDialogEventSaver
+import com.example.workouttracker.ui.managers.DisplayDialogEventListSaver
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.viewmodel.MainViewModel
@@ -153,20 +153,28 @@ private fun ShowDatePicker() {
 /** Composable to show/hide dialog of different types */
 @Composable
 private fun ShowDialog() {
-    var showDialogEvent by rememberSaveable(stateSaver = DisplayDialogEventSaver) {
-        mutableStateOf(DisplayDialogEvent(show = false))
+    var dialogEvents by rememberSaveable(stateSaver = DisplayDialogEventListSaver) {
+        mutableStateOf(emptyList())
     }
 
     LaunchedEffect(Unit) {
         DialogManager.events.collect { event ->
-            showDialogEvent = event
+            dialogEvents = when (event) {
+                is DialogAction.Show -> {
+                    dialogEvents + event.event
+                }
+                is DialogAction.Dismiss -> {
+                    dialogEvents.filterNot { it.dialogName == event.dialogName }
+                }
+            }
         }
     }
 
-    if (showDialogEvent.show) {
+    dialogEvents.forEach { event ->
         BaseDialog(
-            title = showDialogEvent.title,
-            content = showDialogEvent.content
+            title = event.title,
+            dialogName = event.dialogName,
+            content = event.content,
         )
     }
 }

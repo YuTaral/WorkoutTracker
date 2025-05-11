@@ -142,7 +142,7 @@ class AddEditWorkoutViewModel @Inject constructor(
             workoutsRepository.updateWorkouts(null)
 
             withContext(Dispatchers.Main) {
-                DialogManager.hideDialog()
+                DialogManager.hideDialog("AddEditWorkoutDialog")
                 PagerManager.changePageSelection(redirectToPage)
             }
         }

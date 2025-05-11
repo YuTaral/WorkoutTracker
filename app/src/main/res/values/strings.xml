@@ -65,6 +65,7 @@
     <string name="search_lbl">Search…</string>
     <string name="sets_lbl">Sets</string>
     <string name="exercise_completed_lbl">Exercise completed</string>
+    <string name="no_exercise_description_lbl">No description found for this exercise</string>
 
 
 </resources>

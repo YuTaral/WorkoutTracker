@@ -87,6 +87,7 @@ object Utils {
         viewModelScope.launch {
             DialogManager.showDialog(
                 title = resourceProvider.getString(R.string.add_workout_title),
+                dialogName = "AddEditWorkoutDialog",
                 content = { AddEditWorkoutDialog(null) }
             )
         }

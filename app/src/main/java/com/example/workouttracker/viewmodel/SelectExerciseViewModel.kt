@@ -138,6 +138,7 @@ class SelectExerciseViewModel @Inject constructor(
 
             DialogManager.showDialog(
                 title = mGExercise.name,
+                dialogName = "AddExerciseToWorkoutDialog",
                 content = { AddExerciseToWorkoutDialog(
                     mGExercise = mGExercise,
                     weightUnit = weightUnit

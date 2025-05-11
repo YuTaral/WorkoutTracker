@@ -80,6 +80,7 @@ fun ExerciseItem(exercise: ExerciseModel, weightUnit: String) {
                     scope.launch {
                         DialogManager.showDialog(
                             title = exercise.name,
+                            dialogName = "EditExerciseFromWorkoutDialog",
                             content = { EditExerciseFromWorkoutDialog(exercise, weightUnit) }
                         )
                     }

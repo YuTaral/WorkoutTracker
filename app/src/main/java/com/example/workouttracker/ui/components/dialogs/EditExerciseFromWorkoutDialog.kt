@@ -91,7 +91,7 @@ fun EditExerciseFromWorkoutDialog(exercise: ExerciseModel,
             )
 
             ImageButton(
-                onClick = { },
+                onClick = { vm.showDescription() },
                 image = Icons.Default.Info,
             )
         }

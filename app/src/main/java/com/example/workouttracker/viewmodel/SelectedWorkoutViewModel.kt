@@ -68,6 +68,7 @@ class SelectedWorkoutViewModel @Inject constructor(
         viewModelScope.launch {
             DialogManager.showDialog(
                 title = resourceProvider.getString(R.string.edit_workout_title),
+                dialogName = "AddEditWorkoutDialog",
                 content = { AddEditWorkoutDialog(workout = workoutRepository.selectedWorkout.value!!) }
             )
         }

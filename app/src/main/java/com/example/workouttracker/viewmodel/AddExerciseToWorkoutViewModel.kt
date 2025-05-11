@@ -95,7 +95,7 @@ class AddExerciseToWorkoutViewModel @Inject constructor(
                     }
 
                     viewModelScope.launch {
-                        DialogManager.hideDialog()
+                        DialogManager.hideDialog("AddExerciseToWorkoutDialog")
                         PagerManager.changePageSelection(Page.SelectedWorkout)
                     }
                 }

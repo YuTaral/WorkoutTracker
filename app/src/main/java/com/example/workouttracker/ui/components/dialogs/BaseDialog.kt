@@ -38,10 +38,11 @@ import kotlinx.coroutines.launch
 /**
  * Composable function to display a dialog
  * @param title the dialog title
+ * @param dialogName the dialog name
  * @param content the dialog content
  */
 @Composable
-fun BaseDialog(title: String, content: @Composable () -> Unit) {
+fun BaseDialog(title: String, dialogName: String, content: @Composable () -> Unit) {
     val scope = rememberCoroutineScope()
 
     Dialog(
@@ -80,7 +81,7 @@ fun BaseDialog(title: String, content: @Composable () -> Unit) {
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     onClick = {
                         scope.launch {
-                            DialogManager.hideDialog()
+                            DialogManager.hideDialog(dialogName)
                         }
                     }
                 ) {
@@ -103,6 +104,7 @@ fun BaseDialogPreview() {
     WorkoutTrackerTheme {
         BaseDialog(
             title = "Dialog title",
+            dialogName = "Test",
             content = {
                 Label(text = "Dialog content goes here")
             },
