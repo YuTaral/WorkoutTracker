@@ -33,7 +33,6 @@ import com.example.workouttracker.ui.components.extensions.customBorder
 import com.example.workouttracker.ui.components.reusable.CustomCheckbox
 import com.example.workouttracker.ui.components.reusable.DialogButton
 import com.example.workouttracker.ui.theme.DialogFooterSize
-import com.example.workouttracker.ui.theme.PaddingLarge
 
 /**
  * Dialog to add exercise to workout
