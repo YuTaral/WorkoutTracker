@@ -4,18 +4,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
+import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
+import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.workouttracker.R
+import com.example.workouttracker.ui.components.dialogs.ChangePasswordDialog
+import com.example.workouttracker.ui.components.dialogs.ExerciseDefaultValuesDialog
 
 /** Drawer view model to manage the state of the Drawer */
 @HiltViewModel
 class DrawerViewModel @Inject constructor(
-    private var userRepository: UserRepository
-
+    private var userRepository: UserRepository,
+    private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
     /** Logout user */
@@ -40,6 +45,28 @@ class DrawerViewModel @Inject constructor(
                         }
                     }
                 ),
+            )
+        }
+    }
+
+    /** Show change default values dialog */
+    fun showChangeDefaultValues() {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.exercise_default_values),
+                dialogName = "ExerciseDefaultValuesDialog",
+                content = { ExerciseDefaultValuesDialog() }
+            )
+        }
+    }
+
+    /** Show change password dialog */
+    fun showChangePassword() {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.change_password),
+                dialogName = "ChangePasswordDialog",
+                content = { ChangePasswordDialog() }
             )
         }
     }

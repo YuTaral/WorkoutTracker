@@ -106,7 +106,11 @@ fun DrawerContent(
                     thickness = 2.dp
                 )
 
-                getNavItems(onLogout = { vm.logout() }).forEachIndexed { index, item ->
+                getNavItems(
+                    onLogout = { vm.logout() },
+                    onChangeDefaultValues = { vm.showChangeDefaultValues() },
+                    onChangePassword = { vm.showChangePassword() }
+                ).forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         label = {
                             Label(text = item.text, style = LabelNavItem)
@@ -199,12 +203,14 @@ fun DrawerHeader(
 }
 
 @Composable
-fun getNavItems(onLogout: () -> Unit): List<NavItemData> {
+fun getNavItems(onLogout: () -> Unit,
+                onChangeDefaultValues: () -> Unit,
+                onChangePassword: () -> Unit): List<NavItemData> {
     return listOf(
         NavItemData(
             text = stringResource(id = R.string.exercise_default_values),
             icon = painterResource(id = R.drawable.icon_edit_exercise_def_vals),
-            onClick = {}
+            onClick = { onChangeDefaultValues() }
         ),
         NavItemData(
             text = stringResource(id = R.string.edit_profile),
@@ -214,7 +220,7 @@ fun getNavItems(onLogout: () -> Unit): List<NavItemData> {
         NavItemData(
             text = stringResource(id = R.string.change_password),
             icon = painterResource(id = R.drawable.icon_change_password),
-            onClick = {}
+            onClick = { onChangePassword() }
         ),
         NavItemData(
             text = stringResource(id = R.string.logout),

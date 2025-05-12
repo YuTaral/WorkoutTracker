@@ -70,9 +70,18 @@
     <string name="search_lbl">Search…</string>
     <string name="sets_lbl">Sets</string>
     <string name="exercise_completed_lbl">Exercise completed</string>
+    <string name="completed_lbl">Completed</string>
     <string name="no_exercise_description_lbl">No description found for this exercise</string>
     <string name="timer_lbl">Timer</string>
     <string name="time_is_up_lbl">Time\'s up!</string>
-
+    <string name="default_values_explanation_lbl">Enter the default values which will be used when starting exercise. These values can be override with Manage Exercises function</string>
+    <string name="weight_unit_lb_lbl">Lb</string>
+    <string name="weight_unit_kg_lbl">Kg</string>
+    <string name="old_password_lbl">Old password</string>
+    <string name="new_password_lbl">New password</string>
+    <string name="confirm_password_lbl">Confirm password</string>
+    <string name="error_msg_blank_pass">Password cannot be blank</string>
+    <string name="error_msg_pass_match">Passwords do not match</string>
+    <string name="error_msg_pass_matches">Old and new passwords matches</string>
 
 </resources>

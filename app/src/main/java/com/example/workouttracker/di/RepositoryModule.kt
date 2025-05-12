@@ -5,6 +5,7 @@ import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.MuscleGroupRepository
+import com.example.workouttracker.data.network.repositories.UserProfileRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 
@@ -51,5 +52,11 @@ object RepositoryModule {
         networkManager: NetworkManager
     ): ExerciseRepository {
         return ExerciseRepository(apiService, networkManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserProfileRepository(apiService: APIService, networkManager: NetworkManager): UserProfileRepository {
+        return UserProfileRepository(apiService, networkManager)
     }
 }

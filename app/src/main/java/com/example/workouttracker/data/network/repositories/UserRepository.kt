@@ -2,6 +2,7 @@ package com.example.workouttracker.data.network.repositories
 
 import com.example.workouttracker.data.managers.NetworkManager
 import com.example.workouttracker.data.managers.SharedPrefsManager
+import com.example.workouttracker.data.models.UserDefaultValuesModel
 import com.example.workouttracker.data.models.UserModel
 import com.example.workouttracker.data.network.APIService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,22 @@ class UserRepository @Inject constructor(
     private fun updateToken(token: String) {
         apiService.updateToken(token)
         sharedPrefsManager.updateTokenInPrefs(token)
+    }
+
+    /** Update the user default values with the provided value */
+    fun updateDefaultValues(value: UserDefaultValuesModel) {
+        // Simulate creation of new object to trigger recompositions
+        // and update the weight unit labels
+        val currentUser = _user.value!!
+        val newUser = UserModel(
+            idVal = currentUser.id,
+            emailVal = currentUser.email,
+            fullNameVal = currentUser.fullName,
+            profileImageVal = currentUser.profileImage,
+            defaultValuesVal = value
+        )
+
+        updateUser(newUser)
     }
 
     /**

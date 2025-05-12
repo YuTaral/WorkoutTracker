@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.ui.theme.ColorAccent
+import com.example.workouttracker.ui.theme.ColorLightGrey
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 
@@ -33,7 +34,7 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
  */
 @Composable
 fun CustomCheckbox(modifier: Modifier = Modifier, checked: Boolean, onValueChange: (Boolean) -> Unit, text: String) {
-    val backgroundColor = if (checked) ColorAccent else ColorWhite
+    val color = if (checked) ColorAccent else ColorLightGrey
 
     Row(
         modifier = modifier
@@ -50,18 +51,16 @@ fun CustomCheckbox(modifier: Modifier = Modifier, checked: Boolean, onValueChang
             modifier = Modifier
                 .size(24.dp)
                 .clip(CircleShape)
-                .background(backgroundColor)
-                .border(1.dp, ColorAccent, CircleShape),
+                .background(color)
+                .border(1.dp, color, CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            if (checked) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "",
-                    tint = ColorWhite,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = "",
+                tint = ColorWhite,
+                modifier = Modifier.size(24.dp)
+            )
         }
 
         if (!text.isEmpty()) {
@@ -79,7 +78,7 @@ private fun CustomCheckboxPreview() {
     WorkoutTrackerTheme {
         CustomCheckbox(
             modifier = Modifier.fillMaxWidth(),
-            checked = true,
+            checked = false,
             onValueChange = {},
             text = "Exercise Completed"
         )

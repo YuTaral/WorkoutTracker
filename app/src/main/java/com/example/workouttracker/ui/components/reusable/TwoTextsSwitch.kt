@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
@@ -18,9 +18,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
+import com.example.workouttracker.R
 import com.example.workouttracker.ui.theme.ColorAccent
+import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 
 /**
  * Switch to allow to choose a value between 2 texts
@@ -31,11 +34,13 @@ import com.example.workouttracker.ui.theme.ColorAccent
  * */
 @Composable
 fun TwoTextsSwitch(modifier: Modifier = Modifier,
+                   selectedValue: String = "Left",
                    leftText: String = "Left",
                    rightText: String = "Right",
-                   onSelectionChanged: (Boolean) -> Unit = {}
+                   onSelectionChanged: (String) -> Unit = {}
 ) {
-    var isLeftSelected by remember { mutableStateOf(true) }
+    var selected by remember { mutableStateOf(selectedValue) }
+    var isLeftSelected by remember { mutableStateOf(selected == leftText) }
 
     Row(
         modifier = modifier
@@ -51,7 +56,7 @@ fun TwoTextsSwitch(modifier: Modifier = Modifier,
                 .clickable {
                     if (!isLeftSelected) {
                         isLeftSelected = true
-                        onSelectionChanged(true)
+                        onSelectionChanged(leftText)
                     }
                 }
                 .padding(vertical = 5.dp),
@@ -69,7 +74,7 @@ fun TwoTextsSwitch(modifier: Modifier = Modifier,
                 .clickable {
                     if (isLeftSelected) {
                         isLeftSelected = false
-                        onSelectionChanged(false)
+                        onSelectionChanged(rightText)
                     }
                 }
                 .padding(vertical = 5.dp),
@@ -84,8 +89,13 @@ fun TwoTextsSwitch(modifier: Modifier = Modifier,
 @Preview(showBackground = true)
 @Composable
 fun PreviewCustomSwitch() {
-    TwoTextsSwitch { isLeftSelected ->
-        println("Selected: ${if (isLeftSelected) "Left" else "Right"}")
+    WorkoutTrackerTheme {
+        TwoTextsSwitch(
+            selectedValue = stringResource(id= R.string.weight_unit_kg_lbl),
+            leftText = stringResource(id = R.string.weight_unit_kg_lbl),
+            rightText = stringResource(id = R.string.weight_unit_lb_lbl),
+            onSelectionChanged = {}
+        )
     }
 }
 
