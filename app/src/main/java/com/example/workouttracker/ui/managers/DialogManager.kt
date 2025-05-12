@@ -1,7 +1,5 @@
 package com.example.workouttracker.ui.managers
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.listSaver
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
@@ -17,36 +15,6 @@ sealed class DialogAction {
     data class Show(val event: DisplayDialogEvent) : DialogAction()
     data class Dismiss(val dialogName: String) : DialogAction()
 }
-
-/** Display event saver */
-@Suppress("UNCHECKED_CAST")
-val DisplayDialogEventSaver = Saver<DisplayDialogEvent, List<Any>>(
-    save = { event ->
-        listOf(event.dialogName, event.title, event.content)
-    },
-    restore = { savedState ->
-        DisplayDialogEvent(
-            dialogName = savedState[0] as String,
-            title = savedState[1] as String,
-            content = savedState[2] as @Composable () -> Unit,
-        )
-    }
-)
-
-/** Display event list saver */
-val DisplayDialogEventListSaver: Saver<List<DisplayDialogEvent>, Any> =
-    listSaver(
-        save = { list ->
-            list.map { event ->
-                DisplayDialogEventSaver.run { save(event) ?: error("Failed to save") }
-            }
-        },
-        restore = { savedList ->
-            savedList.map { saved ->
-                DisplayDialogEventSaver.run { restore(saved) ?: error("Failed to restore") }
-            }
-        }
-    )
 
 /** Class to handle showing dialogs of different type */
 object DialogManager {

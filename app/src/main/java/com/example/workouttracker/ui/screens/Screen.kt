@@ -22,16 +22,14 @@ import com.example.workouttracker.ui.components.dialogs.AskQuestionDialog
 import com.example.workouttracker.ui.components.dialogs.BaseDialog
 import com.example.workouttracker.ui.components.dialogs.DatePickerDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
-import com.example.workouttracker.ui.managers.DisplayDatePickerEvent
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
 import com.example.workouttracker.ui.managers.DialogAction
 import com.example.workouttracker.ui.managers.DialogManager
-import com.example.workouttracker.ui.managers.DisplayDatePickerEventSaver
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
-import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEventSaver
-import com.example.workouttracker.ui.managers.DisplayDialogEventListSaver
+import com.example.workouttracker.ui.managers.DisplayDatePickerEvent
+import com.example.workouttracker.ui.managers.DisplayDialogEvent
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.viewmodel.MainViewModel
@@ -112,7 +110,7 @@ private fun MakeVibration(context: Context) {
 /** Composable to show/hide ask question dialog */
 @Composable
 private fun AskQuestion() {
-    var showQuestionDialog by rememberSaveable(stateSaver = DisplayAskQuestionDialogEventSaver) {
+    var showQuestionDialog by remember {
         mutableStateOf(DisplayAskQuestionDialogEvent(null, false))
     }
 
@@ -130,7 +128,7 @@ private fun AskQuestion() {
 /** Show/hide the date picker dialog */
 @Composable
 private fun ShowDatePicker() {
-    var showDatePickEvent by rememberSaveable(stateSaver = DisplayDatePickerEventSaver) {
+    var showDatePickEvent by remember {
         mutableStateOf(DisplayDatePickerEvent(false) {})
     }
 
@@ -153,8 +151,8 @@ private fun ShowDatePicker() {
 /** Composable to show/hide dialog of different types */
 @Composable
 private fun ShowDialog() {
-    var dialogEvents by rememberSaveable(stateSaver = DisplayDialogEventListSaver) {
-        mutableStateOf(emptyList())
+    var dialogEvents by remember {
+        mutableStateOf<List<DisplayDialogEvent>>(emptyList())
     }
 
     LaunchedEffect(Unit) {

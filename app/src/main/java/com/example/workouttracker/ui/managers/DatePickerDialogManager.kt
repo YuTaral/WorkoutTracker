@@ -3,27 +3,12 @@ package com.example.workouttracker.ui.managers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import java.util.Date
-import androidx.compose.runtime.saveable.Saver
 
 /** Show date picker event class */
 data class DisplayDatePickerEvent(
     var show: Boolean = false,
     val onCancel: () -> Unit = {},
     val onDatePick: (Date) -> Unit = {}
-)
-
-@Suppress("UNCHECKED_CAST")
-val DisplayDatePickerEventSaver = Saver<DisplayDatePickerEvent, List<Any>>(
-    save = { event ->
-        listOf(event.show, event.onCancel, event.onDatePick)
-    },
-    restore = { savedState ->
-        DisplayDatePickerEvent(
-            show = savedState[0] as Boolean,
-            onCancel = savedState[1] as () -> Unit,
-            onDatePick = savedState[2] as (Date) -> Unit
-        )
-    }
 )
 
 /** Class to handle showing date picker dialog */
