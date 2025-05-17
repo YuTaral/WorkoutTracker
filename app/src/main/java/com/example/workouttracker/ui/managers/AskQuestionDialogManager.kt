@@ -3,14 +3,15 @@ package com.example.workouttracker.ui.managers
 import com.example.workouttracker.R
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import androidx.compose.runtime.saveable.Saver
 
 /** Enum with all questions */
 enum class Question(private val titleId: Int, private val questionId: Int,
                     private val confirmButtonTextId: Int, private val cancelBtnTextId: Int) {
 
     LOG_OUT(R.string.q_log_out_title, R.string.q_log_out_text, R.string.yes_btn, R.string.no_btn),
-    DELETE_WORKOUT(R.string.question_delete_workout_title, R.string.question_delete_workout_text, R.string.yes_btn, R.string.no_btn);
+    DELETE_WORKOUT(R.string.question_delete_workout_title, R.string.question_delete_workout_text, R.string.yes_btn, R.string.no_btn),
+    IMAGE_SELECTION_OPTIONS(R.string.question_choose_image_title, R.string.question_choose_image_text, R.string.camera_btn, R.string.gallery_btn),
+    ALLOW_CAMERA_PERMISSION(R.string.question_go_to_settings_title, R.string.question_go_to_settings_text, R.string.go_to_settings_btn, R.string.no_btn);
 
     /** Returns the question title */
     fun getTitle(): Int {
@@ -40,40 +41,6 @@ data class DisplayAskQuestionDialogEvent(
     val onCancel: () -> Unit = {},
     val onConfirm: () -> Unit = {},
     val formatQValues: List<String> = listOf()
-)
-
-@Suppress("UNCHECKED_CAST")
-val DisplayAskQuestionDialogEventSaver = Saver<DisplayAskQuestionDialogEvent, List<Any>>(
-    save = { event ->
-        var name = ""
-
-        if (event.question != null) {
-            name = event.question.name
-        }
-
-        listOf(name, event.show, event.onCancel, event.onConfirm, event.formatQValues)
-    },
-    restore = { savedState ->
-        val questionName = savedState[0] as String
-        val show = savedState[1] as Boolean
-        val cancelCallback = savedState[2] as () -> Unit
-        val confirmCallback = savedState[3] as () -> Unit
-        val formatQValues = savedState[4] as List<String>
-
-        val question = if (questionName.isEmpty()) {
-            null
-        } else {
-            Question.valueOf(questionName)
-        }
-
-        DisplayAskQuestionDialogEvent(
-            question = question,
-            show = show,
-            onCancel = cancelCallback,
-            onConfirm = confirmCallback,
-            formatQValues = formatQValues
-        )
-    }
 )
 
 /** Class to trigger events when we need to ask user for confirmation */

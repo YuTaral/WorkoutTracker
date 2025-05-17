@@ -108,6 +108,7 @@ fun DrawerContent(
 
                 getNavItems(
                     onLogout = { vm.logout() },
+                    onEditProfile = { vm.showEditProfile() },
                     onChangeDefaultValues = { vm.showChangeDefaultValues() },
                     onChangePassword = { vm.showChangePassword() }
                 ).forEachIndexed { index, item ->
@@ -204,6 +205,7 @@ fun DrawerHeader(
 
 @Composable
 fun getNavItems(onLogout: () -> Unit,
+                onEditProfile: () -> Unit,
                 onChangeDefaultValues: () -> Unit,
                 onChangePassword: () -> Unit): List<NavItemData> {
     return listOf(
@@ -215,7 +217,7 @@ fun getNavItems(onLogout: () -> Unit,
         NavItemData(
             text = stringResource(id = R.string.edit_profile),
             icon = painterResource(id = R.drawable.icon_edit_profile),
-            onClick = {}
+            onClick = { onEditProfile() }
         ),
         NavItemData(
             text = stringResource(id = R.string.change_password),

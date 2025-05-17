@@ -27,7 +27,7 @@ data class UiState(
     val confirmPasswordError: String? = null,
 )
 
-/** Change password view model to control the UI state of change password dialog*/
+/** Change password view model to control the UI state of change password dialog */
 @HiltViewModel
 class ChangePasswordViewModel @Inject constructor(
     private var userRepository: UserRepository,

@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.components.dialogs.ChangePasswordDialog
+import com.example.workouttracker.ui.components.dialogs.EditProfileDialog
 import com.example.workouttracker.ui.components.dialogs.ExerciseDefaultValuesDialog
 
 /** Drawer view model to manage the state of the Drawer */
@@ -67,6 +68,17 @@ class DrawerViewModel @Inject constructor(
                 title = resourceProvider.getString(R.string.change_password),
                 dialogName = "ChangePasswordDialog",
                 content = { ChangePasswordDialog() }
+            )
+        }
+    }
+
+    /** Show edit profile dialog */
+    fun showEditProfile() {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.edit_profile),
+                dialogName = "EditProfileDialog",
+                content = { EditProfileDialog() }
             )
         }
     }

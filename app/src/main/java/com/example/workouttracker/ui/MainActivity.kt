@@ -10,6 +10,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.workouttracker.ui.managers.PermissionResultHandler
+import com.example.workouttracker.ui.managers.ImageUploadManager
+import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.MainViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,12 +21,15 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity: ComponentActivity() {
     private val vm by viewModels<MainViewModel>()
+    private val permissionResultHandler = PermissionResultHandler(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Show splash screen with animation
         splashScreen()
 
         super.onCreate(savedInstanceState)
+        Utils.init(this)
+        ImageUploadManager.init(permissionResultHandler)
 
         setContent {
             Screen(vm = vm)

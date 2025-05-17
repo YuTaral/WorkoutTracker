@@ -83,5 +83,17 @@
     <string name="error_msg_blank_pass">Password cannot be blank</string>
     <string name="error_msg_pass_match">Passwords do not match</string>
     <string name="error_msg_pass_matches">Old and new passwords matches</string>
+    <string name="full_name_lbl">Full name</string>
+    <string name="remove_picture_btn">Remove picture</string>
+    <string name="question_choose_image_title">Image selection</string>
+    <string name="question_choose_image_text">Please select from where you want to upload image</string>
+    <string name="camera_btn">Camera</string>
+    <string name="gallery_btn">Gallery</string>
+    <string name="permission_denied_message">Operation aborted. The requested permission has been denied</string>
+    <string name="error_msg_failed_to_upload_image">Failed to upload image. Please try again</string>
+    <string name="question_go_to_settings_title">Permission required</string>
+    <string name="question_go_to_settings_text">This feature requires access to camera. Please enable it in the app settings.</string>
+    <string name="go_to_settings_btn">Go to Settings</string>
+    <string name="error_msg_username_cannot_be_blank">User full name cannot be blank</string>
 
 </resources>

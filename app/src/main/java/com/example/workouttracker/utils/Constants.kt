@@ -12,34 +12,8 @@ object Constants {
     val VALIDATION_FAILED_VIBRATION = longArrayOf(0, 350)
     val REQUEST_ERROR_VIBRATION = longArrayOf(0, 250)
     val TIMER_END_VIBRATION = longArrayOf(0, 500, 500, 500, 500, 500)
-
-    /** Object with all custom HTTP status codes defined server-side */
-    object CustomHttpStatusCode {
-        val EXERCISE_ALREADY_EXISTS = 499
-    }
-
-    /** Enum with panel unique ids */
-    enum class PanelUniqueId {
-        MAIN,
-        WORKOUT,
-        TEMPLATES,
-        SELECT_EXERCISE,
-        MANAGE_EXERCISE,
-        MANAGE_TEAMS,
-        ADD_TEAM,
-        EDIT_TEAM,
-        NOTIFICATIONS,
-        TEAM_DETAILS,
-        ASSIGN_WORKOUT
-    }
-
-    /** Enum with the position of the panel in the fragment state adapter  */
-    enum class PanelIndices {
-        MAIN,
-        WORKOUT,
-        FIRST_TEMPORARY,
-        SECOND_TEMPORARY
-    }
+    const val IMAGE_WIDTH = 256
+    const val IMAGE_HEIGHT = 256
 
     /** Enum with notification types */
     enum class NotificationType {
