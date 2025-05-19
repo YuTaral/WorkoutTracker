@@ -40,6 +40,7 @@
     <string name="workouts_screen_title">Workouts</string>
     <string name="workout_screen_title">Current</string>
     <string name="select_exercise_title">Exercise</string>
+    <string name="select_action_title">Select Action</string>
     <string name="select_muscle_group_lbl">Select muscle group</string>
     <string name="select_exercise_lbl">Select exercise</string>
     <string name="status_lbl">Status:</string>
@@ -95,5 +96,9 @@
     <string name="question_go_to_settings_text">This feature requires access to camera. Please enable it in the app settings.</string>
     <string name="go_to_settings_btn">Go to Settings</string>
     <string name="error_msg_username_cannot_be_blank">User full name cannot be blank</string>
+    <string name="action_update_exercise">Update exercise</string>
+    <string name="action_delete_exercise">Delete exercise</string>
+    <string name="action_exercise_default_values">Update default values</string>
+    <string name="manage_exercises_lbl">Manage Exercises</string>
 
 </resources>

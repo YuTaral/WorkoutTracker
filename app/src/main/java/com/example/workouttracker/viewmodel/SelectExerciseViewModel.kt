@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import com.example.workouttracker.R
+import com.example.workouttracker.utils.ResourceProvider
 
 /** Enum with different states of the screen */
 enum class Mode {
@@ -24,12 +26,24 @@ enum class Mode {
     SELECT_EXERCISE
 }
 
+/** Enum representing the actions from the action spinner */
+enum class SpinnerActions(private val stringId: Int) {
+    UPDATE_EXERCISE(R.string.action_update_exercise),
+    DELETE_EXERCISE(R.string.action_delete_exercise),
+    CHANGE_EXERCISE_DEFAULT_VALUES(R.string.action_exercise_default_values);
+
+    fun getStringId(): Int {
+        return stringId
+    }
+}
+
 /** View model to control the UI state of add exercise to workout screen */
 @HiltViewModel
 class SelectExerciseViewModel @Inject constructor(
     var muscleGroupsRepository: MuscleGroupRepository,
     var exerciseRepository: ExerciseRepository,
-    private var userRepository: UserRepository
+    private var userRepository: UserRepository,
+    private var resourceProvider: ResourceProvider
 ): ViewModel() {
     /** Use job with slight delay to avoid filtering the data on each letter */
     private val debounceTime = 500L
@@ -56,6 +70,21 @@ class SelectExerciseViewModel @Inject constructor(
     private var _search = MutableStateFlow<String>("")
     var search = _search.asStateFlow()
 
+    /** Whether the screen is in manage exercise mode */
+    private var _manageExercises = MutableStateFlow<Boolean>(false)
+    var manageExercises = _manageExercises.asStateFlow()
+
+    /** Valid Spinner actions */
+    var spinnerActions: List<SpinnerActions> = listOf(
+        SpinnerActions.UPDATE_EXERCISE,
+        SpinnerActions.DELETE_EXERCISE,
+        SpinnerActions.CHANGE_EXERCISE_DEFAULT_VALUES,
+    )
+
+    /** The selected spinner action, if any */
+    private var _selectedSpinnerAction = MutableStateFlow<SpinnerActions?>(null)
+    var selectedSpinnerAction = _selectedSpinnerAction.asStateFlow()
+
     /** Update the mode with the provided value */
     fun updateMode(newMode: Mode) {
         _mode.value = newMode
@@ -71,6 +100,22 @@ class SelectExerciseViewModel @Inject constructor(
 
     init {
         populateMuscleGroups()
+    }
+
+    /** Update manage exercise value when the screen is shown */
+    fun updateManageExercises(value: Boolean) {
+        _manageExercises.value = value
+
+        if (_manageExercises.value) {
+            updateSelectedSpinnerAction(resourceProvider.getString(SpinnerActions.UPDATE_EXERCISE.getStringId()))
+        }
+    }
+
+    /** Update the selected spinner action with the provided value */
+    fun updateSelectedSpinnerAction(actionText: String) {
+        _selectedSpinnerAction.value = spinnerActions.first {
+            resourceProvider.getString(it.getStringId()) == actionText
+        }
     }
 
     /** Reset the data when the screen in which the view model is used is being destroyed */

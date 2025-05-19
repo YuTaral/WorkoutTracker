@@ -26,9 +26,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingSmall
+import com.example.workouttracker.viewmodel.Page
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,7 +70,14 @@ fun TopBar(drawerState: DrawerState) {
                 text = stringResource(id = R.string.notifications),
             )
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.clickable {
+                scope.launch {
+                    PagerManager.changePageSelection(Page.Actions)
+                }
+            },
+        ) {
             Image(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Menu icon",

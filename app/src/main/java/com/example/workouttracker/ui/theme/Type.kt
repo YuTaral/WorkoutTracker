@@ -67,6 +67,15 @@ val LabelMediumGrey = TextStyle(
     color = ColorSecondary
 )
 
+val LabelMediumBold = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Bold,
+    fontSize = labelMediumSize,
+    lineHeight = labelMediumLineHeight,
+    letterSpacing = labelMediumLetterSpacing,
+    color = ColorWhite
+)
+
 val labelLargeBold = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Bold,

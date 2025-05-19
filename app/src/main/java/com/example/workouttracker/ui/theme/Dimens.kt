@@ -27,3 +27,5 @@ val SmallImageButtonSize = 25.dp
 val MediumImageButtonSize = 40.dp
 
 val LazyListBottomPadding = 40.dp
+
+val SpinnerBorderSize = 10.dp

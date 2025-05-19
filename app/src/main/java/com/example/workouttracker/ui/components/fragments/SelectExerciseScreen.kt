@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import com.example.workouttracker.data.models.MGExerciseModel
 import com.example.workouttracker.data.models.MuscleGroupModel
+import com.example.workouttracker.ui.components.reusable.Spinner
 import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.MGExerciseItem
 import com.example.workouttracker.ui.components.reusable.MuscleGroupItem
@@ -36,30 +38,48 @@ import com.example.workouttracker.viewmodel.Mode
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * The screen to display muscle groups and exercises when adding exercise to workout
+ * The screen to display muscle groups and exercises when adding exercise to workout or managing exercises
+ * @param manageExercises true if the screen is in manage exercise mode (add/update/delete), false
+ * otherwise - to select exercises and add to workout
  */
 @Composable
-fun SelectExerciseScreen(vm: SelectExerciseViewModel = hiltViewModel()) {
+fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel = hiltViewModel()) {
     DisposableEffect(Unit) {
         onDispose {
             vm.resetData()
         }
     }
 
+    LaunchedEffect(Unit) {
+        vm.updateManageExercises(manageExercises)
+    }
+
     val mode by vm.mode.collectAsStateWithLifecycle()
     val searchTerm by vm.search.collectAsStateWithLifecycle()
+    val manageExercises by vm.manageExercises.collectAsStateWithLifecycle()
+    val selectedAction by vm.selectedSpinnerAction.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(PaddingVerySmall)
     ) {
 
-        Label(
-            modifier = Modifier.fillMaxWidth(),
-            text = if (mode == Mode.SELECT_MUSCLE_GROUP) stringResource(id = R.string.select_muscle_group_lbl)
-                    else stringResource(id = R.string.select_exercise_lbl),
-            style = MaterialTheme.typography.titleMedium,
-        )
+        if (mode == Mode.SELECT_EXERCISE && manageExercises) {
+            Spinner(
+                items = vm.spinnerActions.map { stringResource(id = it.getStringId()) },
+                selectedItem = stringResource(id = selectedAction!!.getStringId()),
+                onItemSelected = {
+                    vm.updateSelectedSpinnerAction(it)
+                }
+            )
+        } else {
+            Label(
+                modifier = Modifier.fillMaxWidth(),
+                text = if (mode == Mode.SELECT_MUSCLE_GROUP) stringResource(id = R.string.select_muscle_group_lbl)
+                else stringResource(id = R.string.select_exercise_lbl),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
 
         InputField(
             value = searchTerm,
@@ -112,7 +132,10 @@ private fun MuscleGroupsScreen(data: StateFlow<MutableList<MuscleGroupModel>>, o
  * @param onBackClick callback to execute on back button click
  */
 @Composable
-private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>, onClick: (MGExerciseModel) -> Unit, onBackClick: () -> Unit) {
+private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>,
+                            onClick: (MGExerciseModel) -> Unit,
+                            onBackClick: () -> Unit
+) {
     val mGExercises by data.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
 
