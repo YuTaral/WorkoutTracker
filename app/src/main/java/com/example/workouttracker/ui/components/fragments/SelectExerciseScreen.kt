@@ -33,7 +33,9 @@ import com.example.workouttracker.ui.components.reusable.Spinner
 import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.MGExerciseItem
 import com.example.workouttracker.ui.components.reusable.MuscleGroupItem
+import com.example.workouttracker.ui.theme.LabelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
+import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.viewmodel.Mode
 import kotlinx.coroutines.flow.StateFlow
 
@@ -66,6 +68,7 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
 
         if (mode == Mode.SELECT_EXERCISE && manageExercises) {
             Spinner(
+                modifier = Modifier.padding(horizontal = PaddingVerySmall),
                 items = vm.spinnerActions.map { stringResource(id = it.getStringId()) },
                 selectedItem = stringResource(id = selectedAction!!.getStringId()),
                 onItemSelected = {
@@ -99,7 +102,9 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
             ExercisesScreen(
                 data = vm.filteredmGExercises,
                 onClick = { vm.selectMGExercise(it) },
-                onBackClick = { vm.changeSelectedMuscleGroup(0) }
+                onBackClick = { vm.changeSelectedMuscleGroup(0) },
+                manageExercises = manageExercises,
+                onAddClick = { vm.showAddMGExercise() }
             )
         }
     }
@@ -130,23 +135,37 @@ private fun MuscleGroupsScreen(data: StateFlow<MutableList<MuscleGroupModel>>, o
  * @param data the muscle groups exercises
  * @param onClick callback to execute on item click
  * @param onBackClick callback to execute on back button click
+ * @param manageExercises whether the screen is in manage mode
+ * @param onAddClick callback to execute on Add button click
  */
 @Composable
 private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>,
                             onClick: (MGExerciseModel) -> Unit,
-                            onBackClick: () -> Unit
+                            onBackClick: () -> Unit,
+                            manageExercises: Boolean,
+                            onAddClick: () -> Unit
 ) {
     val mGExercises by data.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = lazyListState,
-            contentPadding = PaddingValues(bottom = LazyListBottomPadding)
-        ) {
-            items(mGExercises) { item ->
-                MGExerciseItem(item, onClick)
+
+        if (manageExercises && mGExercises.isEmpty()) {
+            Label(
+                modifier = Modifier.padding(PaddingSmall),
+                text = stringResource(id = R.string.no_exercises_to_edit),
+                style = LabelMediumGrey,
+                maxLines = 4
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = lazyListState,
+                contentPadding = PaddingValues(bottom = LazyListBottomPadding)
+            ) {
+                items(mGExercises) { item ->
+                    MGExerciseItem(item, onClick)
+                }
             }
         }
 
@@ -158,7 +177,7 @@ private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>,
 
         ImageButton(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = { },
+            onClick = { onAddClick() },
             image = Icons.Default.Add
         )
     }

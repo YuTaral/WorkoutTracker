@@ -36,14 +36,21 @@ import com.example.workouttracker.ui.components.reusable.TwoTextsSwitch
 import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.viewmodel.ExerciseDefaultValuesViewModel
 import androidx.compose.runtime.getValue
+import com.example.workouttracker.data.models.UserDefaultValuesModel
 
 /**
  * Dialog to change exercise / global default values
+ * @param values the default values - null of global, not null if exercise specific
+ * @param exerciseName the exercise name, may be empty string if the values are global
  */
 @Composable
-fun ExerciseDefaultValuesDialog(vm: ExerciseDefaultValuesViewModel = hiltViewModel()) {
-    LaunchedEffect(Unit) {
-        vm.initializeData()
+fun ExerciseDefaultValuesDialog(
+    values: UserDefaultValuesModel?,
+    exerciseName: String,
+    vm: ExerciseDefaultValuesViewModel = hiltViewModel()
+) {
+    LaunchedEffect(values, exerciseName) {
+        vm.initializeData(values)
     }
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
@@ -57,13 +64,23 @@ fun ExerciseDefaultValuesDialog(vm: ExerciseDefaultValuesViewModel = hiltViewMod
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(PaddingSmall)
     ) {
-        Label(
-            modifier = Modifier.padding(horizontal = PaddingSmall),
-            text = stringResource(R.string.default_values_explanation_lbl),
-            style = LabelMediumGrey,
-            textAlign = TextAlign.Start,
-            maxLines = 4
-        )
+        if (values != null) {
+            Label(
+                modifier = Modifier.padding(horizontal = PaddingSmall),
+                text = String.format(stringResource(R.string.default_values_explanation_exercise_lbl), exerciseName),
+                style = LabelMediumGrey,
+                textAlign = TextAlign.Start,
+                maxLines = 4
+            )
+        } else {
+            Label(
+                modifier = Modifier.padding(horizontal = PaddingSmall),
+                text = stringResource(R.string.default_values_explanation_lbl),
+                style = LabelMediumGrey,
+                textAlign = TextAlign.Start,
+                maxLines = 4
+            )
+        }
 
         Row(modifier = Modifier.fillMaxWidth()) {
             InputField(
@@ -140,6 +157,7 @@ fun ExerciseDefaultValuesDialog(vm: ExerciseDefaultValuesViewModel = hiltViewMod
                 selectedValue = uiState.weightUnit,
                 leftText = stringResource(id = R.string.weight_unit_kg_lbl),
                 rightText = stringResource(id = R.string.weight_unit_lb_lbl),
+                disabled = uiState.disableWeightUnit,
                 onSelectionChanged = { vm.updateWeightUnit(it) }
             )
 
@@ -173,6 +191,6 @@ fun ExerciseDefaultValuesDialog(vm: ExerciseDefaultValuesViewModel = hiltViewMod
 @Composable
 private fun ExerciseDefaultValuesDialogPreview() {
     WorkoutTrackerTheme {
-        ExerciseDefaultValuesDialog()
+        ExerciseDefaultValuesDialog(null, "")
     }
 }

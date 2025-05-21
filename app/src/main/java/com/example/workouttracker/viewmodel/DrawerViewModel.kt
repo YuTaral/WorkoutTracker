@@ -56,7 +56,7 @@ class DrawerViewModel @Inject constructor(
             DialogManager.showDialog(
                 title = resourceProvider.getString(R.string.exercise_default_values),
                 dialogName = "ExerciseDefaultValuesDialog",
-                content = { ExerciseDefaultValuesDialog() }
+                content = { ExerciseDefaultValuesDialog(values = null, exerciseName = "") }
             )
         }
     }

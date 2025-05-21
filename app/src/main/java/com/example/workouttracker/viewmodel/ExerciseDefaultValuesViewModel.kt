@@ -23,6 +23,7 @@ data class ExDefaultValuesUiState(
     val rest: String = "",
     val weightUnit: String = "",
     val completed: Boolean = false,
+    val disableWeightUnit: Boolean = true
 )
 
 /** View model to control the UI state of Exercise Default values dialog */
@@ -37,15 +38,14 @@ class ExerciseDefaultValuesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ExDefaultValuesUiState())
     val uiState = _uiState.asStateFlow()
 
-    init {
-        initializeData()
-    }
+    /** Tracks whether the default values are for specific exercise */
+    private var mgExerciseId = 0L
 
     /**
      * Initialize the data required to populate the dialog
      */
-    fun initializeData() {
-        val defaultValues = userRepository.user.value!!.defaultValues
+    fun initializeData(values: UserDefaultValuesModel?) {
+        val defaultValues = values ?: userRepository.user.value!!.defaultValues
         val sets = defaultValues.sets.toString()
         val reps = defaultValues.reps.toString()
         val rest = defaultValues.rest.toString()
@@ -57,6 +57,8 @@ class ExerciseDefaultValuesViewModel @Inject constructor(
         updateWeight(if (weight != "0") weight else "")
         updateWeightUnit(defaultValues.weightUnit.text)
         updateCompleted(defaultValues.completed)
+        mgExerciseId = defaultValues.mGExerciseId
+        updateDisableWeightUnit(mgExerciseId != 0L)
     }
 
     /** Update the sets in the UI with the provided value */
@@ -89,6 +91,11 @@ class ExerciseDefaultValuesViewModel @Inject constructor(
         _uiState.update { it.copy(completed = value) }
     }
 
+    /** Update the disable weight unit boolean with the provided value */
+    private fun updateDisableWeightUnit(value: Boolean) {
+        _uiState.update { it.copy(disableWeightUnit = value) }
+    }
+
     /** Save the changes to the default values */
     fun save() {
         val state = _uiState.value
@@ -100,13 +107,15 @@ class ExerciseDefaultValuesViewModel @Inject constructor(
 
         val values = UserDefaultValuesModel(idVal = userRepository.user.value!!.defaultValues.id,
             setsVal = exerciseSets, repsVal = setReps, weightVal = exerciseWeight,
-            restVal = setRest, completedVal = state.completed, weightUnitVal = weightUnit!!, mGExerciseIdVal = 0)
+            restVal = setRest, completedVal = state.completed, weightUnitVal = weightUnit!!, mGExerciseIdVal = mgExerciseId)
 
         viewModelScope.launch(Dispatchers.IO) {
             userProfileRepository.updateUserDefaultValues(
                 values = values,
                 onSuccess = {
-                    userRepository.updateDefaultValues(it)
+                    if (mgExerciseId == 0L) {
+                        userRepository.updateDefaultValues(it)
+                    }
 
                     viewModelScope.launch {
                         DialogManager.hideDialog("ExerciseDefaultValuesDialog")

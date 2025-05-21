@@ -76,6 +76,7 @@
     <string name="timer_lbl">Timer</string>
     <string name="time_is_up_lbl">Time\'s up!</string>
     <string name="default_values_explanation_lbl">Enter the default values which will be used when starting exercise. These values can be override with Manage Exercises function</string>
+    <string name="default_values_explanation_exercise_lbl">Enter the default values which will be used when starting exercise \"%s\"</string>
     <string name="weight_unit_lb_lbl">Lb</string>
     <string name="weight_unit_kg_lbl">Kg</string>
     <string name="old_password_lbl">Old password</string>
@@ -96,9 +97,18 @@
     <string name="question_go_to_settings_text">This feature requires access to camera. Please enable it in the app settings.</string>
     <string name="go_to_settings_btn">Go to Settings</string>
     <string name="error_msg_username_cannot_be_blank">User full name cannot be blank</string>
-    <string name="action_update_exercise">Update exercise</string>
+    <string name="action_update_exercise">Edit exercise</string>
     <string name="action_delete_exercise">Delete exercise</string>
-    <string name="action_exercise_default_values">Update default values</string>
+    <string name="action_exercise_default_values">Edit default values</string>
     <string name="manage_exercises_lbl">Manage Exercises</string>
+    <string name="no_exercises_to_edit">You have not created your own exercises for the muscle group. Click the Add button to add one</string>
+    <string name="error_msg_enter_exercise_name">Please enter exercise name</string>
+    <string name="add_exercise_lbl">Add Exercise</string>
+    <string name="update_exercise_lbl">Edit Exercise</string>
+    <string name="exercise_name_lbl">Exercise name</string>
+    <string name="add_exercise_to_workout_lbl">Add exercise to workout</string>
+    <string name="no_mg_ex_description_lbl">There is no description for this exercise</string>
+    <string name="question_delete_exercise_title">Delete exercise</string>
+    <string name="question_delete_exercise_text">Are you sure you want to delete exercise \"%s\" ?</string>
 
 </resources>

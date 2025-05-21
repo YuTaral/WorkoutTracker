@@ -78,10 +78,10 @@ class ExerciseRepository @Inject constructor(
      * @param onSuccess callback to execute if request is successful
      * @param onFailure callback to execute if request failed
      */
-    suspend fun addExercise(exercise: MGExerciseModel, workoutId: String, onlyForUser: String, checkExistingEx: String,
+    suspend fun addExercise(exercise: MGExerciseModel, workoutId: Long, onlyForUser: String, checkExistingEx: String,
                     onSuccess: (List<String>) -> Unit, onFailure: (CustomResponse) -> Unit) {
 
-        val params = mapOf("exercise" to Utils.serializeObject(exercise), "workoutId" to workoutId,
+        val params = mapOf("exercise" to Utils.serializeObject(exercise), "workoutId" to workoutId.toString(),
                             "onlyForUser" to onlyForUser, "checkExistingEx" to checkExistingEx)
 
         networkManager.sendRequest(

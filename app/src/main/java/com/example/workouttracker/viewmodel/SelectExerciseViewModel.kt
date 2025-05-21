@@ -18,6 +18,15 @@ import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.WorkoutModel
+import com.example.workouttracker.data.network.repositories.UserProfileRepository
+import com.example.workouttracker.data.network.repositories.WorkoutRepository
+import com.example.workouttracker.ui.components.dialogs.AddEditMGExerciseDialog
+import com.example.workouttracker.ui.components.dialogs.ExerciseDefaultValuesDialog
+import com.example.workouttracker.ui.managers.AskQuestionDialogManager
+import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
+import com.example.workouttracker.ui.managers.PagerManager
+import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.ResourceProvider
 
 /** Enum with different states of the screen */
@@ -43,6 +52,8 @@ class SelectExerciseViewModel @Inject constructor(
     var muscleGroupsRepository: MuscleGroupRepository,
     var exerciseRepository: ExerciseRepository,
     private var userRepository: UserRepository,
+    private var workoutRepository: WorkoutRepository,
+    private var userProfileRepository: UserProfileRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
     /** Use job with slight delay to avoid filtering the data on each letter */
@@ -116,6 +127,9 @@ class SelectExerciseViewModel @Inject constructor(
         _selectedSpinnerAction.value = spinnerActions.first {
             resourceProvider.getString(it.getStringId()) == actionText
         }
+        if (selectedMuscleGroupId > 0L) {
+            populateMGExercises()
+        }
     }
 
     /** Reset the data when the screen in which the view model is used is being destroyed */
@@ -178,6 +192,144 @@ class SelectExerciseViewModel @Inject constructor(
      * @param mGExercise the muscle group exercise
      */
     fun selectMGExercise(mGExercise: MGExerciseModel) {
+        if (_manageExercises.value) {
+            when(_selectedSpinnerAction.value!!) {
+                SpinnerActions.UPDATE_EXERCISE -> {
+                    showUpdateExercise(mGExercise)
+                }
+                SpinnerActions.DELETE_EXERCISE -> {
+                    askDeleteExercise(mGExercise)
+                }
+                SpinnerActions.CHANGE_EXERCISE_DEFAULT_VALUES -> {
+                    showUpdateDefaultValues(mGExercise)
+                }
+            }
+        } else {
+            showAddExerciseToWorkout(mGExercise)
+        }
+    }
+
+    /** Callback to execute on add button click - show dialog to create new exercise */
+    fun showAddMGExercise() {
+        val manageExerciseActive = _manageExercises.value && _selectedSpinnerAction.value != SpinnerActions.CHANGE_EXERCISE_DEFAULT_VALUES
+
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.add_exercise_lbl),
+                dialogName = "AddEditMGExerciseDialog",
+                content = {
+                    AddEditMGExerciseDialog(
+                        mGExercise = null,
+                        muscleGroupId = selectedMuscleGroupId,
+                        manageExerciseActive = manageExerciseActive,
+                        onSaveCallback = { updateWorkout, data ->
+                            if (updateWorkout) {
+                                workoutRepository.updateSelectedWorkout(WorkoutModel(data[0]))
+                                viewModelScope.launch(Dispatchers.IO) {
+                                    workoutRepository.updateWorkouts(null)
+                                }
+                            } else {
+                                populateMGExercises(data.map { MGExerciseModel(it) })
+                            }
+
+                            viewModelScope.launch {
+                                DialogManager.hideDialog("AddEditMGExerciseDialog")
+
+                                if (updateWorkout) {
+                                    PagerManager.changePageSelection(Page.SelectedWorkout)
+                                }
+                            }
+                        }
+                    )
+                }
+            )
+        }
+    }
+
+    /**
+     * Show the dialog to update muscle group exercise
+     * @param mGExercise the selected exercise
+     */
+    private fun showUpdateExercise(mGExercise: MGExerciseModel) {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.update_exercise_lbl),
+                dialogName = "AddEditMGExerciseDialog",
+                content = {
+                    AddEditMGExerciseDialog(
+                        mGExercise = mGExercise,
+                        muscleGroupId = mGExercise.muscleGroupId,
+                        manageExerciseActive = true,
+                        onSaveCallback = { updateWorkout, data ->
+                            populateMGExercises(data.map { MGExerciseModel(it) })
+                            viewModelScope.launch {
+                                DialogManager.hideDialog("AddEditMGExerciseDialog")
+                            }
+                        }
+                    )
+                }
+            )
+        }
+    }
+
+    /**
+     * Ask user for confirmation to delete the exercise
+     *  @param mGExercise the selected exercise
+     */
+    private fun askDeleteExercise(mGExercise: MGExerciseModel) {
+        viewModelScope.launch {
+            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+                question = Question.DELETE_MG_EXERCISE,
+                show = true,
+                onCancel = {
+                    viewModelScope.launch {
+                        AskQuestionDialogManager.hideQuestion()
+                    }
+                },
+                onConfirm = {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        exerciseRepository.deleteExercise(
+                            mGExerciseId = mGExercise.id,
+                            onSuccess = { data ->
+                                populateMGExercises(data)
+                                viewModelScope.launch {
+                                    AskQuestionDialogManager.hideQuestion()
+                                }
+                            }
+                        )
+                    }
+                },
+                formatQValues = listOf(mGExercise.name)
+            ))
+        }
+    }
+
+    /**
+     * Show the dialog to update exercise default values
+     *  @param mGExercise the selected exercise
+     */
+    private fun showUpdateDefaultValues(mGExercise: MGExerciseModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userProfileRepository.getUserDefaultValues(
+                mgExerciseId = mGExercise.id,
+                onSuccess = {
+                    viewModelScope.launch {
+                        DialogManager.showDialog(
+                            title = resourceProvider.getString(R.string.exercise_default_values),
+                            dialogName = "ExerciseDefaultValuesDialog",
+                            content = { ExerciseDefaultValuesDialog(values = it, exerciseName = mGExercise.name) }
+                        )
+                    }
+                }
+            )
+        }
+    }
+
+    /**
+     * Show the dialog to add exercise to workout
+     * @param mGExercise the selected exercise
+     */
+    private fun showAddExerciseToWorkout(mGExercise: MGExerciseModel) {
         viewModelScope.launch {
             val weightUnit =  userRepository.user.value!!.defaultValues.weightUnit.text
 
@@ -202,12 +354,27 @@ class SelectExerciseViewModel @Inject constructor(
         }
     }
 
+    /** Update the muscle groups when the list is already provided */
+    private fun populateMGExercises(mGExercises: List<MGExerciseModel>) {
+        _mGExercises = mGExercises.toMutableList()
+        _filteredmGExercises.value = _mGExercises
+    }
+
     /** Populate the muscle group exercises for the selected muscle group */
     private fun populateMGExercises() {
+        val onlyForUser = if (_manageExercises.value &&
+            (_selectedSpinnerAction.value == SpinnerActions.UPDATE_EXERCISE ||
+             _selectedSpinnerAction.value == SpinnerActions.DELETE_EXERCISE))
+        {
+            "Y"
+        } else {
+            "N"
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             exerciseRepository.getMuscleGroupExercises(
                 muscleGroupId = selectedMuscleGroupId,
-                onlyForUser = "N",
+                onlyForUser = onlyForUser,
                 onSuccess = { mGExercises ->
                     _mGExercises = mGExercises
                     _filteredmGExercises.value = _mGExercises

@@ -23,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,8 @@ import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.SmallImageButtonSize
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
+import com.example.workouttracker.R
+import com.example.workouttracker.ui.theme.LabelMediumGreyItalic
 
 /**
  * Single muscle group exercise item
@@ -84,11 +87,20 @@ fun MGExerciseItem(mgExerciseModel: MGExerciseModel, onClick: (MGExerciseModel) 
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically()
         ) {
-            Label(
-                text = mgExerciseModel.description,
-                maxLines = 30,
-                textAlign = TextAlign.Start
-            )
+            if (mgExerciseModel.description.isEmpty()) {
+                Label(
+                    text = stringResource(id = R.string.no_mg_ex_description_lbl),
+                    textAlign = TextAlign.Start,
+                    maxLines = 2,
+                    style = LabelMediumGreyItalic
+                )
+            } else {
+                Label(
+                    text = mgExerciseModel.description,
+                    maxLines = 30,
+                    textAlign = TextAlign.Start
+                )
+            }
         }
 
         HorizontalDivider(

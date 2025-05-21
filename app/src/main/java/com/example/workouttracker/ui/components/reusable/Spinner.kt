@@ -38,6 +38,7 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 
 /**
  * Custom implementation of spinner
+ * @param modifier the modifier to apply padding to the most outer element of the spinner
  * @param items the items in the spinner
  * @param selectedItem the selected item
  * @param onItemSelected the callback to execute on item selection
@@ -45,6 +46,7 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Spinner(
+    modifier: Modifier = Modifier,
     items: List<String>,
     selectedItem: String,
     onItemSelected: (String) -> Unit
@@ -68,7 +70,7 @@ fun Spinner(
     }
 
     Box(
-        modifier = Modifier.padding(PaddingVerySmall)
+        modifier = modifier
     ) {
         Surface(
             modifier = Modifier
