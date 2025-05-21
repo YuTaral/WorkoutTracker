@@ -39,12 +39,12 @@ import java.util.Date
  * @param workout the workout to edit if in edit mode, null otherwise
  */
 @Composable
-fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = hiltViewModel<AddEditWorkoutViewModel>()) {
+fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = hiltViewModel()) {
     val notesFocusReq = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(workout == null) {
+    LaunchedEffect(workout) {
         // Initialize the fields
         vm.initialize(workout)
     }
