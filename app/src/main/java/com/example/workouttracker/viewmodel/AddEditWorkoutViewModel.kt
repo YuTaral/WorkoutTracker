@@ -10,6 +10,7 @@ import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
+import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -151,6 +152,7 @@ class AddEditWorkoutViewModel @Inject constructor(
     /** Validate the fields in the UI, return true if valid, false otherwise */
     private fun validate(): Boolean {
         if (_uiState.value.name.isEmpty()) {
+            viewModelScope.launch { VibrationManager.makeVibration() }
             updateNameError(resourceProvider.getString(R.string.error_msg_enter_workout_name))
             return false
         } else {

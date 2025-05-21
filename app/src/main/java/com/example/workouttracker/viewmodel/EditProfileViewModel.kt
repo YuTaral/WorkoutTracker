@@ -11,6 +11,7 @@ import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.ImageUploadManager
 import com.example.workouttracker.ui.managers.SnackbarManager
+import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.utils.interfaces.IImagePicker
@@ -77,6 +78,7 @@ class EditProfileViewModel @Inject constructor(
     /** Save the changes to the profile */
     fun save() {
         if (uiState.value.fullName.isEmpty()) {
+            viewModelScope.launch { VibrationManager.makeVibration() }
             updateNameError(resourceProvider.getString(R.string.error_msg_username_cannot_be_blank))
             return
         } else {
