@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.LabelMediumBold
 import com.example.workouttracker.ui.theme.PaddingSmall
-import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.SpinnerBorderSize
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 
