@@ -35,6 +35,9 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
 
     data object ManageExercise : Page(R.string.select_exercise_title, R.drawable.icon_screen_manage_exercise,
                                  PageIndices.FIRST_TEMPORARY.ordinal, content = { SelectExerciseScreen(manageExercises = true) })
+
+    data object ManageTemplates : Page(R.string.templates_lbl, R.drawable.icon_screen_manage_templates,
+                                  PageIndices.FIRST_TEMPORARY.ordinal, content = {  })
 }
 
 /** PagerViewModel to manage the state of the pages of the main screen */
@@ -59,7 +62,8 @@ class PagerViewModel @Inject constructor(): ViewModel() {
      * @param page the newly selected page
      */
     fun changeSelection(page: Page) {
-        if (page.index == PageIndices.FIRST_TEMPORARY.ordinal) {
+        if (page.index == PageIndices.FIRST_TEMPORARY.ordinal &&
+            _pages.value.size > PageIndices.FIRST_TEMPORARY.ordinal) {
             // Replace the temporary panel if the current one is temporary
             removeTemporaryPage()
         }

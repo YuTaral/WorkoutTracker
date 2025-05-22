@@ -1,5 +1,12 @@
 package com.example.workouttracker.ui.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Tab
@@ -12,68 +19,47 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.viewmodel.PagerViewModel
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.HorizontalDivider
-import com.google.accompanist.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorWhite
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import com.example.workouttracker.viewmodel.Page
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Pager(vm: PagerViewModel = hiltViewModel()) {
     val selectedPage by vm.selectedPage.collectAsStateWithLifecycle()
     val pages by vm.pages.collectAsStateWithLifecycle()
-    val pagerState = rememberPagerState(initialPage = 0)
-    val coroutineScope = rememberCoroutineScope()
     val selectedTabIndex = pages.indexOf(selectedPage).takeIf { it >= 0 } ?: 0
-
-    LaunchedEffect(pagerState.currentPage) {
-        vm.changeSelection(pages[pagerState.currentPage])
-    }
 
     LaunchedEffect(Unit) {
         PagerManager.events.collect { page ->
             vm.changeSelection(page)
-
-            // Use flow, waiting for the page to exist
-            // in the pages list, as we have temporary pages
-            snapshotFlow { vm.pages.value }
-                .map { it.indexOf(page) }
-                .first { it != -1 }
-                .let { pageIndex ->
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(pageIndex)
-                    }
-                }
         }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        HorizontalPager(
-            count = pages.size,
-            state = pagerState,
+        PagesContent(
             modifier = Modifier.weight(1f),
-        ) { pageIndex ->
-            pages[pageIndex].content()
-        }
+            selectedPage = selectedPage,
+            pages = pages,
+            onSwipe = { vm.changeSelection(it) })
 
         HorizontalDivider(color = ColorBorder, thickness = 2.dp)
 
@@ -96,12 +82,7 @@ fun Pager(vm: PagerViewModel = hiltViewModel()) {
 
                 Tab(
                     selected = isSelected,
-                    onClick = {
-                        vm.changeSelection(pages[index])
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
+                    onClick = { vm.changeSelection(pages[index]) },
                     text = {
                         val color = if (isSelected) ColorAccent else ColorWhite
                         Text(
@@ -119,6 +100,57 @@ fun Pager(vm: PagerViewModel = hiltViewModel()) {
                     }
                 )
             }
+        }
+    }
+}
+
+/**
+ * Box with swipe behavior displaying the different pages from the PagerViewModel.
+ * Changed from HorizontalPager to custom solution, because HorizontalPager requires
+ * pager state which is harder sync with our implementation of being able to display
+ * permanent and temporary panels and change the selected page with
+ * swipe / choose from the tab row / programmatically
+ * @param modifier the modifier applied to the Box
+ * @param selectedPage the currently selected page
+ * @param pages all pages
+ * @param onSwipe callback to execute on swipe
+ * */
+@Composable
+fun PagesContent(modifier: Modifier, selectedPage: Page, pages: List<Page>, onSwipe: (Page) -> Unit) {
+    val swipeThreshold = 25f
+    var previousIndex by remember { mutableIntStateOf(pages.indexOf(selectedPage)) }
+    val currentIndex = pages.indexOf(selectedPage)
+
+    LaunchedEffect(currentIndex) {
+        previousIndex = currentIndex
+    }
+
+    Box(modifier = modifier.then(Modifier.pointerInput(pages, selectedPage) {
+        detectHorizontalDragGestures { change, dragAmount ->
+            if (dragAmount > swipeThreshold) {
+                val newIndex = (pages.indexOf(selectedPage) - 1).coerceAtLeast(0)
+                onSwipe(pages[newIndex])
+
+            } else if (dragAmount < -swipeThreshold) {
+                val newIndex = (pages.indexOf(selectedPage) + 1).coerceAtMost(pages.lastIndex)
+                onSwipe(pages[newIndex])
+            }
+        }
+    })) {
+        AnimatedContent(
+            targetState = selectedPage,
+            transitionSpec = {
+                if (currentIndex >= previousIndex) {
+                    (slideInHorizontally { it } + fadeIn()).togetherWith(slideOutHorizontally { -it } + fadeOut())
+                } else {
+                    (slideInHorizontally { -it } + fadeIn()).togetherWith(slideOutHorizontally { it } + fadeOut())
+                }.using(
+                    SizeTransform(clip = false)
+                )
+            },
+            label = "AnimatedPageContent"
+        ) { page ->
+            page.content()
         }
     }
 }

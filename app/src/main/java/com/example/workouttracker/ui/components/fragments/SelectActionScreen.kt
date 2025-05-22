@@ -18,11 +18,16 @@ import kotlinx.coroutines.launch
 sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () -> Unit ) {
     data object ManageExercises : Action(R.drawable.icon_screen_manage_exercise, R.string.manage_exercises_lbl,
         { PagerManager.changePageSelection(Page.ManageExercise) })
+    data object ManageTemplates : Action(R.drawable.icon_screen_manage_templates, R.string.manage_templates_lbl,
+        { PagerManager.changePageSelection(Page.ManageTemplates) })
 }
 
 @Composable
 fun SelectActionScreen() {
-    val actions = listOf<Action>(Action.ManageExercises)
+    val actions = listOf<Action>(
+        Action.ManageTemplates,
+        Action.ManageExercises
+    )
     val scope = rememberCoroutineScope()
 
     LazyColumn(

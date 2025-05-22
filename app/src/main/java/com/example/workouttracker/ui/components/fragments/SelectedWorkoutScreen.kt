@@ -256,10 +256,11 @@ private fun WorkoutScreen(
 @Composable
 private fun NoWorkoutScreen(onClick: () -> Unit) {
     Label(
-        modifier = Modifier.clickable(
-            enabled = true,
-            onClick = onClick
-        ),
+        modifier = Modifier
+            .clickable(
+                enabled = true,
+                onClick = onClick)
+            .padding(PaddingSmall),
         text = stringResource(id = R.string.no_workout_selected_lbl),
         style = LabelMediumGrey,
         maxLines = 3
