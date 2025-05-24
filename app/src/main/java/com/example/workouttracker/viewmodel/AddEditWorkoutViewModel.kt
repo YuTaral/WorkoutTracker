@@ -27,6 +27,11 @@ data class AddEditWorkoutUiState(
     val nameError: String? = null
 )
 
+enum class AddEditWorkoutModel {
+    ADD,
+    EDIT
+}
+
 /** View model to control the UI state of Add / Edit workout dialog */
 @HiltViewModel
 class AddEditWorkoutViewModel @Inject constructor(
@@ -38,12 +43,22 @@ class AddEditWorkoutViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddEditWorkoutUiState())
     val uiState = _uiState.asStateFlow()
 
+    /** The dialog mode */
+    private var mode = AddEditWorkoutModel.ADD
+
+    /** The selected workout / template if any */
+    private var selectedWorkout: WorkoutModel? = null
+
     /**
      * Update the UI sate to empty upon dialog recreation, as the view model is
      * HiltViewModel and is created only once per activity lifetime
-     * @param workout the selected workout if any, null otherwise
+     * @param workout the selected workout / template if any, null otherwise
+     * @param dialogMode the dialog mode
      */
-    fun initialize(workout: WorkoutModel?) {
+    fun initialize(workout: WorkoutModel?, dialogMode: AddEditWorkoutModel) {
+        mode = dialogMode
+        selectedWorkout = workout
+
         if (workout == null) {
             updateName("")
             updateNotes("")
@@ -68,19 +83,24 @@ class AddEditWorkoutViewModel @Inject constructor(
         _uiState.update { it.copy(nameError = value) }
     }
 
-    /**
-     * Add/edit the workout if it's valid
-     * @param add true to add the workout, false to edit
-     */
-    fun saveWorkout(add: Boolean) {
+    /** Add/edit the workout if it's valid */
+    fun saveWorkout() {
         if (!validate()) {
             return
         }
 
-        if (add) {
+        if (mode == AddEditWorkoutModel.ADD) {
+            val newWorkout: WorkoutModel = if (selectedWorkout == null) {
+                // Create new workout
+                WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0)
+            } else {
+                // Create new workout from the template
+                WorkoutModel(0, _uiState.value.name, true, selectedWorkout!!.exercises, _uiState.value.notes, null, 0)
+            }
+
             viewModelScope.launch(Dispatchers.IO) {
                 workoutsRepository.addWorkout(
-                    workout = WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0),
+                    workout = newWorkout,
                     onSuccess = { createdWorkout ->
                         onWorkoutActionSuccess(createdWorkout, Page.SelectedWorkout)
                     }

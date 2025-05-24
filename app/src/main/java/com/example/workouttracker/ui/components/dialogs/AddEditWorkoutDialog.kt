@@ -31,22 +31,24 @@ import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
+import com.example.workouttracker.viewmodel.AddEditWorkoutModel
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel
 import java.util.Date
 
 /**
  * Add / edit workout dialog content
  * @param workout the workout to edit if in edit mode, null otherwise
+ * @param mode the dialog mode
  */
 @Composable
-fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = hiltViewModel()) {
+fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: AddEditWorkoutModel, vm: AddEditWorkoutViewModel = hiltViewModel()) {
     val notesFocusReq = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(workout) {
+    LaunchedEffect(workout, mode) {
         // Initialize the fields
-        vm.initialize(workout)
+        vm.initialize(workout = workout, dialogMode = mode)
     }
 
     Column(
@@ -99,9 +101,8 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = h
             .padding(top = PaddingMedium),
             horizontalArrangement = Arrangement.Center
         ) {
-            if (workout != null) {
+            if (mode == AddEditWorkoutModel.EDIT) {
                 DialogButton(
-
                     modifier = Modifier
                         .customBorder(end = true)
                         .weight(1f),
@@ -115,7 +116,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, vm: AddEditWorkoutViewModel = h
                     .customBorder()
                     .weight(1f),
                 text = stringResource(R.string.save_btn),
-                onClick = { vm.saveWorkout(workout == null) }
+                onClick = { vm.saveWorkout() }
             )
         }
     }
@@ -133,7 +134,7 @@ private fun DialogPreview() {
                 finishDateTimeVal = Date(),
                 notesVal = "This is the best back day",
                 durationVal = null,
-            )
+            ), AddEditWorkoutModel.EDIT,
         )
     }
 }

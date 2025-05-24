@@ -15,6 +15,7 @@ import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.Constants.IMAGE_HEIGHT
 import com.example.workouttracker.utils.Constants.IMAGE_WIDTH
+import com.example.workouttracker.viewmodel.AddEditWorkoutModel
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -113,7 +114,7 @@ object Utils {
             DialogManager.showDialog(
                 title = resourceProvider.getString(R.string.add_workout_title),
                 dialogName = "AddEditWorkoutDialog",
-                content = { AddEditWorkoutDialog(null) }
+                content = { AddEditWorkoutDialog(workout = null, mode = AddEditWorkoutModel.ADD) }
             )
         }
     }

@@ -75,7 +75,7 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
                     WorkoutItem(
                         workout = item,
                         weightUnit = user!!.defaultValues.weightUnit.text,
-                        onClick = { }
+                        onClick = { vm.selectTemplate(it) }
                     )
                 }
             }

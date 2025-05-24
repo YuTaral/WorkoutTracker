@@ -6,6 +6,8 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
+import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -87,6 +89,33 @@ class ManageTemplatesViewModel @Inject constructor(
     fun updateSelectedSpinnerAction(actionText: String) {
         _selectedSpinnerAction.value = spinnerActions.first {
             resourceProvider.getString(it.getStringId()) == actionText
+        }
+    }
+
+    /** Select the template and execute the action based on the selected action */
+    fun selectTemplate(template: WorkoutModel) {
+        when(_selectedSpinnerAction.value) {
+            TemplateSpinnerActions.START_WORKOUT -> {
+                showStartWorkout(template)
+            }
+            TemplateSpinnerActions.EDIT_TEMPLATE -> {
+            }
+            TemplateSpinnerActions.DELETE_TEMPLATE -> {
+            }
+        }
+    }
+
+    /**
+     * Show start workout dialog with the selected template
+     * @param template the selected template
+     */
+    private fun showStartWorkout(template: WorkoutModel) {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.add_workout_title),
+                dialogName = "AddEditWorkoutDialog",
+                content = { AddEditWorkoutDialog(workout = template, mode = AddEditWorkoutModel.ADD) }
+            )
         }
     }
 
