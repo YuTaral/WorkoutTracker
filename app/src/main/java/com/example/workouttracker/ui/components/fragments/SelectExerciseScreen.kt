@@ -104,7 +104,8 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
                 onClick = { vm.selectMGExercise(it) },
                 onBackClick = { vm.changeSelectedMuscleGroup(0) },
                 manageExercises = manageExercises,
-                onAddClick = { vm.showAddMGExercise() }
+                onAddClick = { vm.showAddMGExercise() },
+                searchEmpty = searchTerm.isEmpty()
             )
         }
     }
@@ -137,13 +138,15 @@ private fun MuscleGroupsScreen(data: StateFlow<MutableList<MuscleGroupModel>>, o
  * @param onBackClick callback to execute on back button click
  * @param manageExercises whether the screen is in manage mode
  * @param onAddClick callback to execute on Add button click
+ * @param
  */
 @Composable
 private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>,
                             onClick: (MGExerciseModel) -> Unit,
                             onBackClick: () -> Unit,
                             manageExercises: Boolean,
-                            onAddClick: () -> Unit
+                            onAddClick: () -> Unit,
+                            searchEmpty: Boolean
 ) {
     val mGExercises by data.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
@@ -151,9 +154,15 @@ private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>,
     Box(modifier = Modifier.fillMaxSize()) {
 
         if (manageExercises && mGExercises.isEmpty()) {
+            val noExercisesErrorId = if (searchEmpty) {
+                R.string.no_exercises_to_edit
+            } else {
+                R.string.no_exercises_matching
+            }
+
             Label(
                 modifier = Modifier.padding(PaddingSmall),
-                text = stringResource(id = R.string.no_exercises_to_edit),
+                text = stringResource(id = noExercisesErrorId),
                 style = LabelMediumGrey,
                 maxLines = 4
             )

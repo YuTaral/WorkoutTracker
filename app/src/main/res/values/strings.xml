@@ -124,5 +124,8 @@
     <string name="action_start_workout">Start workout</string>
     <string name="question_delete_template_title">Delete template</string>
     <string name="question_delete_template_text">Are you sure you want to delete template \"%s\" ?</string>
+    <string name="no_templates_matching_error">You don\'t have any templates matching the search term</string>
+    <string name="no_templates_error">You don\'t have any templates. Choose a workout and select action \"Save workout as template\" to create your first template</string>
+    <string name="no_exercises_matching">You don\'t have any exercises matching the search term</string>
 
 </resources>

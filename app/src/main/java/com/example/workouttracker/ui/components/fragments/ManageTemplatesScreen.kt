@@ -18,9 +18,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.components.reusable.InputField
+import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.components.reusable.Spinner
 import com.example.workouttracker.ui.components.reusable.WorkoutItem
+import com.example.workouttracker.ui.theme.LabelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
+import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.ManageTemplatesViewModel
@@ -34,7 +37,7 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
     val lazyListState = rememberLazyListState()
     val selectedAction by vm.selectedSpinnerAction.collectAsStateWithLifecycle()
     val searchTerm by vm.search.collectAsStateWithLifecycle()
-    val workouts by vm.filteredTemplates.collectAsStateWithLifecycle()
+    val templates by vm.filteredTemplates.collectAsStateWithLifecycle()
     val user by vm.userRepository.user.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -60,17 +63,32 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
                 }
             )
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-                contentPadding = PaddingValues(bottom = LazyListBottomPadding)
-            ) {
-                items(workouts) { item ->
-                    WorkoutItem(
-                        workout = item,
-                        weightUnit = user!!.defaultValues.weightUnit.text,
-                        onClick = { vm.selectTemplate(it) }
-                    )
+            if (templates.isEmpty()) {
+                val noTemplatesMsgId = if (searchTerm.isEmpty()) {
+                    R.string.no_templates_error
+                } else {
+                    R.string.no_templates_matching_error
+                }
+
+                Label(
+                    modifier = Modifier.padding(PaddingSmall),
+                    text = stringResource(id = noTemplatesMsgId),
+                    style = LabelMediumGrey,
+                    maxLines = 3
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    contentPadding = PaddingValues(bottom = LazyListBottomPadding)
+                ) {
+                    items(templates) { item ->
+                        WorkoutItem(
+                            workout = item,
+                            weightUnit = user!!.defaultValues.weightUnit.text,
+                            onClick = { vm.selectTemplate(it) }
+                        )
+                    }
                 }
             }
         }
