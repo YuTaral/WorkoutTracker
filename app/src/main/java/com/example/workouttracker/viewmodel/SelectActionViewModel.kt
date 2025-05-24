@@ -2,10 +2,12 @@ package com.example.workouttracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.components.dialogs.AddEditTemplateDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
+import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,12 +21,13 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
     data object ManageTemplates : Action(R.drawable.icon_screen_manage_templates, R.string.manage_templates_lbl,
         { PagerManager.changePageSelection(Page.ManageTemplates) })
 
-    data object SaveWorkoutAsTemplate : Action(R.drawable.icon_action_save_workout_as_template, R.string.save_workout_as_template_lbl,
+    class SaveWorkoutAsTemplate(private val template: WorkoutModel, private val title: String):
+        Action(R.drawable.icon_action_save_workout_as_template, R.string.save_workout_as_template_lbl,
         {
             DialogManager.showDialog(
-                title = R.string.add_template_lbl,
+                title = title,
                 dialogName = "AddEditTemplateDialog",
-                content = { AddEditTemplateDialog() }
+                content = { AddEditTemplateDialog(template = template, mode = AddEditTemplateMode.ADD) }
             )
         }
     )
@@ -33,7 +36,8 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
 /** View model to manage the state of Select Action screen */
 @HiltViewModel
 class SelectActionViewModel @Inject constructor(
-    private var workoutRepository: WorkoutRepository
+    private var workoutRepository: WorkoutRepository,
+    private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
     /** The valid actions */
@@ -47,7 +51,10 @@ class SelectActionViewModel @Inject constructor(
     /** Initialize the valid actions */
     fun initializeData() {
         if (workoutRepository.selectedWorkout.value != null) {
-            _actions.value.add(Action.SaveWorkoutAsTemplate)
+            _actions.value.add(Action.SaveWorkoutAsTemplate(
+                template = workoutRepository.selectedWorkout.value!!,
+                title = resourceProvider.getString(R.string.add_template_lbl)
+            ))
         }
 
         _actions.value.add(Action.ManageExercises)

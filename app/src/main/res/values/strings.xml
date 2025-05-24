@@ -48,6 +48,7 @@
     <string name="in_progress_lbl">In progress</string>
     <string name="finished_lbl">Finished</string>
     <string name="exercises_lbl">Exercises:</string>
+    <string name="exercises_template_dialog_lbl">Exercises</string>
     <string name="workout_summary_lbl">%s/%s %s, %d/%d reps</string>
     <string name="no_workouts">You don\'t have any workouts in the selected time period</string>
     <string name="workouts_filter_lbl">From %s</string>
