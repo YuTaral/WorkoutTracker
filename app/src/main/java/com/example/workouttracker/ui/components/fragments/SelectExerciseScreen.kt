@@ -53,7 +53,7 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
     }
 
     LaunchedEffect(Unit) {
-        vm.updateManageExercises(manageExercises)
+        vm.initializeData(manageExercises)
     }
 
     val mode by vm.mode.collectAsStateWithLifecycle()

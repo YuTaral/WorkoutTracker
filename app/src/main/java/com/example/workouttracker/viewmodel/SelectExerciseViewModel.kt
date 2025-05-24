@@ -109,17 +109,15 @@ class SelectExerciseViewModel @Inject constructor(
         }
     }
 
-    init {
-        populateMuscleGroups()
-    }
-
-    /** Update manage exercise value when the screen is shown */
-    fun updateManageExercises(value: Boolean) {
+    /** Initialize the data when the screen is shown */
+    fun initializeData(value: Boolean) {
         _manageExercises.value = value
 
         if (_manageExercises.value) {
             updateSelectedSpinnerAction(resourceProvider.getString(SpinnerActions.UPDATE_EXERCISE.getStringId()))
         }
+
+        populateMuscleGroups()
     }
 
     /** Update the selected spinner action with the provided value */
