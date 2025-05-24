@@ -41,7 +41,6 @@ class ManageTemplatesViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     /** The templates of the user */
-    private var _templates = MutableStateFlow<MutableList<WorkoutModel>>(mutableListOf())
     private var _filteredTemplates = MutableStateFlow<MutableList<WorkoutModel>>(mutableListOf())
     var filteredTemplates = _filteredTemplates.asStateFlow()
 
@@ -62,7 +61,21 @@ class ManageTemplatesViewModel @Inject constructor(
 
     /** Initialize the data in the panel */
     fun initializeData() {
-        getTemplates()
+        viewModelScope.launch {
+            templatesRepository.templates.collect { newTemplates ->
+                _filteredTemplates.value = if (_search.value.isEmpty()) {
+                    newTemplates
+                } else {
+                    newTemplates.filter {
+                        it.name.contains(_search.value, ignoreCase = true)
+                    }.toMutableList()
+                }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            templatesRepository.refreshTemplates()
+        }
     }
 
     /** Filter the muscle groups when the search value changes */
@@ -76,9 +89,9 @@ class ManageTemplatesViewModel @Inject constructor(
             delay(debounceTime)
 
             if (value.isEmpty()) {
-                _filteredTemplates.value = _templates.value
+                _filteredTemplates.value = templatesRepository.templates.value
             } else {
-                _filteredTemplates.value = _templates.value.filter {
+                _filteredTemplates.value = templatesRepository.templates.value.filter {
                     it.name.contains(value, ignoreCase = true)
                 } as MutableList<WorkoutModel>
             }
@@ -99,6 +112,7 @@ class ManageTemplatesViewModel @Inject constructor(
                 showStartWorkout(template)
             }
             TemplateSpinnerActions.EDIT_TEMPLATE -> {
+                showEditTemplate(template)
             }
             TemplateSpinnerActions.DELETE_TEMPLATE -> {
             }
@@ -119,13 +133,17 @@ class ManageTemplatesViewModel @Inject constructor(
         }
     }
 
-    /** Get the templates */
-    private fun getTemplates() {
-        viewModelScope.launch(Dispatchers.IO) {
-            templatesRepository.getWorkoutTemplates(onSuccess = {
-                _templates.value = it.toMutableList()
-                _filteredTemplates.value = _templates.value
-            })
+    /**
+     * Show edit workout dialog with the selected template
+     * @param template the selected template
+     */
+    private fun showEditTemplate(template: WorkoutModel) {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.edit_template_title),
+                dialogName = "AddEditWorkoutDialog",
+                content = { AddEditWorkoutDialog(workout = template, mode = AddEditWorkoutModel.EDIT) }
+            )
         }
     }
 }

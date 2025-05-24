@@ -101,7 +101,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: AddEditWorkoutModel, vm: 
             .padding(top = PaddingMedium),
             horizontalArrangement = Arrangement.Center
         ) {
-            if (mode == AddEditWorkoutModel.EDIT) {
+            if (mode == AddEditWorkoutModel.EDIT && !workout!!.template) {
                 DialogButton(
                     modifier = Modifier
                         .customBorder(end = true)

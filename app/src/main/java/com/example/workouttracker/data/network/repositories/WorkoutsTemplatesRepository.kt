@@ -4,6 +4,8 @@ import com.example.workouttracker.data.managers.NetworkManager
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.utils.Utils
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 /** WorkoutTemplateRepository class, used to execute all requests related to workout templates */
@@ -11,6 +13,11 @@ class WorkoutTemplatesRepository @Inject constructor(
     private val apiService: APIService,
     private val networkManager: NetworkManager
 ) {
+
+    /** The user templates */
+    private var _templates = MutableStateFlow<MutableList<WorkoutModel>>(mutableListOf())
+    val templates = _templates.asStateFlow()
+
     /** Add new workout template
      * @param template the workout template data
      * @param onSuccess callback to execute if request is successful
@@ -48,13 +55,18 @@ class WorkoutTemplatesRepository @Inject constructor(
         )
     }
 
-    /** Fetch workout templates which has been added by the user
-     * @param onSuccess callback to execute if request is successful
-     */
-    suspend fun getWorkoutTemplates(onSuccess: (List<WorkoutModel>) -> Unit) {
+    /** Fetch workout templates which has been added by the user */
+    suspend fun refreshTemplates() {
         networkManager.sendRequest(
             request = { apiService.getInstance().getWorkoutTemplates() },
-            onSuccessCallback = { response -> onSuccess(response.data.map { WorkoutModel(it) }) }
+            onSuccessCallback = { response ->
+                _templates.value = (response.data.map { WorkoutModel(it) } as MutableList<WorkoutModel>)
+            }
         )
+    }
+
+    /** Update the templates from the provided value */
+    fun refreshTemplates(newTemplates: MutableList<WorkoutModel>) {
+        _templates.value = newTemplates
     }
 }

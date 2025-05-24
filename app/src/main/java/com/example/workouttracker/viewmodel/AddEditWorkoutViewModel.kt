@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
+import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
@@ -36,6 +37,7 @@ enum class AddEditWorkoutModel {
 @HiltViewModel
 class AddEditWorkoutViewModel @Inject constructor(
     private var workoutsRepository: WorkoutRepository,
+    private var workoutTemplatesRepository: WorkoutTemplatesRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
@@ -107,17 +109,31 @@ class AddEditWorkoutViewModel @Inject constructor(
                 )
             }
         } else {
-            val workout = workoutsRepository.selectedWorkout.value!!
+            val workout = selectedWorkout!!
             workout.name = _uiState.value.name
             workout.notes = _uiState.value.notes
 
-            viewModelScope.launch(Dispatchers.IO) {
-                workoutsRepository.updateWorkout (
-                    workout = workout,
-                    onSuccess = { updatedWorkout ->
-                        onWorkoutActionSuccess(updatedWorkout, Page.SelectedWorkout)
-                    }
-                )
+            if (workout.template) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    workoutTemplatesRepository.updateWorkoutTemplate (
+                        template = workout,
+                        onSuccess = { templates ->
+                            viewModelScope.launch {
+                                DialogManager.hideDialog("AddEditWorkoutDialog")
+                                workoutTemplatesRepository.refreshTemplates(templates.toMutableList())
+                            }
+                        }
+                    )
+                }
+            } else {
+                viewModelScope.launch(Dispatchers.IO) {
+                    workoutsRepository.updateWorkout (
+                        workout = workout,
+                        onSuccess = { updatedWorkout ->
+                            onWorkoutActionSuccess(updatedWorkout, Page.SelectedWorkout)
+                        }
+                    )
+                }
             }
         }
     }
