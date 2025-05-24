@@ -50,6 +50,7 @@
     <string name="exercises_lbl">Exercises:</string>
     <string name="exercises_template_dialog_lbl">Exercises</string>
     <string name="workout_summary_lbl">%s/%s %s, %d/%d reps</string>
+    <string name="template_summary">%s %s, %d reps</string>
     <string name="no_workouts">You don\'t have any workouts in the selected time period</string>
     <string name="workouts_filter_lbl">From %s</string>
     <string name="latest_workouts_lbl">Latest Workouts</string>
@@ -113,5 +114,11 @@
     <string name="question_delete_exercise_text">Are you sure you want to delete exercise \"%s\" ?</string>
     <string name="manage_templates_lbl">Manage Templates</string>
     <string name="templates_lbl">Templates</string>
+    <string name="action_edit_template">Edit template</string>
+    <string name="action_delete_template">Delete template</string>
+    <string name="save_workout_as_template_lbl">Save workout as template</string>
+    <string name="error_msg_enter_template_name">Please enter template name</string>
+    <string name="add_template_lbl">Add template</string>
+    <string name="action_start_workout">Start workout</string>
 
 </resources>

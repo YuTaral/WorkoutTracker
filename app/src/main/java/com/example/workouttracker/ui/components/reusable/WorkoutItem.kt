@@ -28,7 +28,7 @@ import com.example.workouttracker.utils.Utils
 import java.util.Date
 
 /**
- * Single workout displayed in the workouts screen
+ * Single workout/template displayed in the workouts screen
  * @param workout the workout model
  * @param weightUnit the selected weight unit
  * @param onClick callback to execute on workout click
@@ -36,6 +36,7 @@ import java.util.Date
 @Composable
 fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutModel) -> Unit) {
     var exercisesText = ""
+    var summaryText = ""
     var totalWeight = 0.0
     var totalReps = 0
     var completedWeight = 0.0
@@ -62,39 +63,43 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
                 textAlign = TextAlign.Left
             )
 
-            Column {
-                Label(
-                    text = Utils.defaultFormatDateTime(workout.startDateTime!!),
-                    style = MaterialTheme.typography.labelSmall
-                )
-
-                if (workout.finishDateTime != null) {
+            if (!workout.template) {
+                Column {
                     Label(
-                        text = Utils.defaultFormatDateTime(workout.finishDateTime!!),
+                        text = Utils.defaultFormatDateTime(workout.startDateTime!!),
                         style = MaterialTheme.typography.labelSmall
                     )
+
+                    if (workout.finishDateTime != null) {
+                        Label(
+                            text = Utils.defaultFormatDateTime(workout.finishDateTime!!),
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
                 }
             }
         }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Label(
-                    modifier = Modifier.padding(end = PaddingVerySmall),
-                    text = stringResource(id = R.string.status_lbl),
-                    style = LabelMediumGrey
-                )
+        if (!workout.template) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Label(
+                        modifier = Modifier.padding(end = PaddingVerySmall),
+                        text = stringResource(id = R.string.status_lbl),
+                        style = LabelMediumGrey
+                    )
 
-                if (workout.finishDateTime == null) {
-                    Label(
-                        text = stringResource(R.string.in_progress_lbl),
-                        style = labelMediumOrange
-                    )
-                } else {
-                    Label(
-                        text = stringResource(R.string.finished_lbl),
-                        style = labelMediumGreen
-                    )
+                    if (workout.finishDateTime == null) {
+                        Label(
+                            text = stringResource(R.string.in_progress_lbl),
+                            style = labelMediumOrange
+                        )
+                    } else {
+                        Label(
+                            text = stringResource(R.string.finished_lbl),
+                            style = labelMediumGreen
+                        )
+                    }
                 }
             }
         }
@@ -126,16 +131,21 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
             }
         }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Label(
-                    text = String.format(
-                        stringResource(id = R.string.workout_summary_lbl),
-                        Utils.formatDouble(completedWeight), Utils.formatDouble(totalWeight),
-                        weightUnit, completedReps, totalReps
-                    )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            summaryText = if (workout.template) {
+                String.format(
+                    stringResource(id = R.string.template_summary),
+                    Utils.formatDouble(totalWeight), weightUnit, totalReps
+                )
+            } else {
+                String.format(
+                    stringResource(id = R.string.workout_summary_lbl),
+                    Utils.formatDouble(completedWeight), Utils.formatDouble(totalWeight),
+                    weightUnit, completedReps, totalReps
                 )
             }
+
+            Label(text = summaryText)
         }
 
         HorizontalDivider(color = ColorBorder, thickness = 1.dp)

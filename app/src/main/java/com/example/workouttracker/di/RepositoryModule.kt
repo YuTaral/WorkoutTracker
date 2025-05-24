@@ -8,6 +8,7 @@ import com.example.workouttracker.data.network.repositories.MuscleGroupRepositor
 import com.example.workouttracker.data.network.repositories.UserProfileRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
+import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
 
 import dagger.Module
 import dagger.Provides
@@ -58,5 +59,14 @@ object RepositoryModule {
     @Singleton
     fun provideUserProfileRepository(apiService: APIService, networkManager: NetworkManager): UserProfileRepository {
         return UserProfileRepository(apiService, networkManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkoutTemplatesRepository(
+        apiService: APIService,
+        networkManager: NetworkManager
+    ): WorkoutTemplatesRepository {
+        return WorkoutTemplatesRepository(apiService, networkManager)
     }
 }

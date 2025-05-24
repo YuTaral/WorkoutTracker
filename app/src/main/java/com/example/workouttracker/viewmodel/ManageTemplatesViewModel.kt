@@ -1,0 +1,102 @@
+package com.example.workouttracker.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.workouttracker.R
+import com.example.workouttracker.data.models.WorkoutModel
+import com.example.workouttracker.data.network.repositories.UserRepository
+import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
+import com.example.workouttracker.utils.ResourceProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+/** Enum representing the actions from the action spinner */
+enum class TemplateSpinnerActions(private val stringId: Int) {
+    START_WORKOUT(R.string.action_start_workout),
+    EDIT_TEMPLATE(R.string.action_edit_template),
+    DELETE_TEMPLATE(R.string.action_delete_template);
+
+    fun getStringId(): Int {
+        return stringId
+    }
+}
+
+@HiltViewModel
+class ManageTemplatesViewModel @Inject constructor(
+    var userRepository: UserRepository,
+    private var templatesRepository: WorkoutTemplatesRepository,
+    private var resourceProvider: ResourceProvider
+): ViewModel() {
+
+    /** Use job with slight delay to avoid filtering the data on each letter */
+    private val debounceTime = 500L
+    private var searchJob: Job? = null
+
+    /** The templates of the user */
+    private var _templates = MutableStateFlow<MutableList<WorkoutModel>>(mutableListOf())
+    private var _filteredTemplates = MutableStateFlow<MutableList<WorkoutModel>>(mutableListOf())
+    var filteredTemplates = _filteredTemplates.asStateFlow()
+
+    /** The search term for templates */
+    private var _search = MutableStateFlow<String>("")
+    var search = _search.asStateFlow()
+
+    /** Valid Spinner actions */
+    var spinnerActions: List<TemplateSpinnerActions> = listOf(
+        TemplateSpinnerActions.START_WORKOUT,
+        TemplateSpinnerActions.EDIT_TEMPLATE,
+        TemplateSpinnerActions.DELETE_TEMPLATE,
+    )
+
+    /** The selected spinner action  */
+    private var _selectedSpinnerAction = MutableStateFlow<TemplateSpinnerActions>(TemplateSpinnerActions.START_WORKOUT)
+    var selectedSpinnerAction = _selectedSpinnerAction.asStateFlow()
+
+    /** Initialize the data in the panel */
+    fun initializeData() {
+        getTemplates()
+    }
+
+    /** Filter the muscle groups when the search value changes */
+    fun updateSearch(value: String) {
+        _search.value = value
+
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch(Dispatchers.Default) {
+            // Wait for the debounce time before filtering to avoid filtering on each letter
+            delay(debounceTime)
+
+            if (value.isEmpty()) {
+                _filteredTemplates.value = _templates.value
+            } else {
+                _filteredTemplates.value = _templates.value.filter {
+                    it.name.contains(value, ignoreCase = true)
+                } as MutableList<WorkoutModel>
+            }
+        }
+    }
+
+    /** Update the selected spinner action with the provided value */
+    fun updateSelectedSpinnerAction(actionText: String) {
+        _selectedSpinnerAction.value = spinnerActions.first {
+            resourceProvider.getString(it.getStringId()) == actionText
+        }
+    }
+
+    /** Get the templates */
+    private fun getTemplates() {
+        viewModelScope.launch(Dispatchers.IO) {
+            templatesRepository.getWorkoutTemplates(onSuccess = {
+                _templates.value = it.toMutableList()
+                _filteredTemplates.value = _templates.value
+            })
+        }
+    }
+}

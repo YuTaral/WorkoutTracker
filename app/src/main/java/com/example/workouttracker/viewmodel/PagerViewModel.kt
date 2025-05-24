@@ -3,6 +3,7 @@ package com.example.workouttracker.viewmodel
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
+import com.example.workouttracker.ui.components.fragments.ManageTemplatesScreen
 import com.example.workouttracker.ui.components.fragments.SelectActionScreen
 import com.example.workouttracker.ui.components.fragments.SelectExerciseScreen
 import com.example.workouttracker.ui.components.fragments.SelectedWorkoutScreen
@@ -37,7 +38,7 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
                                  PageIndices.FIRST_TEMPORARY.ordinal, content = { SelectExerciseScreen(manageExercises = true) })
 
     data object ManageTemplates : Page(R.string.templates_lbl, R.drawable.icon_screen_manage_templates,
-                                  PageIndices.FIRST_TEMPORARY.ordinal, content = {  })
+                                  PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTemplatesScreen() })
 }
 
 /** PagerViewModel to manage the state of the pages of the main screen */

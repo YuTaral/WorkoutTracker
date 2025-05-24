@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
 import javax.inject.Inject
 
-
 /** WorkoutRepository class, used to execute all requests related to workouts */
 class WorkoutRepository @Inject constructor(
     private val apiService: APIService,
