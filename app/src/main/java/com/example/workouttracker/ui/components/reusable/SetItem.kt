@@ -69,7 +69,7 @@ fun SetItem(set: SetModel, rowNumber: Int, onRestClick: (Int) -> Unit) {
                     colorFilter = ColorFilter.tint(Color.White),
                     contentDescription = "",
                 )
-            } else {
+            } else if (set.rest > 0) {
                 Box(
                     modifier = Modifier
                         .size(SmallImageButtonSize)
@@ -87,7 +87,7 @@ fun SetItem(set: SetModel, rowNumber: Int, onRestClick: (Int) -> Unit) {
                     contentAlignment = Alignment.Center
                 ) {
                     Label(
-                        text = if (set.rest > 0) set.rest.toString() else "",
+                        text = set.rest.toString(),
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
