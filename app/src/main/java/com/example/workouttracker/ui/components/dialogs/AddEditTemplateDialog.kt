@@ -59,7 +59,7 @@ fun AddEditTemplateDialog(template: WorkoutModel, mode: AddEditTemplateMode, vm:
     ) {
         InputField(
             modifier = Modifier.padding(horizontal = PaddingSmall),
-            label = stringResource(id = R.string.workout_name_lbl),
+            label = stringResource(id = R.string.template_name_lbl),
             value = uiState.name,
             onValueChange = {
                 if (it.length < 50) {

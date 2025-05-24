@@ -7,7 +7,10 @@ import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
 import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
+import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
+import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -115,6 +118,7 @@ class ManageTemplatesViewModel @Inject constructor(
                 showEditTemplate(template)
             }
             TemplateSpinnerActions.DELETE_TEMPLATE -> {
+                askDeleteTemplate(template)
             }
         }
     }
@@ -144,6 +148,37 @@ class ManageTemplatesViewModel @Inject constructor(
                 dialogName = "AddEditWorkoutDialog",
                 content = { AddEditWorkoutDialog(workout = template, mode = AddEditWorkoutModel.EDIT) }
             )
+        }
+    }
+
+    /**
+     * Ask user for confirmation to delete the template
+     *  @param template the selected template
+     */
+    private fun askDeleteTemplate(template: WorkoutModel) {
+        viewModelScope.launch {
+            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+                question = Question.DELETE_TEMPLATE,
+                show = true,
+                onCancel = {
+                    viewModelScope.launch {
+                        AskQuestionDialogManager.hideQuestion()
+                    }
+                },
+                onConfirm = {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        templatesRepository.deleteWorkoutTemplate(
+                            id = template.id,
+                            onSuccess = {
+                                viewModelScope.launch {
+                                    AskQuestionDialogManager.hideQuestion()
+                                }
+                            }
+                        )
+                    }
+                },
+                formatQValues = listOf(template.name)
+            ))
         }
     }
 }

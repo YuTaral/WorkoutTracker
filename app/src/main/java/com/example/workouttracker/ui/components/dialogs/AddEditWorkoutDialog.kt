@@ -45,6 +45,11 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: AddEditWorkoutModel, vm: 
     val notesFocusReq = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+    var nameInputId = R.string.workout_name_lbl
+
+    if (workout != null && workout.template && mode == AddEditWorkoutModel.EDIT) {
+        nameInputId = R.string.template_name_lbl
+    }
 
     LaunchedEffect(workout, mode) {
         // Initialize the fields
@@ -57,7 +62,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: AddEditWorkoutModel, vm: 
     ) {
         InputField(
             modifier = Modifier.padding(horizontal = PaddingSmall),
-            label = stringResource(id = R.string.workout_name_lbl),
+            label = stringResource(id = nameInputId),
             value = uiState.name,
             onValueChange = {
                 if (it.length < 50) {

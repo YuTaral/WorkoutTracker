@@ -117,10 +117,9 @@ class AddEditWorkoutViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     workoutTemplatesRepository.updateWorkoutTemplate (
                         template = workout,
-                        onSuccess = { templates ->
+                        onSuccess = {
                             viewModelScope.launch {
                                 DialogManager.hideDialog("AddEditWorkoutDialog")
-                                workoutTemplatesRepository.refreshTemplates(templates.toMutableList())
                             }
                         }
                     )

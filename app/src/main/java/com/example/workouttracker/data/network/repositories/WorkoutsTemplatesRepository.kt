@@ -35,10 +35,13 @@ class WorkoutTemplatesRepository @Inject constructor(
      * @param id the template id
      * @param onSuccess callback to execute if request is successful
      */
-    suspend fun deleteWorkoutTemplate(id: Long, onSuccess: (List<WorkoutModel>) -> Unit) {
+    suspend fun deleteWorkoutTemplate(id: Long, onSuccess: () -> Unit) {
         networkManager.sendRequest(
             request = { apiService.getInstance().deleteWorkoutTemplate(id) },
-            onSuccessCallback = { response -> onSuccess(response.data.map { WorkoutModel(it) }) }
+            onSuccessCallback = { response ->
+                refreshTemplates(response.data.map { WorkoutModel(it) }.toMutableList())
+                onSuccess()
+            }
         )
     }
 
@@ -46,12 +49,15 @@ class WorkoutTemplatesRepository @Inject constructor(
      * @param template the workout template data
      * @param onSuccess callback to execute if request is successful
      */
-    suspend fun updateWorkoutTemplate(template: WorkoutModel, onSuccess: (List<WorkoutModel>) -> Unit) {
+    suspend fun updateWorkoutTemplate(template: WorkoutModel, onSuccess: () -> Unit) {
         val params = mapOf("workout" to Utils.serializeObject(template))
 
         networkManager.sendRequest(
             request = { apiService.getInstance().updateWorkoutTemplate(params) },
-            onSuccessCallback = { response -> onSuccess(response.data.map { WorkoutModel(it) }) }
+            onSuccessCallback = { response ->
+                refreshTemplates(response.data.map { WorkoutModel(it) }.toMutableList())
+                onSuccess()
+            }
         )
     }
 
