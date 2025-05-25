@@ -42,6 +42,7 @@ class NetworkManager @Inject constructor(
         if (!isNetworkAvailable()) {
             SnackbarManager.showSnackbar(R.string.error_msg_no_internet)
             VibrationManager.makeVibration()
+            onErrorCallback(getEmptyResponse())
             return
         }
 
