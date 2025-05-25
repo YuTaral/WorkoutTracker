@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.workouttracker"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -85,6 +85,7 @@ dependencies {
     implementation (libs.composeloading)
     implementation (libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.compose.calendar)
     kapt(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

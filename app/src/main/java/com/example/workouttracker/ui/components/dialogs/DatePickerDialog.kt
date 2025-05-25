@@ -1,89 +1,141 @@
 package com.example.workouttracker.ui.components.dialogs
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerColors
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.components.extensions.customBorder
 import com.example.workouttracker.ui.components.reusable.DialogButton
+import com.example.workouttracker.ui.components.reusable.ImageButton
+import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorDialogBackground
-import com.example.workouttracker.ui.theme.ColorGrey
-import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.DialogFooterSize
+import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
+import com.example.workouttracker.ui.theme.PaddingVerySmall
+import com.example.workouttracker.ui.theme.SmallImageButtonSize
+import java.time.LocalDate
 import java.util.Calendar
 import java.util.Date
+import com.kizitonwose.calendar.compose.HorizontalCalendar
+import com.kizitonwose.calendar.compose.rememberCalendarState
+import com.kizitonwose.calendar.core.*
+import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 /**
  * Composable to show/hide the date picker dialog
  * @param onDismiss callback to execute on dialog close
  * @param onDatePick callback to execute on date selection
  */
-fun DatePickerDialog(onDismiss: () -> Unit, onDatePick: (Date) -> Unit) {
-    val today = remember { Calendar.getInstance() }
-    val selectableDates = object : SelectableDates {
-        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            val date = Calendar.getInstance().apply { timeInMillis = utcTimeMillis }
-
-            today.set(Calendar.HOUR_OF_DAY, 0)
-            today.set(Calendar.MINUTE, 0)
-            today.set(Calendar.SECOND, 0)
-            today.set(Calendar.MILLISECOND, 0)
-
-            return date.timeInMillis <= today.timeInMillis
-        }
-    }
-    val startYear = today.get(Calendar.YEAR) - 1
-    val datePickerState = rememberDatePickerState(
-        yearRange = IntRange(startYear, startYear + 1),
-        selectableDates = selectableDates
+@Composable
+fun DatePickerDialog(
+    onDismiss: () -> Unit,
+    onDatePick: (Date) -> Unit
+) {
+    var currentMonth by remember { mutableStateOf(YearMonth.now()) }
+    val daysOfWeek = remember { daysOfWeek(firstDayOfWeek = DayOfWeek.MONDAY) }
+    val state = rememberCalendarState(
+        startMonth = YearMonth.of(2024, 6),
+        endMonth = YearMonth.now().plusMonths(1),
+        firstVisibleMonth = currentMonth,
+        firstDayOfWeek = daysOfWeek.first(),
+        outDateStyle = OutDateStyle.EndOfGrid
     )
+    var selectedDate by remember {
+        mutableStateOf(CalendarDay(LocalDate.now(), position = DayPosition.MonthDate))
+    }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(state) {
+        snapshotFlow { state.firstVisibleMonth }
+            .collect { visibleMonth ->
+                currentMonth = visibleMonth.yearMonth
+            }
+    }
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = MaterialTheme.shapes.medium,
-            color = ColorDialogBackground
+            color = ColorDialogBackground,
+            shape = MaterialTheme.shapes.medium
         ) {
-            Column {
-                DatePicker(
-                    state = datePickerState,
-                    modifier = Modifier
-                        .padding(horizontal = PaddingSmall)
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
-                    showModeToggle = false,
-                    title = null,
-                    headline = null,
-                    colors = getDatePickerColors()
-                )
+            Column(modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(PaddingMedium)
+                ) {
+                    CurrentMonth(
+                        month = currentMonth,
+                        onBack = {
+                            scope.launch {
+                                state.scrollToMonth(currentMonth.minusMonths(1))
+                            }
+                        },
+                        onForward = {
+                            scope.launch {
+                                state.scrollToMonth(currentMonth.plusMonths(1))
+                            }
+                        }
+                    )
+                    HorizontalCalendar(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = state,
+                        dayContent = { Day(
+                                day = it,
+                                onClick = {
+                                     selectedDate = it
+                                },
+                                isSelected = it == selectedDate
+                            )
+                         },
+                        monthHeader = {
+                            DaysOfWeekTitle(daysOfWeek)
+                        }
+                    )
+                }
 
-                Row(modifier = Modifier
-                        .height(DialogFooterSize)
+                Row(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .background(ColorDialogBackground),
+                        .height(DialogFooterSize)
+                        .background(ColorDialogBackground)
                 ) {
                     DialogButton(
                         modifier = Modifier
@@ -98,29 +150,11 @@ fun DatePickerDialog(onDismiss: () -> Unit, onDatePick: (Date) -> Unit) {
                             .customBorder(),
                         text = stringResource(id = R.string.select_date_btn),
                         onClick = {
-                            val selected = datePickerState.selectedDateMillis
-
-                            val date = if (selected != null) {
-                                // Selected date midnight
-                                Calendar.getInstance().apply {
-                                    timeInMillis = selected
-                                    set(Calendar.HOUR_OF_DAY, 0)
-                                    set(Calendar.MINUTE, 0)
-                                    set(Calendar.SECOND, 0)
-                                    set(Calendar.MILLISECOND, 0)
-                                }.time
-                            } else {
-                                // Today midnight if no date selected
-                                Calendar.getInstance().apply {
-                                    timeInMillis = System.currentTimeMillis()
-                                    set(Calendar.HOUR_OF_DAY, 0)
-                                    set(Calendar.MINUTE, 0)
-                                    set(Calendar.SECOND, 0)
-                                    set(Calendar.MILLISECOND, 0)
-                                }.time
+                            val cal = Calendar.getInstance().apply {
+                                set(selectedDate.date.year, selectedDate.date.monthValue - 1, selectedDate.date.dayOfMonth, 0, 0, 0)
+                                set(Calendar.MILLISECOND, 0)
                             }
-
-                            onDatePick(date)
+                            onDatePick(cal.time)
                         }
                     )
                 }
@@ -129,81 +163,102 @@ fun DatePickerDialog(onDismiss: () -> Unit, onDatePick: (Date) -> Unit) {
     }
 }
 
-/** Return date picker colors class */
-@OptIn(ExperimentalMaterial3Api::class)
-private fun getDatePickerColors(): DatePickerColors {
-    return DatePickerColors(
-        containerColor = ColorDialogBackground,
-        titleContentColor = ColorWhite,
-        headlineContentColor = ColorWhite,
-        weekdayContentColor = ColorWhite,
-        subheadContentColor = ColorWhite,
-        navigationContentColor = ColorWhite,
-        yearContentColor = ColorWhite,
-        disabledYearContentColor = ColorGrey,
-        currentYearContentColor = ColorWhite,
-        selectedYearContentColor = ColorWhite,
-        disabledSelectedYearContentColor = ColorGrey,
-        selectedYearContainerColor = ColorAccent,
-        disabledSelectedYearContainerColor = ColorGrey,
-        dayContentColor = ColorWhite,
-        disabledDayContentColor = ColorGrey,
-        selectedDayContentColor = ColorWhite,
-        disabledSelectedDayContentColor = ColorGrey,
-        disabledSelectedDayContainerColor = ColorGrey,
-        todayContentColor = ColorWhite,
-        todayDateBorderColor = ColorAccent,
-        dayInSelectionRangeContainerColor = ColorWhite,
-        dayInSelectionRangeContentColor = ColorDialogBackground,
-        dividerColor = ColorBorder,
-        selectedDayContainerColor = ColorAccent,
-        dateTextFieldColors = TextFieldColors(
-            focusedTextColor = ColorWhite,
-            unfocusedTextColor = ColorWhite,
-            disabledTextColor = ColorGrey,
-            errorTextColor = ColorWhite,
-            focusedContainerColor = ColorWhite,
-            unfocusedContainerColor = ColorWhite,
-            disabledContainerColor = ColorWhite,
-            errorContainerColor = ColorWhite,
-            cursorColor = ColorWhite,
-            errorCursorColor = ColorWhite,
-            textSelectionColors= TextSelectionColors(
-                handleColor = ColorWhite,
-                backgroundColor = ColorWhite
+/**
+ * Composable to display the selected date
+ * @param month the selected day
+ * */
+@Composable
+fun CurrentMonth(month: YearMonth, onBack: () -> Unit, onForward: () -> Unit) {
+    val formatter = DateTimeFormatter.ofPattern("MMM yyyy")
+    val formattedDate = month.format(formatter)
+
+    Row(modifier = Modifier
+        .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ImageButton(
+            onClick = { onBack() },
+            image = Icons.AutoMirrored.Filled.ArrowBack,
+            size = SmallImageButtonSize,
+            buttonColor = Color.Transparent,
+            imageColor = ColorAccent
+        )
+
+        Label(
+            modifier = Modifier.weight(1f),
+            text = formattedDate,
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        ImageButton(
+            onClick = { onForward() },
+            image = Icons.AutoMirrored.Filled.ArrowForward,
+            size = SmallImageButtonSize,
+            buttonColor = Color.Transparent,
+            imageColor = ColorAccent
+        )
+    }
+}
+
+/**
+ * Composable to each day
+ * @param day the day
+ * @param onClick callback to select the date
+ * @param isSelected whether that's the currently selected date
+ */
+@Composable
+fun Day(day: CalendarDay, onClick: (CalendarDay) -> Unit, isSelected: Boolean) {
+    Box(
+        modifier = Modifier
+            .padding(PaddingVerySmall)
+            .aspectRatio(1f)
+            .clip(CircleShape)
+            .then(
+                if (isSelected) {
+                    Modifier.border(
+                        width = 2.dp,
+                        color = ColorAccent,
+                        shape = CircleShape
+                    )
+                } else {
+                    Modifier
+                }
+            )
+            .clickable(
+                enabled = true,
+                onClick = { onClick(day) }
             ),
-            focusedIndicatorColor = ColorWhite,
-            unfocusedIndicatorColor = ColorWhite,
-            disabledIndicatorColor = ColorWhite,
-            errorIndicatorColor = ColorWhite,
-            focusedLeadingIconColor = ColorWhite,
-            unfocusedLeadingIconColor = ColorWhite,
-            disabledLeadingIconColor = ColorWhite,
-            errorLeadingIconColor = ColorWhite,
-            focusedTrailingIconColor = ColorWhite,
-            unfocusedTrailingIconColor = ColorWhite,
-            disabledTrailingIconColor = ColorWhite,
-            errorTrailingIconColor = ColorWhite,
-            focusedLabelColor = ColorWhite,
-            unfocusedLabelColor = ColorWhite,
-            disabledLabelColor = ColorWhite,
-            errorLabelColor = ColorWhite,
-            focusedPlaceholderColor = ColorWhite,
-            unfocusedPlaceholderColor = ColorWhite,
-            disabledPlaceholderColor = ColorWhite,
-            errorPlaceholderColor = ColorWhite,
-            focusedSupportingTextColor = ColorWhite,
-            unfocusedSupportingTextColor = ColorWhite,
-            disabledSupportingTextColor = ColorWhite,
-            errorSupportingTextColor = ColorWhite,
-            focusedPrefixColor = ColorWhite,
-            unfocusedPrefixColor = ColorWhite,
-            disabledPrefixColor = ColorWhite,
-            errorPrefixColor = ColorWhite,
-            focusedSuffixColor = ColorWhite,
-            unfocusedSuffixColor = ColorWhite,
-            disabledSuffixColor = ColorWhite,
-            errorSuffixColor = ColorWhite,
-        ),
+        contentAlignment = Alignment.Center
+    ) {
+        Label(
+            text = day.date.dayOfMonth.toString(),
+            style = if (day.position == DayPosition.MonthDate) MaterialTheme.typography.labelMedium
+                    else LabelMediumGrey
+        )
+    }
+}
+
+/**
+ * Composable to display days of the week
+ * @param daysOfWeek the days of the week
+ */
+@Composable
+fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = PaddingSmall)
+    ) {
+        for (dayOfWeek in daysOfWeek) {
+            Label(
+                modifier = Modifier.weight(1f),
+                text = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                style = MaterialTheme.typography.titleSmall
+            )
+        }
+    }
+    HorizontalDivider(
+        modifier = Modifier.padding(bottom = PaddingSmall),
+        color = ColorBorder,
+        thickness = 1.dp
     )
 }
