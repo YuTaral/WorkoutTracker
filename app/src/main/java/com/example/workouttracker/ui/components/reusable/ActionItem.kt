@@ -77,6 +77,6 @@ fun ActionItem(imageId: Int, titleId: Int, onClick: () -> Unit) {
 @Composable
 fun ActionItemPreview() {
     WorkoutTrackerTheme {
-        ActionItem(R.drawable.icon_screen_manage_exercise, R.string.manage_exercises_lbl, {})
+        ActionItem(R.drawable.icon_screen_manage_exercises, R.string.manage_exercises_lbl, {})
     }
 }

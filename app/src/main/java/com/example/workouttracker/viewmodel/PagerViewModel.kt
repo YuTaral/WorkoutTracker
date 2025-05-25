@@ -34,7 +34,7 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
     data object Actions : Page(R.string.select_action_title, R.drawable.icon_screen_menu,
                           PageIndices.FIRST_TEMPORARY.ordinal, content = { SelectActionScreen() })
 
-    data object ManageExercise : Page(R.string.select_exercise_title, R.drawable.icon_screen_manage_exercise,
+    data object ManageExercise : Page(R.string.select_exercise_title, R.drawable.icon_screen_manage_exercises,
                                  PageIndices.FIRST_TEMPORARY.ordinal, content = { SelectExerciseScreen(manageExercises = true) })
 
     data object ManageTemplates : Page(R.string.templates_lbl, R.drawable.icon_screen_manage_templates,

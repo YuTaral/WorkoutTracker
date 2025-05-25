@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 /** Different actions accessed from the actions menu */
 sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () -> Unit ) {
-    data object ManageExercises : Action(R.drawable.icon_screen_manage_exercise, R.string.manage_exercises_lbl,
+    data object ManageExercises : Action(R.drawable.icon_screen_manage_exercises, R.string.manage_exercises_lbl,
         { PagerManager.changePageSelection(Page.ManageExercise) })
 
     data object ManageTemplates : Action(R.drawable.icon_screen_manage_templates, R.string.manage_templates_lbl,
