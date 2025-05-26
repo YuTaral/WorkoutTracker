@@ -1,16 +1,20 @@
 package com.example.workouttracker.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.components.dialogs.AddEditTemplateDialog
+import com.example.workouttracker.ui.components.dialogs.StartTimerDialog
+import com.example.workouttracker.ui.components.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /** Different actions accessed from the actions menu */
@@ -20,6 +24,17 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
 
     data object ManageTemplates : Action(R.drawable.icon_screen_manage_templates, R.string.manage_templates_lbl,
         { PagerManager.changePageSelection(Page.ManageTemplates) })
+
+    class StartTimer(private val title: String, private val showTimer: (Long) -> Unit):
+        Action(R.drawable.icon_start_timer, R.string.start_timer_lbl,
+        {
+            DialogManager.showDialog(
+                title = title,
+                dialogName = "StartTimerDialog",
+                content = { StartTimerDialog(onStart = { showTimer(it) }) }
+            )
+        }
+    )
 
     class SaveWorkoutAsTemplate(private val template: WorkoutModel, private val title: String):
         Action(R.drawable.icon_action_save_workout_as_template, R.string.save_workout_as_template_lbl,
@@ -59,6 +74,29 @@ class SelectActionViewModel @Inject constructor(
 
         _actions.value.add(Action.ManageExercises)
         _actions.value.add(Action.ManageTemplates)
+        _actions.value.add(Action.StartTimer(
+            title = resourceProvider.getString(R.string.start_timer_lbl),
+            showTimer = {
+                viewModelScope.launch {
+                    DialogManager.showDialog(
+                        title = resourceProvider.getString(R.string.timer_lbl),
+                        dialogName = "TimerDialog",
+                        content = {
+                            TimerDialog(
+                                seconds = it,
+                                autoStart = true,
+                                onDone = {
+                                    viewModelScope.launch {
+                                        DialogManager.hideDialog("StartTimerDialog")
+                                        DialogManager.hideDialog("TimerDialog")
+                                    }
+                                }
+                            )
+                        }
+                    )
+                }
+            }),
+        )
 
         _isInitialized.value = true
     }

@@ -127,5 +127,9 @@
     <string name="no_templates_matching_error">You don\'t have any templates matching the search term</string>
     <string name="no_templates_error">You don\'t have any templates. Choose a workout and select action \"Save workout as template\" to create your first template</string>
     <string name="no_exercises_matching">You don\'t have any exercises matching the search term</string>
+    <string name="start_timer_lbl">Start Timer</string>
+    <string name="hours_lbl">Hours</string>
+    <string name="minutes_lbl">Minutes</string>
+    <string name="seconds_lbl">Seconds</string>
 
 </resources>
