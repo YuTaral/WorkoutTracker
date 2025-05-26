@@ -9,21 +9,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorBorder
-import com.example.workouttracker.ui.theme.MediumImageButtonSize
+import com.example.workouttracker.ui.theme.ColorWhite
+import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 
@@ -36,7 +35,10 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 @Composable
 @SuppressLint("DiscouragedApi")
 fun ActionItem(imageId: Int, titleId: Int, onClick: () -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = PaddingSmall)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -48,22 +50,19 @@ fun ActionItem(imageId: Int, titleId: Int, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            Label(
+                modifier = Modifier.padding(start = PaddingSmall),
+                text = stringResource(id = titleId),
+                style = MaterialTheme.typography.titleMedium
+            )
+
             Image(
-                modifier = Modifier.size(50.dp),
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(end = PaddingSmall),
                 painter = painterResource(id = imageId),
                 contentDescription = null,
-            )
-
-            Label(
-                text = stringResource(id = titleId)
-            )
-
-            ImageButton(
-                onClick = {},
-                image = Icons.AutoMirrored.Filled.ArrowForward,
-                size = MediumImageButtonSize,
-                buttonColor = Color.Transparent,
-                imageColor = ColorAccent
+                colorFilter = ColorFilter.tint(color = ColorWhite),
             )
         }
         HorizontalDivider(

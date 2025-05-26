@@ -234,19 +234,20 @@ private fun WorkoutScreen(
             size = 35.dp
         )
 
-        ImageButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = PaddingSmall),
-            onClick = {
-                scope.launch {
-                    PagerManager.changePageSelection(Page.SelectExercise)
-                }
-            },
-            image = Icons.Default.Add
-        )
+        if (workout.finishDateTime == null) {
+            ImageButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = PaddingSmall),
+                onClick = {
+                    scope.launch {
+                        PagerManager.changePageSelection(Page.SelectExercise)
+                    }
+                },
+                image = Icons.Default.Add
+            )
+        }
     }
-
 }
 
 /**

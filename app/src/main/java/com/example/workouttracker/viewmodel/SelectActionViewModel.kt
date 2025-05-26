@@ -12,9 +12,13 @@ import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.Duration
+import java.util.Date
 import javax.inject.Inject
 
 /** Different actions accessed from the actions menu */
@@ -24,6 +28,8 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
 
     data object ManageTemplates : Action(R.drawable.icon_screen_manage_templates, R.string.manage_templates_lbl,
         { PagerManager.changePageSelection(Page.ManageTemplates) })
+
+    class FinishWorkout(onClick: () -> Unit): Action(R.drawable.icon_finish_workout, R.string.mark_workout_as_finished_lbl, { onClick() })
 
     class StartTimer(private val title: String, private val showTimer: (Long) -> Unit):
         Action(R.drawable.icon_start_timer, R.string.start_timer_lbl,
@@ -70,10 +76,37 @@ class SelectActionViewModel @Inject constructor(
                 template = workoutRepository.selectedWorkout.value!!,
                 title = resourceProvider.getString(R.string.add_template_lbl)
             ))
+
+            if (workoutRepository.selectedWorkout.value!!.finishDateTime == null) {
+                _actions.value.add(Action.FinishWorkout(onClick = {
+                    val workout = workoutRepository.selectedWorkout.value!!
+                    workout.finishDateTime = Date()
+                    workout.durationSeconds = Duration.between(
+                        workout.startDateTime!!.toInstant(), workout.finishDateTime!!.toInstant()
+                    ).seconds.toInt()
+
+                    viewModelScope.launch(Dispatchers.IO) {
+                        workoutRepository.updateWorkout(
+                            workout = workout,
+                            onSuccess = {
+                                workoutRepository.updateSelectedWorkout(it)
+                                viewModelScope.launch(Dispatchers.IO) {
+                                    workoutRepository.updateWorkouts(null)
+
+                                    withContext(Dispatchers.Default) {
+                                        PagerManager.changePageSelection(Page.SelectedWorkout)
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }))
+            }
         }
 
         _actions.value.add(Action.ManageExercises)
         _actions.value.add(Action.ManageTemplates)
+
         _actions.value.add(Action.StartTimer(
             title = resourceProvider.getString(R.string.start_timer_lbl),
             showTimer = {

@@ -131,5 +131,6 @@
     <string name="hours_lbl">Hours</string>
     <string name="minutes_lbl">Minutes</string>
     <string name="seconds_lbl">Seconds</string>
+    <string name="mark_workout_as_finished_lbl">Finish Workout</string>
 
 </resources>
