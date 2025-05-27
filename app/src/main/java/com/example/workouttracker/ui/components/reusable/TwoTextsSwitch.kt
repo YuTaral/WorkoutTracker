@@ -42,11 +42,12 @@ fun TwoTextsSwitch(modifier: Modifier = Modifier,
     val contentAlpha = if (disabled) 0.4f else 1f
 
     Row(
-        modifier = modifier
+        modifier = modifier.then(Modifier
             .fillMaxWidth()
             .alpha(contentAlpha)
             .background(Color.Transparent)
             .border(border = BorderStroke(2.dp, ColorAccent), shape = RoundedCornerShape(25.dp))
+        )
     ) {
         Text(
             text = leftText,

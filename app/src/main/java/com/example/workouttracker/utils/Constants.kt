@@ -22,12 +22,6 @@ object Constants {
         DECLINED_TEAM_INVITATION
     }
 
-    /** Enum with team types when fetching teams */
-    enum class ViewTeamAs {
-        COACH,
-        MEMBER
-    }
-
     /** Object containing request end point values */
     object RequestEndPoints {
         private const val USERS = "users"

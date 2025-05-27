@@ -134,5 +134,9 @@
     <string name="mark_workout_as_finished_lbl">Finish Workout</string>
     <string name="manage_teams_lbl">Manage Teams</string>
     <string name="teams_lbl">Teams</string>
+    <string name="as_coach_lbl">As coach</string>
+    <string name="as_member_lbl">As member</string>
+    <string name="no_my_teams_lbl">You don\'t have any teams. Click Add to create your first team</string>
+    <string name="no_joined_teams_lbl">You are not a member of any team</string>
 
 </resources>

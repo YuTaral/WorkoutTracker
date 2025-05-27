@@ -1,6 +1,6 @@
 package com.example.workouttracker.data.models
 
-import com.example.workouttracker.utils.Constants
+import com.example.workouttracker.viewmodel.ViewTeamAs
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
@@ -43,7 +43,7 @@ open class TeamModel: BaseModel {
         image = imageVal
         name = nameVal
         description = descriptionVal
-        viewTeamAs = Constants.ViewTeamAs.COACH.toString()
+        viewTeamAs = ViewTeamAs.COACH.toString()
         selectedInPanel = false
     }
 }
