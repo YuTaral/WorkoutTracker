@@ -29,6 +29,9 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
     data object ManageTemplates : Action(R.drawable.icon_screen_manage_templates, R.string.manage_templates_lbl,
         { PagerManager.changePageSelection(Page.ManageTemplates) })
 
+    data object ManageTeams : Action(R.drawable.icon_screen_manage_teams, R.string.manage_teams_lbl,
+        { PagerManager.changePageSelection(Page.ManageTeams) })
+
     class FinishWorkout(onClick: () -> Unit): Action(R.drawable.icon_finish_workout, R.string.mark_workout_as_finished_lbl, { onClick() })
 
     class StartTimer(private val title: String, private val showTimer: (Long) -> Unit):
@@ -104,9 +107,6 @@ class SelectActionViewModel @Inject constructor(
             }
         }
 
-        _actions.value.add(Action.ManageExercises)
-        _actions.value.add(Action.ManageTemplates)
-
         _actions.value.add(Action.StartTimer(
             title = resourceProvider.getString(R.string.start_timer_lbl),
             showTimer = {
@@ -130,6 +130,10 @@ class SelectActionViewModel @Inject constructor(
                 }
             }),
         )
+
+        _actions.value.add(Action.ManageExercises)
+        _actions.value.add(Action.ManageTemplates)
+        _actions.value.add(Action.ManageTeams)
 
         _isInitialized.value = true
     }

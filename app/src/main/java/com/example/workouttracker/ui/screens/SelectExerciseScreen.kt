@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.fragments
+package com.example.workouttracker.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import com.example.workouttracker.R

@@ -3,11 +3,11 @@ package com.example.workouttracker.viewmodel
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.fragments.ManageTemplatesScreen
-import com.example.workouttracker.ui.components.fragments.SelectActionScreen
-import com.example.workouttracker.ui.components.fragments.SelectExerciseScreen
-import com.example.workouttracker.ui.components.fragments.SelectedWorkoutScreen
-import com.example.workouttracker.ui.components.fragments.WorkoutsScreen
+import com.example.workouttracker.ui.screens.ManageTemplatesScreen
+import com.example.workouttracker.ui.screens.SelectActionScreen
+import com.example.workouttracker.ui.screens.SelectExerciseScreen
+import com.example.workouttracker.ui.screens.SelectedWorkoutScreen
+import com.example.workouttracker.ui.screens.WorkoutsScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +39,9 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
 
     data object ManageTemplates : Page(R.string.templates_lbl, R.drawable.icon_screen_manage_templates,
                                   PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTemplatesScreen() })
+
+    data object ManageTeams : Page(R.string.teams_lbl, R.drawable.icon_screen_manage_teams,
+        PageIndices.FIRST_TEMPORARY.ordinal, content = { })
 }
 
 /** PagerViewModel to manage the state of the pages of the main screen */

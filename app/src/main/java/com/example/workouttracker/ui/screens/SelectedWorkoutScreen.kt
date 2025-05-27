@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.fragments
+package com.example.workouttracker.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility

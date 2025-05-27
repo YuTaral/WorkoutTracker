@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.fragments
+package com.example.workouttracker.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
