@@ -2,6 +2,7 @@ package com.example.workouttracker.ui.components.reusable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,12 +33,17 @@ import com.example.workouttracker.utils.Utils
 /**
  * Single team item
  * @param team the team
+ * @param onClick callback to execute on team click
  */
 @Composable
-fun TeamItem(team: TeamModel) {
+fun TeamItem(team: TeamModel, onClick: (TeamModel) -> Unit) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(bottom = PaddingSmall)
+        .clickable(
+            enabled = true,
+            onClick = { onClick(team) }
+        )
     ) {
         Row {
             DisplayImage(team.image)
@@ -74,7 +80,7 @@ fun TeamItem(team: TeamModel) {
  */
 @Composable
 private fun DisplayImage(image: String) {
-    val profileImagePainter = if (image.isEmpty()) {
+    val profileImagePainter = if (!image.isEmpty()) {
         val bitmap = Utils.convertStringToBitmap(image)
         BitmapPainter(bitmap.asImageBitmap())
     } else {
@@ -96,6 +102,6 @@ private fun DisplayImage(image: String) {
 @Composable
 private fun TeamItemPreview() {
     WorkoutTrackerTheme {
-        TeamItem(TeamModel(1L, "", "My first team", "This is the best team ever"))
+        TeamItem(TeamModel(1L, "", "My first team", "This is the best team ever"), {})
     }
 }

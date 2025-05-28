@@ -114,7 +114,7 @@ interface IAPIService {
     @PATCH(Constants.RequestEndPoints.TEAMS)
     fun updateTeam(@Body params: Map<String, String>): Call<CustomResponse>
 
-    @POST(Constants.RequestEndPoints.TEAMS)
+    @DELETE(Constants.RequestEndPoints.TEAMS)
     fun deleteTeam(@Query("teamId") teamId: Long): Call<CustomResponse>
 
     @PUT(Constants.RequestEndPoints.LEAVE_TEAM)

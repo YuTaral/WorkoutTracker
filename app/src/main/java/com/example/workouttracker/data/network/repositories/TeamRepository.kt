@@ -18,31 +18,27 @@ class TeamRepository @Inject constructor(
     /** Add new team
      * @param team the team data
      * @param onSuccess callback to execute if request is successful
-     * @param onError callback to execute if request failed
      */
-    suspend fun addTeam(team: TeamModel, onSuccess: () -> Unit, onError: () -> Unit) {
+    suspend fun addTeam(team: TeamModel, onSuccess: () -> Unit) {
         // Send a request to add the team
         val params = mapOf("team" to Utils.serializeObject(team))
 
         networkManager.sendRequest(
             request = { apiService.getInstance().addTeam(params) },
-            onSuccessCallback = { onSuccess() },
-            onErrorCallback = { onError() }
+            onSuccessCallback = { onSuccess() }
         )
     }
 
     /** Update team
      * @param team the team data
      * @param onSuccess callback to execute if request is successful
-     * @param onError callback to execute if request failed
      */
-    suspend fun updateTeam(team: TeamModel, onSuccess: () -> Unit, onError: () -> Unit) {
+    suspend fun editTeam(team: TeamModel, onSuccess: () -> Unit) {
         val params = mapOf("team" to Utils.serializeObject(team))
 
         networkManager.sendRequest(
             request = { apiService.getInstance().updateTeam(params) },
             onSuccessCallback = { onSuccess() },
-            onErrorCallback = { onError() }
         )
     }
 

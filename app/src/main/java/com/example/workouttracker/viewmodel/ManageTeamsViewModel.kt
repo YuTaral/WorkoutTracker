@@ -9,6 +9,7 @@ import javax.inject.Inject
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.network.repositories.TeamRepository
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,9 +38,13 @@ class ManageTeamsViewModel @Inject constructor(
     private var _selectedTeamType = MutableStateFlow<ViewTeamAs>(ViewTeamAs.COACH)
     var selectedTeamType = _selectedTeamType.asStateFlow()
 
+    /** Track the selected team */
+    private var _selectedTeam: TeamModel? = null
+
     /** Initialize the data when the screen is created */
     fun initializeData() {
         updateSelectedTeamType(resourceProvider.getString(ViewTeamAs.COACH.getStringId()))
+        updateSelectedTeam(null)
     }
 
     /** Update the selected team type to the provided value */
@@ -54,12 +59,32 @@ class ManageTeamsViewModel @Inject constructor(
         }
     }
 
+    /** Update the selected team with the provided value */
+    fun updateSelectedTeam(value: TeamModel?) {
+        _selectedTeam = value
+
+        viewModelScope.launch {
+            if (_selectedTeam == null) {
+                PagerManager.changePageSelection(Page.ManageTeams)
+            } else {
+                PagerManager.changePageSelection(Page.EditTeam(team = value!!))
+            }
+        }
+    }
+
     /** Return the string id of the message to display when there are no teams */
     fun getNoTeamsMessage(): Int {
         return if (_selectedTeamType.value == ViewTeamAs.COACH) {
             R.string.no_my_teams_lbl
         } else {
             R.string.no_joined_teams_lbl
+        }
+    }
+
+    /** Show the panel to add new team */
+    fun showAddTeam() {
+        viewModelScope.launch {
+            PagerManager.changePageSelection(Page.AddTeam)
         }
     }
 

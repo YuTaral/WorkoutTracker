@@ -3,6 +3,8 @@ package com.example.workouttracker.viewmodel
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.TeamModel
+import com.example.workouttracker.ui.screens.AddEditTeamScreen
 import com.example.workouttracker.ui.screens.ManageTeamsScreen
 import com.example.workouttracker.ui.screens.ManageTemplatesScreen
 import com.example.workouttracker.ui.screens.SelectActionScreen
@@ -18,7 +20,8 @@ import javax.inject.Inject
 enum class PageIndices {
     WORKOUTS,
     SELECTED_WORKOUT,
-    FIRST_TEMPORARY
+    FIRST_TEMPORARY,
+    SECOND_TEMPORARY
 }
 
 /** Class representing a screen in the main pager */
@@ -42,7 +45,13 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
                                   PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTemplatesScreen() })
 
     data object ManageTeams : Page(R.string.teams_lbl, R.drawable.icon_screen_manage_teams,
-        PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTeamsScreen() })
+                               PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTeamsScreen() })
+
+    data object AddTeam: Page(R.string.add_team_lbl, R.drawable.icon_tab_add_team,
+                         PageIndices.SECOND_TEMPORARY.ordinal, content = { AddEditTeamScreen(team = null) })
+
+    class EditTeam(private val team: TeamModel): Page(R.string.edit_team_lbl, R.drawable.icon_tab_edit_team,
+        PageIndices.SECOND_TEMPORARY.ordinal, content = { AddEditTeamScreen(team = team) })
 }
 
 /** PagerViewModel to manage the state of the pages of the main screen */

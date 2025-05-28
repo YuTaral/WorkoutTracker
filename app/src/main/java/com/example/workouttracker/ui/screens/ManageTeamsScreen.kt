@@ -82,7 +82,10 @@ fun ManageTeamsScreen(vm: ManageTeamsViewModel = hiltViewModel()) {
                     contentPadding = PaddingValues(bottom = LazyListBottomPadding)
                 ) {
                     items(teams) {
-                        TeamItem(it)
+                        TeamItem(
+                            team = it,
+                            onClick = { vm.updateSelectedTeam(it) }
+                        )
                     }
                 }
             }
@@ -90,7 +93,7 @@ fun ManageTeamsScreen(vm: ManageTeamsViewModel = hiltViewModel()) {
             if (selectedTeamType == ViewTeamAs.COACH) {
                 ImageButton(
                     modifier = Modifier.align(Alignment.BottomEnd),
-                    onClick = {  },
+                    onClick = { vm.showAddTeam() },
                     image = Icons.Default.Add
                 )
             }
