@@ -35,7 +35,7 @@ import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.AddEditTemplateViewModel
-import com.example.workouttracker.viewmodel.AddEditTemplateViewModel.Mode
+import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 
 /**
  * Add / edit template dialog content
