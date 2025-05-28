@@ -22,23 +22,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/** Enum representing the actions from the action spinner */
-enum class TemplateSpinnerActions(private val stringId: Int) {
-    START_WORKOUT(R.string.action_start_workout),
-    EDIT_TEMPLATE(R.string.action_edit_template),
-    DELETE_TEMPLATE(R.string.action_delete_template);
-
-    fun getStringId(): Int {
-        return stringId
-    }
-}
-
 @HiltViewModel
 class ManageTemplatesViewModel @Inject constructor(
     var userRepository: UserRepository,
     private var templatesRepository: WorkoutTemplatesRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
+
+    /** Enum representing the actions from the action spinner */
+    enum class SpinnerActions(private val stringId: Int) {
+        START_WORKOUT(R.string.action_start_workout),
+        EDIT_TEMPLATE(R.string.action_edit_template),
+        DELETE_TEMPLATE(R.string.action_delete_template);
+
+        fun getStringId(): Int {
+            return stringId
+        }
+    }
 
     /** Use job with slight delay to avoid filtering the data on each letter */
     private val debounceTime = 500L
@@ -53,14 +53,14 @@ class ManageTemplatesViewModel @Inject constructor(
     var search = _search.asStateFlow()
 
     /** Valid Spinner actions */
-    var spinnerActions: List<TemplateSpinnerActions> = listOf(
-        TemplateSpinnerActions.START_WORKOUT,
-        TemplateSpinnerActions.EDIT_TEMPLATE,
-        TemplateSpinnerActions.DELETE_TEMPLATE,
+    var spinnerActions: List<SpinnerActions> = listOf(
+        SpinnerActions.START_WORKOUT,
+        SpinnerActions.EDIT_TEMPLATE,
+        SpinnerActions.DELETE_TEMPLATE,
     )
 
     /** The selected spinner action  */
-    private var _selectedSpinnerAction = MutableStateFlow<TemplateSpinnerActions>(TemplateSpinnerActions.START_WORKOUT)
+    private var _selectedSpinnerAction = MutableStateFlow<SpinnerActions>(SpinnerActions.START_WORKOUT)
     var selectedSpinnerAction = _selectedSpinnerAction.asStateFlow()
 
     /** Initialize the data in the panel */
@@ -112,13 +112,13 @@ class ManageTemplatesViewModel @Inject constructor(
     /** Select the template and execute the action based on the selected action */
     fun selectTemplate(template: WorkoutModel) {
         when(_selectedSpinnerAction.value) {
-            TemplateSpinnerActions.START_WORKOUT -> {
+            SpinnerActions.START_WORKOUT -> {
                 showStartWorkout(template)
             }
-            TemplateSpinnerActions.EDIT_TEMPLATE -> {
+            SpinnerActions.EDIT_TEMPLATE -> {
                 showEditTemplate(template)
             }
-            TemplateSpinnerActions.DELETE_TEMPLATE -> {
+            SpinnerActions.DELETE_TEMPLATE -> {
                 askDeleteTemplate(template)
             }
         }

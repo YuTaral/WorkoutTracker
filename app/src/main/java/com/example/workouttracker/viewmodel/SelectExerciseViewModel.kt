@@ -29,17 +29,6 @@ import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.ResourceProvider
 
-/** Enum representing the actions from the action spinner */
-enum class SpinnerActions(private val stringId: Int) {
-    UPDATE_EXERCISE(R.string.action_update_exercise),
-    DELETE_EXERCISE(R.string.action_delete_exercise),
-    CHANGE_EXERCISE_DEFAULT_VALUES(R.string.action_exercise_default_values);
-
-    fun getStringId(): Int {
-        return stringId
-    }
-}
-
 /** View model to control the UI state of add exercise to workout screen */
 @HiltViewModel
 class SelectExerciseViewModel @Inject constructor(
@@ -50,6 +39,17 @@ class SelectExerciseViewModel @Inject constructor(
     private var userProfileRepository: UserProfileRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
+
+    /** Enum representing the actions from the action spinner */
+    enum class SpinnerActions(private val stringId: Int) {
+        UPDATE_EXERCISE(R.string.action_update_exercise),
+        DELETE_EXERCISE(R.string.action_delete_exercise),
+        CHANGE_EXERCISE_DEFAULT_VALUES(R.string.action_exercise_default_values);
+
+        fun getStringId(): Int {
+            return stringId
+        }
+    }
 
     /** Enum with different states of the screen */
     enum class Mode {
