@@ -1,7 +1,9 @@
 package com.example.workouttracker.ui.screens
 
 import android.content.Context
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -13,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getString
@@ -32,6 +35,7 @@ import com.example.workouttracker.ui.managers.DisplayDatePickerEvent
 import com.example.workouttracker.ui.managers.DisplayDialogEvent
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
+import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.viewmodel.MainViewModel
 
 /**
@@ -43,20 +47,36 @@ fun Screen(vm: MainViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { innerPadding ->
-        WorkoutTrackerTheme {
-            ShowLoading()
-            ShowSnackbar(snackbarHostState, context)
-            MakeVibration(context)
-            AskQuestion()
-            ShowDatePicker()
-            ShowDialog()
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+        ) { innerPadding ->
+            WorkoutTrackerTheme {
+                ShowLoading()
+                ShowSnackbar(snackbarHostState, context)
+                MakeVibration(context)
+                AskQuestion()
+                ShowDatePicker()
+                ShowDialog()
 
-            Navigation(modifier = Modifier.padding(innerPadding), vm = vm)
+                Navigation(modifier = Modifier.padding(innerPadding), vm = vm)
+            }
         }
+
+        CustomSnackbarHost(snackbarHostState)
+    }
+}
+
+/** Composable to display the snackbar at the top of the screen */
+@Composable
+private fun CustomSnackbarHost(snackbarHostState: SnackbarHostState) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = PaddingLarge),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        SnackbarHost(hostState = snackbarHostState)
     }
 }
 
