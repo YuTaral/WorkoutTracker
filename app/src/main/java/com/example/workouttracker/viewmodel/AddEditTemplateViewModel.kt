@@ -10,6 +10,7 @@ import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.utils.ResourceProvider
+import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,12 +33,6 @@ class AddEditTemplateViewModel @Inject constructor(
     private var workoutRepository: WorkoutRepository,
     private var workoutTemplatesRepository: WorkoutTemplatesRepository
 ): ViewModel() {
-
-    /** The dialog modes */
-    enum class Mode {
-        ADD,
-        EDIT
-    }
 
     /** Dialog state */
     private val _uiState = MutableStateFlow(AddEditTemplateUiState())
