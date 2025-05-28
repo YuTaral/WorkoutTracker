@@ -32,9 +32,9 @@ import com.example.workouttracker.ui.components.reusable.ErrorLabel
 import com.example.workouttracker.ui.components.reusable.InputField
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.*
-import com.example.workouttracker.viewmodel.LoginUiState
 import com.example.workouttracker.viewmodel.AuthViewModel
-import com.example.workouttracker.viewmodel.RegisterUiState
+import com.example.workouttracker.viewmodel.AuthViewModel.LoginUiState
+import com.example.workouttracker.viewmodel.AuthViewModel.RegisterUiState
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState

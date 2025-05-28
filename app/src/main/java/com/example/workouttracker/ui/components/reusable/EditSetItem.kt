@@ -26,7 +26,7 @@ import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.SmallImageButtonSize
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.viewmodel.SetUiState
+import com.example.workouttracker.viewmodel.EditExerciseFromWorkoutViewModel.SetUiState
 
 /**
  * Single set item to display set as part of exercise

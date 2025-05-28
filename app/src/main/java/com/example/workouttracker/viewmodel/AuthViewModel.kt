@@ -17,32 +17,32 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** Login UI State representing the state of the Login page */
-data class LoginUiState(
-    val email: String = "",
-    val password: String = "",
-
-    val emailError: String? = null,
-    val passwordError: String? = null
-)
-
-/** Register UI State representing the state of the Register page */
-data class RegisterUiState(
-    val email: String = "",
-    val password: String = "",
-    val confirmPassword: String = "",
-
-    val emailError: String? = null,
-    val passwordError: String? = null,
-    val confirmPasswordError: String? = null
-)
-
 /** AuthViewModel to manage the state of AuthScreen Login or Register */
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private var userRepository: UserRepository
 ): ViewModel() {
+
+    /** Login UI State representing the state of the Login page */
+    data class LoginUiState(
+        val email: String = "",
+        val password: String = "",
+
+        val emailError: String? = null,
+        val passwordError: String? = null
+    )
+
+    /** Register UI State representing the state of the Register page */
+    data class RegisterUiState(
+        val email: String = "",
+        val password: String = "",
+        val confirmPassword: String = "",
+
+        val emailError: String? = null,
+        val passwordError: String? = null,
+        val confirmPasswordError: String? = null
+    )
 
     private val _loginUiState = MutableStateFlow(LoginUiState())
     val loginUiState = _loginUiState.asStateFlow()

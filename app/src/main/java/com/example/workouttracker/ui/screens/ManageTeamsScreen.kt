@@ -28,11 +28,10 @@ import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel
-import com.example.workouttracker.viewmodel.ViewTeamAs
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.style.TextAlign
 import com.example.workouttracker.ui.components.reusable.TeamItem
-
+import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 
 /** The screen displaying the teams the user owns / participates in  */
 @Composable

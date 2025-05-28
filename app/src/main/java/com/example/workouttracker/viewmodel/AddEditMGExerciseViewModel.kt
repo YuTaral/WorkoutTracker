@@ -16,13 +16,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class AddEditMGExerciseUiState(
-    val name: String = "",
-    val notes: String = "",
-    val nameError: String? = null,
-    val showAddExToWorkout: Boolean? = true
-)
-
 /** View model to control the UI state of Add / Edit muscle group exercise dialog */
 @HiltViewModel
 class AddEditMGExerciseViewModel @Inject constructor(
@@ -31,8 +24,16 @@ class AddEditMGExerciseViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
+    /** Class containing all fields in the UI */
+    data class UIState(
+        val name: String = "",
+        val notes: String = "",
+        val nameError: String? = null,
+        val showAddExToWorkout: Boolean? = true
+    )
+
     /** Dialog state */
-    private val _uiState = MutableStateFlow(AddEditMGExerciseUiState())
+    private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
     /** The selected muscle group id */

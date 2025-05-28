@@ -23,12 +23,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class EditProfileUiState(
-    val profileImage: String = "",
-    val fullName: String = "",
-    val fullNameError: String? = null
-)
-
 /** Edit profile view model to control the UI state change profile dialog */
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
@@ -37,8 +31,15 @@ class EditProfileViewModel @Inject constructor(
     private var userRepository: UserRepository
 ): ViewModel(), IImagePicker {
 
+    /** Class containing all fields in the UI */
+    data class UIState(
+        val profileImage: String = "",
+        val fullName: String = "",
+        val fullNameError: String? = null
+    )
+
     /** UI state of the dialog */
-    private var _uiState = MutableStateFlow(EditProfileUiState())
+    private var _uiState = MutableStateFlow(UIState())
     var uiState = _uiState.asStateFlow()
 
     /** Initialize the state when the dialog is opened */

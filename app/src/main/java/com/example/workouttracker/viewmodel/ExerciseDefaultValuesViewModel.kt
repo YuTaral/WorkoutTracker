@@ -16,16 +16,6 @@ import com.example.workouttracker.ui.managers.DialogManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-data class ExDefaultValuesUiState(
-    val sets: String = "",
-    val reps: String = "",
-    val weight: String = "",
-    val rest: String = "",
-    val weightUnit: String = "",
-    val completed: Boolean = false,
-    val disableWeightUnit: Boolean = true
-)
-
 /** View model to control the UI state of Exercise Default values dialog */
 @HiltViewModel
 class ExerciseDefaultValuesViewModel @Inject constructor(
@@ -34,8 +24,19 @@ class ExerciseDefaultValuesViewModel @Inject constructor(
     private var workoutRepository: WorkoutRepository
 ): ViewModel() {
 
+    /** Class containing all fields in the UI */
+    data class UIState(
+        val sets: String = "",
+        val reps: String = "",
+        val weight: String = "",
+        val rest: String = "",
+        val weightUnit: String = "",
+        val completed: Boolean = false,
+        val disableWeightUnit: Boolean = true
+    )
+
     /** Dialog state */
-    private val _uiState = MutableStateFlow(ExDefaultValuesUiState())
+    private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
     /** Tracks whether the default values are for specific exercise */

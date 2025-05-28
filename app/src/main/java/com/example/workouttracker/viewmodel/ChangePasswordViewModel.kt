@@ -15,16 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/** Login UI State representing the state of the Login page */
-data class UiState(
-    val oldPassword: String = "",
-    val newPassword: String = "",
-    val confirmPassword: String = "",
 
-    val oldPasswordError: String? = null,
-    val newPasswordError: String? = null,
-    val confirmPasswordError: String? = null,
-)
 
 /** Change password view model to control the UI state of change password dialog */
 @HiltViewModel
@@ -33,8 +24,19 @@ class ChangePasswordViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
+    /** Login UI State representing the state of the Login page */
+    data class UIState(
+        val oldPassword: String = "",
+        val newPassword: String = "",
+        val confirmPassword: String = "",
+
+        val oldPasswordError: String? = null,
+        val newPasswordError: String? = null,
+        val confirmPasswordError: String? = null,
+    )
+
     /** The UI state of the dialog */
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -43,7 +45,7 @@ class ChangePasswordViewModel @Inject constructor(
 
     /** Default the fields to empty */
     fun resetState() {
-        _uiState.value = UiState()
+        _uiState.value = UIState()
     }
 
     /** Update the old password field in the login UI state */

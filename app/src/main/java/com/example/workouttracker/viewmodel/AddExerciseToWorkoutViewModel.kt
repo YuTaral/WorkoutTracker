@@ -19,15 +19,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class AddExToWorkoutUiState(
-    val notes: String = "",
-    val sets: String = "",
-    val reps: String = "",
-    val weight: String = "",
-    val rest: String = "",
-    val completed: Boolean = false
-)
-
 /** View model to control the UI state of Add exercise to workout dialog */
 @HiltViewModel
 class AddExerciseToWorkoutViewModel @Inject constructor(
@@ -36,8 +27,18 @@ class AddExerciseToWorkoutViewModel @Inject constructor(
     private var workoutRepository: WorkoutRepository
 ): ViewModel() {
 
+    /** Class containing all fields in the UI */
+    data class UISTate(
+        val notes: String = "",
+        val sets: String = "",
+        val reps: String = "",
+        val weight: String = "",
+        val rest: String = "",
+        val completed: Boolean = false
+    )
+
     /** Dialog state */
-    private val _uiState = MutableStateFlow(AddExToWorkoutUiState())
+    private val _uiState = MutableStateFlow(UISTate())
     val uiState = _uiState.asStateFlow()
 
     var exerciseToAdd: MGExerciseModel? = null

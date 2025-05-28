@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
-
 /** WorkoutsViewModel to manage the state of WorkoutScreen */
 @HiltViewModel
 class SelectedWorkoutViewModel @Inject constructor(

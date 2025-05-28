@@ -20,22 +20,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/** The state of each set row */
-data class SetUiState(
-    val completed: Boolean = false,
-    val reps: String = "",
-    val weight: String = "",
-    val rest: String = "",
-    val id: Long = 0
-)
-
-/** The state of the dialog */
-data class EditExerciseFromWorkoutUiState(
-    val notes: String = "",
-    val setsState: MutableList<SetUiState> = mutableListOf(),
-    val deleteMode: Boolean = false
-)
-
 /** View model to control the UI state of Edit exercise from workout dialog */
 @HiltViewModel
 class EditExerciseFromWorkoutViewModel @Inject constructor(
@@ -44,8 +28,24 @@ class EditExerciseFromWorkoutViewModel @Inject constructor(
     private var workoutRepository: WorkoutRepository
 ): ViewModel() {
 
+    /** The state of each set row */
+    data class SetUiState(
+        val completed: Boolean = false,
+        val reps: String = "",
+        val weight: String = "",
+        val rest: String = "",
+        val id: Long = 0
+    )
+
+    /** Class containing all fields in the UI */
+    data class UIState(
+        val notes: String = "",
+        val setsState: MutableList<SetUiState> = mutableListOf(),
+        val deleteMode: Boolean = false
+    )
+
     /** The UI state of the dialog */
-    private var _uiState = MutableStateFlow(EditExerciseFromWorkoutUiState())
+    private var _uiState = MutableStateFlow(UIState())
     var uiState = _uiState.asStateFlow()
 
     /** The exercise to edit */

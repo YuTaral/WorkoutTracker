@@ -14,21 +14,21 @@ import com.example.workouttracker.utils.ResourceProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-/** Enum with team types when fetching teams */
-enum class ViewTeamAs(private val stringId: Int) {
-    COACH(R.string.as_coach_lbl),
-    MEMBER(R.string.as_member_lbl);
-
-    fun getStringId(): Int {
-        return stringId
-    }
-}
-
 @HiltViewModel
 class ManageTeamsViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private var teamRepository: TeamRepository
 ): ViewModel() {
+
+    /** Enum with team types when fetching teams */
+    enum class ViewTeamAs(private val stringId: Int) {
+        COACH(R.string.as_coach_lbl),
+        MEMBER(R.string.as_member_lbl);
+
+        fun getStringId(): Int {
+            return stringId
+        }
+    }
 
     /** The teams the user owns / participates as member */
     private var _teams = MutableStateFlow<List<TeamModel>>(listOf())

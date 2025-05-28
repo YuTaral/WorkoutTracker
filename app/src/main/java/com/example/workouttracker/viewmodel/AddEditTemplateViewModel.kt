@@ -19,13 +19,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class AddEditTemplateUiState(
-    val name: String = "",
-    val notes: String = "",
-    val nameError: String? = null
-)
-
-
 /** View model to control the UI state of Add / Edit template dialog */
 @HiltViewModel
 class AddEditTemplateViewModel @Inject constructor(
@@ -34,8 +27,15 @@ class AddEditTemplateViewModel @Inject constructor(
     private var workoutTemplatesRepository: WorkoutTemplatesRepository
 ): ViewModel() {
 
+    /** Class containing all fields in the UI */
+    data class UIState(
+        val name: String = "",
+        val notes: String = "",
+        val nameError: String? = null
+    )
+
     /** Dialog state */
-    private val _uiState = MutableStateFlow(AddEditTemplateUiState())
+    private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
     /** The dialog mode */

@@ -22,12 +22,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-data class AddEditWorkoutUiState(
-    val name: String = "",
-    val notes: String = "",
-    val nameError: String? = null
-)
-
 /** View model to control the UI state of Add / Edit workout dialog */
 @HiltViewModel
 class AddEditWorkoutViewModel @Inject constructor(
@@ -36,6 +30,13 @@ class AddEditWorkoutViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
+    /** Class containing all fields in the UI */
+    data class UIState(
+        val name: String = "",
+        val notes: String = "",
+        val nameError: String? = null
+    )
+
     /** The dialog modes */
     enum class Mode {
         ADD,
@@ -43,7 +44,7 @@ class AddEditWorkoutViewModel @Inject constructor(
     }
 
     /** Dialog state */
-    private val _uiState = MutableStateFlow(AddEditWorkoutUiState())
+    private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
     /** The dialog mode */
