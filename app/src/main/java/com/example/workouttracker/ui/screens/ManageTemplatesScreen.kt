@@ -21,7 +21,7 @@ import com.example.workouttracker.ui.components.reusable.InputField
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.components.reusable.Spinner
 import com.example.workouttracker.ui.components.reusable.WorkoutItem
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
@@ -73,7 +73,7 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
                 Label(
                     modifier = Modifier.padding(PaddingSmall),
                     text = stringResource(id = noTemplatesMsgId),
-                    style = LabelMediumGrey,
+                    style = labelMediumGrey,
                     maxLines = 3
                 )
             } else {

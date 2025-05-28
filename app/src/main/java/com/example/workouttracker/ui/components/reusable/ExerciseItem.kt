@@ -37,7 +37,7 @@ import com.example.workouttracker.data.models.SetModel
 import com.example.workouttracker.ui.components.dialogs.EditExerciseFromWorkoutDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.theme.ColorBorder
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.SmallImageButtonSize
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
@@ -119,7 +119,7 @@ fun ExerciseItem(exercise: ExerciseModel, weightUnit: String, onRestClick: (Long
                 Label(
                     modifier = Modifier.padding(start = PaddingVerySmall),
                     text = String.format(stringResource(id = R.string.target_lbl), exercise.muscleGroup.name),
-                    style = LabelMediumGrey
+                    style = labelMediumGrey
                 )
 
                 Row(

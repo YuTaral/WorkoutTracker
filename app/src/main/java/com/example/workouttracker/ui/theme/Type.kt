@@ -59,7 +59,7 @@ val Typography = Typography(
     )
 )
 
-val LabelMediumGrey = TextStyle(
+val labelMediumGrey = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
     fontSize = labelMediumSize,
@@ -68,7 +68,7 @@ val LabelMediumGrey = TextStyle(
     color = ColorSecondary
 )
 
-val LabelMediumGreyItalic = TextStyle(
+val labelMediumGreyItalic = TextStyle(
     fontStyle = FontStyle.Italic,
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
@@ -78,7 +78,7 @@ val LabelMediumGreyItalic = TextStyle(
     color = ColorSecondary
 )
 
-val LabelMediumBold = TextStyle(
+val labelMediumBold = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Bold,
     fontSize = labelMediumSize,
@@ -114,7 +114,7 @@ val labelMediumGreen = TextStyle(
     color = ColorGreen
 )
 
-val LabelNavItem = TextStyle(
+val labelNavItem = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
     fontSize = 16.sp,

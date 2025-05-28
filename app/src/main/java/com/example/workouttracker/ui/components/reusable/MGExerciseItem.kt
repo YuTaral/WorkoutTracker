@@ -33,7 +33,7 @@ import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.SmallImageButtonSize
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.theme.LabelMediumGreyItalic
+import com.example.workouttracker.ui.theme.labelMediumGreyItalic
 
 /**
  * Single muscle group exercise item
@@ -92,7 +92,7 @@ fun MGExerciseItem(mgExerciseModel: MGExerciseModel, onClick: (MGExerciseModel) 
                     text = stringResource(id = R.string.no_mg_ex_description_lbl),
                     textAlign = TextAlign.Start,
                     maxLines = 2,
-                    style = LabelMediumGreyItalic
+                    style = labelMediumGreyItalic
                 )
             } else {
                 Label(

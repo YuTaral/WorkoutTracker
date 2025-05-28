@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.ui.theme.ColorBorder
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
@@ -54,7 +54,7 @@ fun TeamItem(team: TeamModel) {
                 Label(
                     modifier = Modifier.padding(top = PaddingVerySmall),
                     text = team.description,
-                    style = LabelMediumGrey,
+                    style = labelMediumGrey,
                     maxLines = 3,
                     textAlign = TextAlign.Left
                 )

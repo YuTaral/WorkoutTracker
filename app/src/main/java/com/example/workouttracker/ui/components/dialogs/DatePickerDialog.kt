@@ -41,7 +41,7 @@ import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorDialogBackground
 import com.example.workouttracker.ui.theme.DialogFooterSize
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
@@ -233,7 +233,7 @@ fun Day(day: CalendarDay, onClick: (CalendarDay) -> Unit, isSelected: Boolean) {
         Label(
             text = day.date.dayOfMonth.toString(),
             style = if (day.position == DayPosition.MonthDate) MaterialTheme.typography.labelMedium
-                    else LabelMediumGrey
+                    else labelMediumGrey
         )
     }
 }

@@ -37,7 +37,7 @@ import com.example.workouttracker.ui.components.reusable.DialogButton
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.DialogFooterSize
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
@@ -186,7 +186,7 @@ fun NumberPicker(
                         style = if (index == centeredItemIndex) {
                             MaterialTheme.typography.titleLarge
                         } else {
-                            LabelMediumGrey
+                            labelMediumGrey
                         }
                     )
                 }

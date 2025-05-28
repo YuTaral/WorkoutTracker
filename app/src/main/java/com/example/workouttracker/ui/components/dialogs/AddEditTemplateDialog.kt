@@ -30,7 +30,7 @@ import com.example.workouttracker.ui.components.reusable.ErrorLabel
 import com.example.workouttracker.ui.components.reusable.InputField
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.DialogFooterSize
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
@@ -108,7 +108,7 @@ fun AddEditTemplateDialog(template: WorkoutModel, mode: AddEditTemplateMode, vm:
             Label(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.exercises_template_dialog_lbl),
-                style = LabelMediumGrey
+                style = labelMediumGrey
             )
             if (exercisesText.length > 2) {
                 Label(

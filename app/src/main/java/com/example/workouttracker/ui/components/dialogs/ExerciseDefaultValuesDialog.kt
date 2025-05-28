@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.R
@@ -68,7 +68,7 @@ fun ExerciseDefaultValuesDialog(
             Label(
                 modifier = Modifier.padding(horizontal = PaddingSmall),
                 text = String.format(stringResource(R.string.default_values_explanation_exercise_lbl), exerciseName),
-                style = LabelMediumGrey,
+                style = labelMediumGrey,
                 textAlign = TextAlign.Start,
                 maxLines = 4
             )
@@ -76,7 +76,7 @@ fun ExerciseDefaultValuesDialog(
             Label(
                 modifier = Modifier.padding(horizontal = PaddingSmall),
                 text = stringResource(R.string.default_values_explanation_lbl),
-                style = LabelMediumGrey,
+                style = labelMediumGrey,
                 textAlign = TextAlign.Start,
                 maxLines = 4
             )

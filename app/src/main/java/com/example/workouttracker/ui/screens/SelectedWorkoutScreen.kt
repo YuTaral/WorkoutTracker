@@ -49,7 +49,7 @@ import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
@@ -152,7 +152,7 @@ private fun WorkoutScreen(
                     Label(
                         modifier = Modifier.padding(end = PaddingVerySmall),
                         text = stringResource(id = R.string.status_lbl),
-                        style = LabelMediumGrey
+                        style = labelMediumGrey
                     )
 
                     if (workout.finishDateTime == null) {
@@ -193,7 +193,7 @@ private fun WorkoutScreen(
                     Label(
                         modifier = Modifier.padding(end = PaddingVerySmall),
                         text = stringResource(id = R.string.notes_lbl),
-                        style = LabelMediumGrey
+                        style = labelMediumGrey
                     )
                     Label(
                         text = workout.notes,
@@ -263,7 +263,7 @@ private fun NoWorkoutScreen(onClick: () -> Unit) {
                 onClick = onClick)
             .padding(PaddingSmall),
         text = stringResource(id = R.string.no_workout_selected_lbl),
-        style = LabelMediumGrey,
+        style = labelMediumGrey,
         maxLines = 3
     )
 }

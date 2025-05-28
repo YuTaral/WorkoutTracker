@@ -49,7 +49,7 @@ import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorDrawer
 import com.example.workouttracker.ui.theme.ColorGrey
 import com.example.workouttracker.ui.theme.ColorWhite
-import com.example.workouttracker.ui.theme.LabelNavItem
+import com.example.workouttracker.ui.theme.labelNavItem
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
@@ -114,7 +114,7 @@ fun DrawerContent(
                 ).forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         label = {
-                            Label(text = item.text, style = LabelNavItem)
+                            Label(text = item.text, style = labelNavItem)
                         },
                         selected = index == selectedItemIndex,
                         onClick = {

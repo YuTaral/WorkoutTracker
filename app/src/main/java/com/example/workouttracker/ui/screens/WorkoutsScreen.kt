@@ -28,7 +28,7 @@ import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.components.reusable.WorkoutItem
 import com.example.workouttracker.ui.theme.ColorBorder
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
@@ -89,7 +89,7 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
                 ) {
                     Label(
                         text = stringResource(id = R.string.no_workouts),
-                        style = LabelMediumGrey,
+                        style = labelMediumGrey,
                         maxLines = 2
                     )
                 }

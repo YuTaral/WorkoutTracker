@@ -280,7 +280,7 @@ fun SwitchModeLabel(text: String, onClick: () -> Unit) {
         Label(
             modifier = Modifier.fillMaxWidth(),
             text = text,
-            style = LabelMediumGrey
+            style = labelMediumGrey
         )
     }
 }

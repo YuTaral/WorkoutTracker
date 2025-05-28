@@ -18,7 +18,7 @@ import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.SetModel
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.theme.ColorBorder
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelLargeBold
@@ -86,7 +86,7 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
                     Label(
                         modifier = Modifier.padding(end = PaddingVerySmall),
                         text = stringResource(id = R.string.status_lbl),
-                        style = LabelMediumGrey
+                        style = labelMediumGrey
                     )
 
                     if (workout.finishDateTime == null) {
@@ -123,7 +123,7 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
                 Label(
                     modifier = Modifier.padding(end = PaddingVerySmall),
                     text = stringResource(id = R.string.exercises_lbl),
-                    style = LabelMediumGrey
+                    style = labelMediumGrey
                 )
                 if (exercisesText.length > 2) {
                     Label(text = exercisesText.dropLast(2))

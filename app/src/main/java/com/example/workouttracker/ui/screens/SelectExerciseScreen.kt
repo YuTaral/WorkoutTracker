@@ -33,7 +33,7 @@ import com.example.workouttracker.ui.components.reusable.Spinner
 import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.MGExerciseItem
 import com.example.workouttracker.ui.components.reusable.MuscleGroupItem
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.viewmodel.Mode
@@ -163,7 +163,7 @@ private fun ExercisesScreen(data: StateFlow<MutableList<MGExerciseModel>>,
             Label(
                 modifier = Modifier.padding(PaddingSmall),
                 text = stringResource(id = noExercisesErrorId),
-                style = LabelMediumGrey,
+                style = labelMediumGrey,
                 maxLines = 4
             )
         } else {

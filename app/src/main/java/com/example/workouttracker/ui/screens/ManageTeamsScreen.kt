@@ -22,7 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.components.reusable.TwoTextsSwitch
-import com.example.workouttracker.ui.theme.LabelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
@@ -70,7 +70,7 @@ fun ManageTeamsScreen(vm: ManageTeamsViewModel = hiltViewModel()) {
                     Label(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = vm.getNoTeamsMessage()),
-                        style = LabelMediumGrey,
+                        style = labelMediumGrey,
                         maxLines = 2,
                         textAlign = TextAlign.Center
                     )
