@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 /** Login UI State representing the state of the Login page */
 data class UiState(
     val oldPassword: String = "",

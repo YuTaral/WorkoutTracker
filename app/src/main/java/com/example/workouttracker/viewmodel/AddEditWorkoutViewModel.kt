@@ -28,11 +28,6 @@ data class AddEditWorkoutUiState(
     val nameError: String? = null
 )
 
-enum class AddEditWorkoutModel {
-    ADD,
-    EDIT
-}
-
 /** View model to control the UI state of Add / Edit workout dialog */
 @HiltViewModel
 class AddEditWorkoutViewModel @Inject constructor(
@@ -41,12 +36,18 @@ class AddEditWorkoutViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
 
+    /** The dialog modes */
+    enum class Mode {
+        ADD,
+        EDIT
+    }
+
     /** Dialog state */
     private val _uiState = MutableStateFlow(AddEditWorkoutUiState())
     val uiState = _uiState.asStateFlow()
 
     /** The dialog mode */
-    private var mode = AddEditWorkoutModel.ADD
+    private var mode = Mode.ADD
 
     /** The selected workout / template if any */
     private var selectedWorkout: WorkoutModel? = null
@@ -57,7 +58,7 @@ class AddEditWorkoutViewModel @Inject constructor(
      * @param workout the selected workout / template if any, null otherwise
      * @param dialogMode the dialog mode
      */
-    fun initialize(workout: WorkoutModel?, dialogMode: AddEditWorkoutModel) {
+    fun initialize(workout: WorkoutModel?, dialogMode: Mode) {
         mode = dialogMode
         selectedWorkout = workout
 
@@ -91,7 +92,7 @@ class AddEditWorkoutViewModel @Inject constructor(
             return
         }
 
-        if (mode == AddEditWorkoutModel.ADD) {
+        if (mode == Mode.ADD) {
             val newWorkout: WorkoutModel = if (selectedWorkout == null) {
                 // Create new workout
                 WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0)

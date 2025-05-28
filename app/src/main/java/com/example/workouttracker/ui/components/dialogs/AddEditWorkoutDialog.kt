@@ -31,7 +31,7 @@ import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.viewmodel.AddEditWorkoutModel
+import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel
 import java.util.Date
 
@@ -41,13 +41,13 @@ import java.util.Date
  * @param mode the dialog mode
  */
 @Composable
-fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: AddEditWorkoutModel, vm: AddEditWorkoutViewModel = hiltViewModel()) {
+fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: Mode, vm: AddEditWorkoutViewModel = hiltViewModel()) {
     val notesFocusReq = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     var nameInputId = R.string.workout_name_lbl
 
-    if (workout != null && workout.template && mode == AddEditWorkoutModel.EDIT) {
+    if (workout != null && workout.template && mode == Mode.EDIT) {
         nameInputId = R.string.template_name_lbl
     }
 
@@ -106,7 +106,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: AddEditWorkoutModel, vm: 
             .padding(top = PaddingMedium),
             horizontalArrangement = Arrangement.Center
         ) {
-            if (mode == AddEditWorkoutModel.EDIT && !workout!!.template) {
+            if (mode == Mode.EDIT && !workout!!.template) {
                 DialogButton(
                     modifier = Modifier
                         .customBorder(end = true)
@@ -139,7 +139,7 @@ private fun DialogPreview() {
                 finishDateTimeVal = Date(),
                 notesVal = "This is the best back day",
                 durationVal = null,
-            ), AddEditWorkoutModel.EDIT,
+            ), Mode.EDIT,
         )
     }
 }

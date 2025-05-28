@@ -12,6 +12,7 @@ import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.ResourceProvider
+import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -132,7 +133,7 @@ class ManageTemplatesViewModel @Inject constructor(
             DialogManager.showDialog(
                 title = resourceProvider.getString(R.string.add_workout_title),
                 dialogName = "AddEditWorkoutDialog",
-                content = { AddEditWorkoutDialog(workout = template, mode = AddEditWorkoutModel.ADD) }
+                content = { AddEditWorkoutDialog(workout = template, mode = Mode.ADD) }
             )
         }
     }
@@ -146,7 +147,7 @@ class ManageTemplatesViewModel @Inject constructor(
             DialogManager.showDialog(
                 title = resourceProvider.getString(R.string.edit_template_title),
                 dialogName = "AddEditWorkoutDialog",
-                content = { AddEditWorkoutDialog(workout = template, mode = AddEditWorkoutModel.EDIT) }
+                content = { AddEditWorkoutDialog(workout = template, mode = Mode.EDIT) }
             )
         }
     }

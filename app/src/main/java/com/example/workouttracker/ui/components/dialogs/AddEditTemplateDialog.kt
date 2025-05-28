@@ -34,15 +34,15 @@ import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.viewmodel.AddEditTemplateMode
 import com.example.workouttracker.viewmodel.AddEditTemplateViewModel
+import com.example.workouttracker.viewmodel.AddEditTemplateViewModel.Mode
 
 /**
  * Add / edit template dialog content
  * @param template the template to edit if in edit mode, null otherwise
  */
 @Composable
-fun AddEditTemplateDialog(template: WorkoutModel, mode: AddEditTemplateMode, vm: AddEditTemplateViewModel = hiltViewModel()) {
+fun AddEditTemplateDialog(template: WorkoutModel, mode: Mode, vm: AddEditTemplateViewModel = hiltViewModel()) {
     val notesFocusReq = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
@@ -151,6 +151,6 @@ private fun AddEditTemplateDialogPreview() {
             finishDateTimeVal = null,
             notesVal = "This is the best back day template ever",
             durationVal = null,
-        ), AddEditTemplateMode.ADD)
+        ), Mode.ADD)
     }
 }

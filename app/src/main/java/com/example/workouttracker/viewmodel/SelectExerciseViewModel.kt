@@ -29,12 +29,6 @@ import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.ResourceProvider
 
-/** Enum with different states of the screen */
-enum class Mode {
-    SELECT_MUSCLE_GROUP,
-    SELECT_EXERCISE
-}
-
 /** Enum representing the actions from the action spinner */
 enum class SpinnerActions(private val stringId: Int) {
     UPDATE_EXERCISE(R.string.action_update_exercise),
@@ -56,6 +50,13 @@ class SelectExerciseViewModel @Inject constructor(
     private var userProfileRepository: UserProfileRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel() {
+
+    /** Enum with different states of the screen */
+    enum class Mode {
+        SELECT_MUSCLE_GROUP,
+        SELECT_EXERCISE
+    }
+
     /** Use job with slight delay to avoid filtering the data on each letter */
     private val debounceTime = 500L
     private var searchJob: Job? = null

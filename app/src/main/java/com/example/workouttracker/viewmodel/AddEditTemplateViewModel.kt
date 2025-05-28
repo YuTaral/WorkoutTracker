@@ -24,10 +24,6 @@ data class AddEditTemplateUiState(
     val nameError: String? = null
 )
 
-enum class AddEditTemplateMode {
-    ADD,
-    EDIT
-}
 
 /** View model to control the UI state of Add / Edit template dialog */
 @HiltViewModel
@@ -37,12 +33,18 @@ class AddEditTemplateViewModel @Inject constructor(
     private var workoutTemplatesRepository: WorkoutTemplatesRepository
 ): ViewModel() {
 
+    /** The dialog modes */
+    enum class Mode {
+        ADD,
+        EDIT
+    }
+
     /** Dialog state */
     private val _uiState = MutableStateFlow(AddEditTemplateUiState())
     val uiState = _uiState.asStateFlow()
 
     /** The dialog mode */
-    private var mode = AddEditTemplateMode.ADD
+    private var mode = Mode.ADD
 
     /**
      * Update the UI sate to empty upon dialog recreation, as the view model is
@@ -50,7 +52,7 @@ class AddEditTemplateViewModel @Inject constructor(
      * @param template the template workout
      * @param dialogMode the dialog mode (Add / Edit)
      */
-    fun initialize(template: WorkoutModel, dialogMode: AddEditTemplateMode) {
+    fun initialize(template: WorkoutModel, dialogMode: Mode) {
         mode = dialogMode
         updateName(template.name)
         updateNotes(template.notes)
@@ -77,7 +79,7 @@ class AddEditTemplateViewModel @Inject constructor(
             return
         }
 
-        if (mode == AddEditTemplateMode.ADD) {
+        if (mode == Mode.ADD) {
             addTemplate()
         } else {
             editTemplate()

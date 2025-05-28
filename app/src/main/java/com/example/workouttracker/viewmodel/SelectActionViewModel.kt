@@ -11,6 +11,7 @@ import com.example.workouttracker.ui.components.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
+import com.example.workouttracker.viewmodel.AddEditTemplateViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +52,7 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
             DialogManager.showDialog(
                 title = title,
                 dialogName = "AddEditTemplateDialog",
-                content = { AddEditTemplateDialog(template = template, mode = AddEditTemplateMode.ADD) }
+                content = { AddEditTemplateDialog(template = template, mode = Mode.ADD) }
             )
         }
     )

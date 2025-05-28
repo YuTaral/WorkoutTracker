@@ -36,7 +36,7 @@ import com.example.workouttracker.ui.components.reusable.MuscleGroupItem
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingSmall
-import com.example.workouttracker.viewmodel.Mode
+import com.example.workouttracker.viewmodel.SelectExerciseViewModel.Mode
 import kotlinx.coroutines.flow.StateFlow
 
 /**

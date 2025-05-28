@@ -12,6 +12,7 @@ import com.example.workouttracker.ui.components.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
+import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -75,7 +76,7 @@ class SelectedWorkoutViewModel @Inject constructor(
                 dialogName = "AddEditWorkoutDialog",
                 content = { AddEditWorkoutDialog(
                     workout = workoutRepository.selectedWorkout.value!!,
-                    mode = AddEditWorkoutModel.EDIT)
+                    mode = Mode.EDIT)
                 }
             )
         }
