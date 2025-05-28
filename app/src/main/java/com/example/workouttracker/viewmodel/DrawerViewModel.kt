@@ -13,9 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.dialogs.ChangePasswordDialog
-import com.example.workouttracker.ui.components.dialogs.EditProfileDialog
-import com.example.workouttracker.ui.components.dialogs.ExerciseDefaultValuesDialog
+import com.example.workouttracker.ui.dialogs.ChangePasswordDialog
+import com.example.workouttracker.ui.dialogs.EditProfileDialog
+import com.example.workouttracker.ui.dialogs.ExerciseDefaultValuesDialog
 
 /** Drawer view model to manage the state of the Drawer */
 @HiltViewModel

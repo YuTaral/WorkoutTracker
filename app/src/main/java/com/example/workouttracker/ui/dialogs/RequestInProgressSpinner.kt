@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.dialogs
+package com.example.workouttracker.ui.dialogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

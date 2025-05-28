@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.dialogs
+package com.example.workouttracker.ui.dialogs
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior

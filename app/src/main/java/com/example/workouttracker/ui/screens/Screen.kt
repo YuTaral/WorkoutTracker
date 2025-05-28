@@ -19,11 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getString
-import com.example.workouttracker.ui.components.dialogs.RequestInProgressSpinner
+import com.example.workouttracker.ui.dialogs.RequestInProgressSpinner
 import com.example.workouttracker.ui.components.Navigation
-import com.example.workouttracker.ui.components.dialogs.AskQuestionDialog
-import com.example.workouttracker.ui.components.dialogs.BaseDialog
-import com.example.workouttracker.ui.components.dialogs.DatePickerDialog
+import com.example.workouttracker.ui.dialogs.AskQuestionDialog
+import com.example.workouttracker.ui.dialogs.BaseDialog
+import com.example.workouttracker.ui.dialogs.DatePickerDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
 import com.example.workouttracker.ui.managers.DialogAction

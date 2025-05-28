@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.dialogs
+package com.example.workouttracker.ui.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,42 +10,47 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workouttracker.ui.components.reusable.InputField
-import com.example.workouttracker.ui.theme.PaddingMedium
-import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.viewmodel.AddExerciseToWorkoutViewModel
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingSmall
+import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.R
-import com.example.workouttracker.data.models.MGExerciseModel
 import com.example.workouttracker.ui.components.extensions.customBorder
 import com.example.workouttracker.ui.components.reusable.CustomCheckbox
 import com.example.workouttracker.ui.components.reusable.DialogButton
+import com.example.workouttracker.ui.components.reusable.InputField
+import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.components.reusable.TwoTextsSwitch
 import com.example.workouttracker.ui.theme.DialogFooterSize
+import com.example.workouttracker.viewmodel.ExerciseDefaultValuesViewModel
+import androidx.compose.runtime.getValue
+import com.example.workouttracker.data.models.UserDefaultValuesModel
 
 /**
- * Dialog to add exercise to workout
- * @param mGExercise the selected muscle group exercise
- * @param vm the view model
+ * Dialog to change exercise / global default values
+ * @param values the default values - null of global, not null if exercise specific
+ * @param exerciseName the exercise name, may be empty string if the values are global
  */
 @Composable
-fun AddExerciseToWorkoutDialog(mGExercise: MGExerciseModel,
-                               weightUnit: String,
-                               vm: AddExerciseToWorkoutViewModel = hiltViewModel()
+fun ExerciseDefaultValuesDialog(
+    values: UserDefaultValuesModel?,
+    exerciseName: String,
+    vm: ExerciseDefaultValuesViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(mGExercise.id) {
-        vm.initializeData(mGExercise)
+    LaunchedEffect(values, exerciseName) {
+        vm.initializeData(values)
     }
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
@@ -57,23 +62,25 @@ fun AddExerciseToWorkoutDialog(mGExercise: MGExerciseModel,
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(PaddingMedium)
+        verticalArrangement = Arrangement.spacedBy(PaddingSmall)
     ) {
-        InputField(
-            modifier = Modifier.padding(horizontal = PaddingSmall),
-            label = stringResource(id = R.string.additional_notes_lbl),
-            value = uiState.notes,
-            onValueChange = {
-                if (it.length < 4000) {
-                    vm.updateNotes(it)
-                }
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { setsFocusRequester.requestFocus() }),
-            singleLine = false,
-            minLines = 3,
-            maxLines = 3
-        )
+        if (values != null) {
+            Label(
+                modifier = Modifier.padding(horizontal = PaddingSmall),
+                text = String.format(stringResource(R.string.default_values_explanation_exercise_lbl), exerciseName),
+                style = labelMediumGrey,
+                textAlign = TextAlign.Start,
+                maxLines = 4
+            )
+        } else {
+            Label(
+                modifier = Modifier.padding(horizontal = PaddingSmall),
+                text = stringResource(R.string.default_values_explanation_lbl),
+                style = labelMediumGrey,
+                textAlign = TextAlign.Start,
+                maxLines = 4
+            )
+        }
 
         Row(modifier = Modifier.fillMaxWidth()) {
             InputField(
@@ -107,13 +114,13 @@ fun AddExerciseToWorkoutDialog(mGExercise: MGExerciseModel,
             )
         }
 
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row( modifier = Modifier.fillMaxWidth()) {
             InputField(
                 modifier = Modifier
                     .padding(horizontal = PaddingSmall)
                     .weight(1f)
                     .focusRequester(weightFocusRequester),
-                label = String.format(stringResource(id = R.string.weight_lbl), weightUnit),
+                label = String.format(stringResource(id = R.string.weight_lbl), uiState.weightUnit),
                 value = uiState.weight,
                 onValueChange = { vm.updateWeight(it) },
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -139,16 +146,35 @@ fun AddExerciseToWorkoutDialog(mGExercise: MGExerciseModel,
             )
         }
 
-        CustomCheckbox(
-            modifier = Modifier.padding(horizontal = PaddingSmall),
-            checked = uiState.completed,
-            onValueChange = { vm.updateCompleted(it) },
-            text = stringResource(id = R.string.exercise_completed_lbl)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TwoTextsSwitch(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = PaddingSmall),
+                selectedValue = uiState.weightUnit,
+                leftText = stringResource(id = R.string.weight_unit_kg_lbl),
+                rightText = stringResource(id = R.string.weight_unit_lb_lbl),
+                disabled = uiState.disableWeightUnit,
+                onSelectionChanged = { vm.updateWeightUnit(it) }
+            )
+
+            CustomCheckbox(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = PaddingSmall),
+                checked = uiState.completed,
+                onValueChange = { vm.updateCompleted(it) },
+                text = stringResource(id = R.string.completed_lbl)
+            )
+        }
 
         Row(modifier = Modifier
             .fillMaxWidth()
             .height(DialogFooterSize)
+            .padding(top = PaddingSmall)
         ) {
             DialogButton(
                 modifier = Modifier
@@ -158,14 +184,13 @@ fun AddExerciseToWorkoutDialog(mGExercise: MGExerciseModel,
                 onClick = { vm.save() }
             )
         }
-
     }
 }
 
 @Preview
 @Composable
-fun AddExerciseToWorkoutDialogPreview() {
+private fun ExerciseDefaultValuesDialogPreview() {
     WorkoutTrackerTheme {
-        AddExerciseToWorkoutDialog(MGExerciseModel(1L, "Wide pull ups", "", 1L), "Kg")
+        ExerciseDefaultValuesDialog(null, "")
     }
 }

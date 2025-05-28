@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
-import com.example.workouttracker.ui.components.dialogs.AddEditTemplateDialog
-import com.example.workouttracker.ui.components.dialogs.StartTimerDialog
-import com.example.workouttracker.ui.components.dialogs.TimerDialog
+import com.example.workouttracker.ui.dialogs.AddEditTemplateDialog
+import com.example.workouttracker.ui.dialogs.StartTimerDialog
+import com.example.workouttracker.ui.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider

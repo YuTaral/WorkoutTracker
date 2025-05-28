@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.MuscleGroupModel
 import com.example.workouttracker.data.models.SetModel
-import com.example.workouttracker.ui.components.dialogs.EditExerciseFromWorkoutDialog
+import com.example.workouttracker.ui.dialogs.EditExerciseFromWorkoutDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.labelMediumGrey

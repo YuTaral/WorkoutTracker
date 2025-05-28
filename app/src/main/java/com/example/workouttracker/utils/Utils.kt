@@ -11,7 +11,7 @@ import android.os.Build
 import android.util.Base64
 import android.util.Patterns
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.Constants.IMAGE_HEIGHT
 import com.example.workouttracker.utils.Constants.IMAGE_WIDTH

@@ -9,7 +9,7 @@ import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
-import com.example.workouttracker.ui.components.dialogs.MGExerciseDescDialog
+import com.example.workouttracker.ui.dialogs.MGExerciseDescDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel

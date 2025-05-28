@@ -7,8 +7,8 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
-import com.example.workouttracker.ui.components.dialogs.AddEditWorkoutDialog
-import com.example.workouttracker.ui.components.dialogs.TimerDialog
+import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils

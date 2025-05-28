@@ -7,7 +7,7 @@ import com.example.workouttracker.data.models.MuscleGroupModel
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.MuscleGroupRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
-import com.example.workouttracker.ui.components.dialogs.AddExerciseToWorkoutDialog
+import com.example.workouttracker.ui.dialogs.AddExerciseToWorkoutDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +21,8 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.UserProfileRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
-import com.example.workouttracker.ui.components.dialogs.AddEditMGExerciseDialog
-import com.example.workouttracker.ui.components.dialogs.ExerciseDefaultValuesDialog
+import com.example.workouttracker.ui.dialogs.AddEditMGExerciseDialog
+import com.example.workouttracker.ui.dialogs.ExerciseDefaultValuesDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.PagerManager

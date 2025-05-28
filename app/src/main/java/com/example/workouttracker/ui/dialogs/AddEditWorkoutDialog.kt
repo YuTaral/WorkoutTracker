@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.dialogs
+package com.example.workouttracker.ui.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,35 +22,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
-import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.components.extensions.customBorder
 import com.example.workouttracker.ui.components.reusable.DialogButton
 import com.example.workouttracker.ui.components.reusable.ErrorLabel
 import com.example.workouttracker.ui.components.reusable.InputField
-import com.example.workouttracker.ui.components.reusable.Label
 import com.example.workouttracker.ui.theme.DialogFooterSize
-import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.viewmodel.AddEditTemplateViewModel
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
+import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel
+import java.util.Date
 
 /**
- * Add / edit template dialog content
- * @param template the template to edit if in edit mode, null otherwise
+ * Add / edit workout dialog content
+ * @param workout the workout to edit if in edit mode, null otherwise
+ * @param mode the dialog mode
  */
 @Composable
-fun AddEditTemplateDialog(template: WorkoutModel, mode: Mode, vm: AddEditTemplateViewModel = hiltViewModel()) {
+fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: Mode, vm: AddEditWorkoutViewModel = hiltViewModel()) {
     val notesFocusReq = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    var exercisesText = ""
+    var nameInputId = R.string.workout_name_lbl
 
-    LaunchedEffect(template) {
+    if (workout != null && workout.template && mode == Mode.EDIT) {
+        nameInputId = R.string.template_name_lbl
+    }
+
+    LaunchedEffect(workout, mode) {
         // Initialize the fields
-        vm.initialize(template = template, dialogMode = mode)
+        vm.initialize(workout = workout, dialogMode = mode)
     }
 
     Column(
@@ -59,7 +62,7 @@ fun AddEditTemplateDialog(template: WorkoutModel, mode: Mode, vm: AddEditTemplat
     ) {
         InputField(
             modifier = Modifier.padding(horizontal = PaddingSmall),
-            label = stringResource(id = R.string.template_name_lbl),
+            label = stringResource(id = nameInputId),
             value = uiState.name,
             onValueChange = {
                 if (it.length < 50) {
@@ -80,7 +83,7 @@ fun AddEditTemplateDialog(template: WorkoutModel, mode: Mode, vm: AddEditTemplat
 
         InputField(
             modifier = Modifier.
-            padding(horizontal = PaddingSmall)
+                padding(horizontal = PaddingSmall)
                 .focusRequester(notesFocusReq),
             label = stringResource(id = R.string.additional_notes_lbl),
             value = uiState.notes,
@@ -97,60 +100,46 @@ fun AddEditTemplateDialog(template: WorkoutModel, mode: Mode, vm: AddEditTemplat
             maxLines = 4
         )
 
-        for (e: ExerciseModel in template.exercises) {
-            exercisesText = exercisesText + e.name + ", "
-        }
-
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = PaddingSmall)
-        ) {
-            Label(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.exercises_template_dialog_lbl),
-                style = labelMediumGrey
-            )
-            if (exercisesText.length > 2) {
-                Label(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = PaddingSmall),
-                    text = exercisesText.dropLast(2),
-                    maxLines = 4
-                )
-            }
-        }
-
         Row(modifier = Modifier
             .height(DialogFooterSize)
             .fillMaxWidth()
             .padding(top = PaddingMedium),
             horizontalArrangement = Arrangement.Center
         ) {
+            if (mode == Mode.EDIT && !workout!!.template) {
+                DialogButton(
+                    modifier = Modifier
+                        .customBorder(end = true)
+                        .weight(1f),
+                    text = stringResource(R.string.delete_btn),
+                    onClick = { vm.deleteWorkout() }
+                )
+            }
 
             DialogButton(
                 modifier = Modifier
                     .customBorder()
                     .weight(1f),
                 text = stringResource(R.string.save_btn),
-                onClick = { vm.saveTemplate() }
+                onClick = { vm.saveWorkout() }
             )
         }
     }
 }
 
-@Preview
+@Preview(widthDp = 360, heightDp = 640)
 @Composable
-private fun AddEditTemplateDialogPreview() {
+private fun DialogPreview() {
     WorkoutTrackerTheme {
-        AddEditTemplateDialog(WorkoutModel(
-            idVal = 0,
-            nameVal = "Back day template ",
-            templateVal = true,
-            exercisesVal = mutableListOf(),
-            finishDateTimeVal = null,
-            notesVal = "This is the best back day template ever",
-            durationVal = null,
-        ), Mode.ADD)
+        AddEditWorkoutDialog(WorkoutModel(
+                idVal = 0,
+                nameVal = "Back day",
+                templateVal = false,
+                exercisesVal = mutableListOf(),
+                finishDateTimeVal = Date(),
+                notesVal = "This is the best back day",
+                durationVal = null,
+            ), Mode.EDIT,
+        )
     }
 }
