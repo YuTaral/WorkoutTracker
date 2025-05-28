@@ -57,8 +57,8 @@ class UserRepository @Inject constructor(
         networkManager.sendRequest(
             request = { apiService.getInstance().login(mapOf("email" to email, "password" to password)) },
             onSuccessCallback = { response ->
-                updateUser(UserModel(response.data[0]))
                 updateToken(response.data[1])
+                updateUser(UserModel(response.data[0]))
             }
         )
     }
