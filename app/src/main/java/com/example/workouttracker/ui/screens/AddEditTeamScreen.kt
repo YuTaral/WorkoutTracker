@@ -6,11 +6,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,14 +42,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import com.example.workouttracker.ui.components.reusable.DialogButton
 import com.example.workouttracker.ui.components.reusable.ErrorLabel
 import com.example.workouttracker.ui.components.reusable.FragmentButton
 import com.example.workouttracker.ui.components.reusable.ImageButton
 import com.example.workouttracker.ui.components.reusable.InputField
+import com.example.workouttracker.ui.components.reusable.MemberItem
+import com.example.workouttracker.ui.theme.BottomSheetsDialogFooterSize
 import com.example.workouttracker.ui.theme.ColorAccent
+import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
@@ -62,6 +70,7 @@ fun AddEditTeamScreen(team: TeamModel?, vm: AddEditTeamViewModel = hiltViewModel
     }
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val members by vm.teamRepository.teamMembers.collectAsStateWithLifecycle()
     val profileImagePainter = if (!uiState.image.isEmpty()) {
         val bitmap = Utils.convertStringToBitmap(uiState.image)
         BitmapPainter(bitmap.asImageBitmap())
@@ -69,7 +78,7 @@ fun AddEditTeamScreen(team: TeamModel?, vm: AddEditTeamViewModel = hiltViewModel
         painterResource(id = R.drawable.icon_team_default_picture)
     }
     val descriptionFocusReq = remember { FocusRequester() }
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val lazyListState = rememberLazyListState()
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -138,11 +147,33 @@ fun AddEditTeamScreen(team: TeamModel?, vm: AddEditTeamViewModel = hiltViewModel
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
                 singleLine = false,
                 minLines = 3,
                 maxLines = 3
             )
+
+            if (team != null) {
+                Row(modifier = Modifier.height(BottomSheetsDialogFooterSize)) {
+                    DialogButton(
+                        text = stringResource(id = R.string.manage_members_btn),
+                        onClick = { vm.showManageMembers() }
+                    )
+                }
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    contentPadding = PaddingValues(bottom = LazyListBottomPadding)
+                ) {
+                    items(members) {
+                        MemberItem(
+                            member = it,
+                            showButton = false,
+                            onAction = {}
+                        )
+                    }
+                }
+            }
         }
 
         Row(modifier = Modifier

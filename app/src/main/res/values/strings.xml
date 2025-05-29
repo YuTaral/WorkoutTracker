@@ -145,5 +145,14 @@
     <string name="error_msg_enter_team_name">Please enter team name</string>
     <string name="question_delete_team_title">Delete Team</string>
     <string name="question_delete_team_text">Are you sure you want to delete team \"%s\" ?</string>
+    <string name="manage_members_btn">Manage members</string>
+    <string name="invited_lbl">Invited</string>
+    <string name="in_team_lbl">Joined</string>
+    <string name="search_members_lbl">Search members…</string>
+    <string name="manage_team_members_lbl">Manage team members</string>
+    <string name="team_members_lbl">Team members (%s)</string>
+    <string name="other_members_lbl">Other members (%s)</string>
+    <string name="search_results_lbl">Search results (%s)</string>
+    <string name="no_users_found">No users found</string>
 
 </resources>

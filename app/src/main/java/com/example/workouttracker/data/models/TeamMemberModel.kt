@@ -1,6 +1,5 @@
-package com.example.fitnessapp.models
+package com.example.workouttracker.data.models
 
-import com.example.workouttracker.data.models.BaseModel
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
@@ -8,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Must correspond with server-side TeamMemberModel, excluding selectedForAssign
  * which is used only client side
  */
-class TeamMemberModel(data: String) : BaseModel(data) {
+class TeamMemberModel: BaseModel {
     @SerializedName("UserId")
     var userId: String
 
@@ -26,7 +25,7 @@ class TeamMemberModel(data: String) : BaseModel(data) {
 
     var selectedForAssign: Boolean
 
-    init {
+    constructor(data: String): super(data) {
         val gson = Gson()
         val model: TeamMemberModel = gson.fromJson(data, TeamMemberModel::class.java)
 
@@ -36,6 +35,16 @@ class TeamMemberModel(data: String) : BaseModel(data) {
         fullName = model.fullName
         image = model.image
         teamState = model.teamState
+        selectedForAssign = false
+    }
+
+    constructor(idVal: Long, teamIdVal: Long, userIdVal: String, fullNameVal: String, imageVal: String, teamStateVal: String): super(idVal) {
+        id = idVal
+        teamId = teamIdVal
+        userId = userIdVal
+        fullName = fullNameVal
+        image = imageVal
+        teamState = teamStateVal
         selectedForAssign = false
     }
 }

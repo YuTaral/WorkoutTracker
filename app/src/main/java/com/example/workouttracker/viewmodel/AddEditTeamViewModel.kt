@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.network.repositories.TeamRepository
+import com.example.workouttracker.ui.dialogs.ManageMembersDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
+import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.ImageUploadManager
 import com.example.workouttracker.ui.managers.PagerManager
@@ -26,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditTeamViewModel @Inject constructor(
-    private var teamRepository: TeamRepository,
+    var teamRepository: TeamRepository,
     private var resourceProvider: ResourceProvider
 ): ViewModel(), IImagePicker {
 
@@ -42,23 +44,30 @@ class AddEditTeamViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
-    /** The team to edit if in edit mode, null otherwise*/
-    private var selectedTeam: TeamModel? = null
-
     /**
      * Initialize the data in the view model when the screen is shown
      */
     fun initialize(team: TeamModel?) {
-        selectedTeam = team
+        viewModelScope.launch {
+            teamRepository.updateSelectedTeam(team)
+        }
 
-        if (selectedTeam == null) {
+        if (teamRepository.selectedTeam.value == null) {
             updateImage("")
             updateName("")
             updateDescription("")
+
+            viewModelScope.launch {
+                teamRepository.refreshMyTeamMembers(teamId = 0L)
+            }
         } else {
-            updateImage(selectedTeam!!.image)
-            updateName(selectedTeam!!.name)
-            updateDescription(selectedTeam!!.description)
+            updateImage(teamRepository.selectedTeam.value!!.image)
+            updateName(teamRepository.selectedTeam.value!!.name)
+            updateDescription(teamRepository.selectedTeam.value!!.description)
+
+            viewModelScope.launch(Dispatchers.IO) {
+                teamRepository.refreshMyTeamMembers(teamId = team!!.id)
+            }
         }
     }
 
@@ -95,7 +104,7 @@ class AddEditTeamViewModel @Inject constructor(
             return
         }
 
-        if (selectedTeam == null) {
+        if (teamRepository.selectedTeam.value == null) {
             addTeam()
         } else {
             editTeam()
@@ -116,7 +125,7 @@ class AddEditTeamViewModel @Inject constructor(
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         teamRepository.deleteTeam(
-                            teamId = selectedTeam!!.id,
+                            teamId = teamRepository.selectedTeam.value!!.id,
                             onSuccess = {
                                 viewModelScope.launch {
                                     AskQuestionDialogManager.hideQuestion()
@@ -126,8 +135,19 @@ class AddEditTeamViewModel @Inject constructor(
                         )
                     }
                 },
-                formatQValues = listOf(selectedTeam!!.name)
+                formatQValues = listOf(teamRepository.selectedTeam.value!!.name)
             ))
+        }
+    }
+
+    /** Show manage members dialog */
+    fun showManageMembers() {
+        viewModelScope.launch {
+            DialogManager.showDialog(
+                title = resourceProvider.getString(R.string.manage_team_members_lbl),
+                dialogName = "ManageMembersDialog",
+                content = { ManageMembersDialog() }
+            )
         }
     }
 
@@ -155,7 +175,7 @@ class AddEditTeamViewModel @Inject constructor(
     /** Send request to edit the selected team */
     private fun editTeam() {
         val team = TeamModel(
-            idVal = selectedTeam!!.id,
+            idVal = teamRepository.selectedTeam.value!!.id,
             imageVal = _uiState.value.image,
             nameVal = _uiState.value.name,
             descriptionVal = _uiState.value.description

@@ -42,7 +42,7 @@ fun ManageTeamsScreen(vm: ManageTeamsViewModel = hiltViewModel()) {
 
     val selectedTeamType by vm.selectedTeamType.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
-    val teams by vm.teams.collectAsStateWithLifecycle()
+    val teams by vm.teamRepository.teams.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier
         .fillMaxWidth()

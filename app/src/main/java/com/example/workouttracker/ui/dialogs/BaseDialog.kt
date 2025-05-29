@@ -32,6 +32,7 @@ import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorDialogBackground
 import com.example.workouttracker.ui.theme.PaddingMedium
+import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import kotlinx.coroutines.launch
 
@@ -47,14 +48,21 @@ fun BaseDialog(title: String, dialogName: String, content: @Composable () -> Uni
 
     Dialog(
         onDismissRequest = { },
-        DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false
+        )
     ) {
         Column(
-            modifier = Modifier.border(
-                width = 1.dp,
-                color = ColorDialogBackground,
-                shape = RoundedCornerShape(16.dp)
-            )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = PaddingMedium)
+                .border(
+                    width = 1.dp,
+                    color = ColorDialogBackground,
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .clip(RoundedCornerShape(16.dp))
                 .background(ColorDialogBackground),
             verticalArrangement = Arrangement.Center,
@@ -63,7 +71,7 @@ fun BaseDialog(title: String, dialogName: String, content: @Composable () -> Uni
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = PaddingMedium),
+                    .padding(bottom = PaddingSmall),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Label(

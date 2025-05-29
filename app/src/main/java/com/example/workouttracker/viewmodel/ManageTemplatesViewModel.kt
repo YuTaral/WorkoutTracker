@@ -15,8 +15,6 @@ import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -181,5 +179,20 @@ class ManageTemplatesViewModel @Inject constructor(
                 formatQValues = listOf(template.name)
             ))
         }
+    }
+
+    /**
+     * Callback to execute on search
+     * @param value the new filter search term
+     */
+    private fun onSearch(value: String) {
+        val filtered = if (value.isEmpty()) {
+            templatesRepository.templates.value
+        } else {
+            templatesRepository.templates.value.filter {
+                it.name.contains(value, ignoreCase = true)
+            }
+        }
+        _filteredTemplates.value = filtered as MutableList<WorkoutModel>
     }
 }

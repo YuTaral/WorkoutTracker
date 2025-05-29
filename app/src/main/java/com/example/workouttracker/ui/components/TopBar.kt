@@ -85,7 +85,6 @@ fun TopBar(drawerState: DrawerState) {
             )
             Label(
                 text = stringResource(id = R.string.actions),
-                style = MaterialTheme.typography.labelSmall
             )
         }
     }

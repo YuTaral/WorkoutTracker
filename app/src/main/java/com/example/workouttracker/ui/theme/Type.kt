@@ -131,3 +131,30 @@ val labelMediumAccent = TextStyle(
     letterSpacing = labelMediumLetterSpacing,
     color = ColorAccent
 )
+
+val  labelSmall = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = labelSmallSize,
+    lineHeight = labelSmallLineHeight,
+    letterSpacing = labelSmallLetterSpacing,
+    color = ColorWhite
+)
+
+val  labelSmallGreen = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = labelSmallSize,
+    lineHeight = labelSmallLineHeight,
+    letterSpacing = labelSmallLetterSpacing,
+    color = ColorGreen
+)
+
+val  labelSmallOrange = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = labelSmallSize,
+    lineHeight = labelSmallLineHeight,
+    letterSpacing = labelSmallLetterSpacing,
+    color = ColorOrange
+)

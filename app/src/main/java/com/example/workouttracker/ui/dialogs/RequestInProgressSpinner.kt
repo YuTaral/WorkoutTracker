@@ -60,7 +60,7 @@ fun RequestInProgressSpinner() {
 
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
-fun CustomLoadingSpinnerPreview(modifier: Modifier = Modifier) {
+fun CustomLoadingSpinnerPreview() {
     WorkoutTrackerTheme {
         RequestInProgressSpinner()
     }

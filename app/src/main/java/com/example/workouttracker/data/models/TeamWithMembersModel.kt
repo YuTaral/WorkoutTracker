@@ -1,6 +1,5 @@
 package com.example.workouttracker.data.models
 
-import com.example.fitnessapp.models.TeamMemberModel
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 

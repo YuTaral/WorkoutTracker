@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ManageTeamsViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
-    private var teamRepository: TeamRepository
+    var teamRepository: TeamRepository
 ): ViewModel() {
 
     /** Enum with team types when fetching teams */
@@ -30,16 +30,9 @@ class ManageTeamsViewModel @Inject constructor(
         }
     }
 
-    /** The teams the user owns / participates as member */
-    private var _teams = MutableStateFlow<List<TeamModel>>(listOf())
-    var teams = _teams.asStateFlow()
-
     /** Track the selected team type */
     private var _selectedTeamType = MutableStateFlow<ViewTeamAs>(ViewTeamAs.COACH)
     var selectedTeamType = _selectedTeamType.asStateFlow()
-
-    /** Track the selected team */
-    private var _selectedTeam: TeamModel? = null
 
     /** Initialize the data when the screen is created */
     fun initializeData() {
@@ -61,10 +54,10 @@ class ManageTeamsViewModel @Inject constructor(
 
     /** Update the selected team with the provided value */
     fun updateSelectedTeam(value: TeamModel?) {
-        _selectedTeam = value
-
         viewModelScope.launch {
-            if (_selectedTeam == null) {
+            teamRepository.updateSelectedTeam(value)
+
+            if (teamRepository.selectedTeam.value == null) {
                 PagerManager.changePageSelection(Page.ManageTeams)
             } else {
                 PagerManager.changePageSelection(Page.EditTeam(team = value!!))
@@ -91,10 +84,7 @@ class ManageTeamsViewModel @Inject constructor(
     /** Refresh teams after team type selection */
     private fun refreshTeams() {
         viewModelScope.launch(Dispatchers.IO) {
-            teamRepository.getMyTeams(
-                teamType = _selectedTeamType.value.name,
-                onSuccess = { _teams.value = it }
-            )
+            teamRepository.refreshMyTeams(teamType = _selectedTeamType.value.name)
         }
     }
 }
