@@ -1,6 +1,6 @@
 package com.example.workouttracker.ui.theme
 
-import com.example.workouttracker.ui.components.reusable.AppBackground
+import com.example.workouttracker.ui.components.AppBackground
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box

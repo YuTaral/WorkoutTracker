@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -33,6 +33,8 @@ import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.SmallImageButtonSize
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.R
+import com.example.workouttracker.ui.reusable.ImageButton
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.labelMediumGreyItalic
 
 /**

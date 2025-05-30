@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.data.models.SetModel
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.SmallImageButtonSize
@@ -50,7 +51,7 @@ fun SetItem(set: SetModel, rowNumber: Int, onRestClick: (Int) -> Unit) {
         Label(
             modifier = Modifier.weight(0.25f),
             textAlign = TextAlign.Start,
-            text = if (set.reps > 0 )set.reps.toString() else ""
+            text = if (set.reps > 0) set.reps.toString() else ""
         )
         Label(
             modifier = Modifier.weight(0.40f),

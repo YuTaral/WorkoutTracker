@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.extensions
+package com.example.workouttracker.ui.extensions
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind

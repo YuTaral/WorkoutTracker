@@ -19,9 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workouttracker.ui.components.reusable.ImageButton
-import com.example.workouttracker.ui.components.reusable.Label
-import com.example.workouttracker.ui.components.reusable.TwoTextsSwitch
+import com.example.workouttracker.ui.reusable.ImageButton
+import com.example.workouttracker.ui.reusable.Label
+import com.example.workouttracker.ui.reusable.TwoTextsSwitch
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingMedium
@@ -30,7 +30,7 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.style.TextAlign
-import com.example.workouttracker.ui.components.reusable.TeamItem
+import com.example.workouttracker.ui.components.TeamItem
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 
 /** The screen displaying the teams the user owns / participates in  */

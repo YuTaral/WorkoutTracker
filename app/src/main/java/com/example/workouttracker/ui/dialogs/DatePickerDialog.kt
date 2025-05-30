@@ -33,10 +33,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.extensions.customBorder
-import com.example.workouttracker.ui.components.reusable.DialogButton
-import com.example.workouttracker.ui.components.reusable.ImageButton
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.extensions.customBorder
+import com.example.workouttracker.ui.reusable.DialogButton
+import com.example.workouttracker.ui.reusable.ImageButton
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorDialogBackground

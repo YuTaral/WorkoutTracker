@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -34,6 +34,7 @@ import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.utils.Utils
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.labelSmall
 import com.example.workouttracker.ui.theme.labelSmallGreen
@@ -99,8 +100,8 @@ fun MemberItem(member: TeamMemberModel, showButton: Boolean, onAction: (TeamMemb
                 )
                 Label(
                     text = if (state != MemberTeamState.NOT_INVITED)
-                            stringResource(id = state.getTextId())
-                            else "",
+                        stringResource(id = state.getTextId())
+                    else "",
                     style = state.getStyle(),
                     textAlign = TextAlign.Left,
                 )

@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.reusable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues

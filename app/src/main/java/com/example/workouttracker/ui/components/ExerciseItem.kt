@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.MuscleGroupModel
 import com.example.workouttracker.data.models.SetModel
+import com.example.workouttracker.ui.reusable.ImageButton
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.dialogs.EditExerciseFromWorkoutDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.theme.ColorBorder
@@ -118,7 +120,10 @@ fun ExerciseItem(exercise: ExerciseModel, weightUnit: String, onRestClick: (Long
             Column(modifier = Modifier.fillMaxWidth()) {
                 Label(
                     modifier = Modifier.padding(start = PaddingVerySmall),
-                    text = String.format(stringResource(id = R.string.target_lbl), exercise.muscleGroup.name),
+                    text = String.format(
+                        stringResource(id = R.string.target_lbl),
+                        exercise.muscleGroup.name
+                    ),
                     style = labelMediumGrey
                 )
 

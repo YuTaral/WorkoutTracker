@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +20,9 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.workouttracker.ui.reusable.CustomCheckbox
+import com.example.workouttracker.ui.reusable.ImageButton
+import com.example.workouttracker.ui.reusable.SmallInputField
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingSmall
@@ -71,7 +74,8 @@ fun EditSetItem(setUIState: SetUiState,
             }
         }
 
-        SmallInputField(modifier = Modifier
+        SmallInputField(
+            modifier = Modifier
                 .padding(start = PaddingSmall)
                 .weight(0.22f),
             value = setUIState.reps,
@@ -83,7 +87,8 @@ fun EditSetItem(setUIState: SetUiState,
             keyboardActions = KeyboardActions(onNext = { weightFocusRequester.requestFocus() })
         )
 
-        SmallInputField(modifier = Modifier
+        SmallInputField(
+            modifier = Modifier
                 .padding(start = PaddingLarge)
                 .weight(0.28f)
                 .focusRequester(weightFocusRequester),
@@ -96,7 +101,8 @@ fun EditSetItem(setUIState: SetUiState,
             keyboardActions = KeyboardActions(onNext = { restFocusRequester.requestFocus() }),
         )
 
-        SmallInputField(modifier = Modifier
+        SmallInputField(
+            modifier = Modifier
                 .padding(start = PaddingLarge)
                 .weight(0.22f)
                 .focusRequester(restFocusRequester),

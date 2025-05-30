@@ -44,9 +44,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.data.models.WorkoutModel
-import com.example.workouttracker.ui.components.reusable.ExerciseItem
-import com.example.workouttracker.ui.components.reusable.ImageButton
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.components.ExerciseItem
+import com.example.workouttracker.ui.reusable.ImageButton
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.labelMediumGrey

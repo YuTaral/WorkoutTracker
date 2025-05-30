@@ -24,11 +24,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.WorkoutModel
-import com.example.workouttracker.ui.components.extensions.customBorder
-import com.example.workouttracker.ui.components.reusable.DialogButton
-import com.example.workouttracker.ui.components.reusable.ErrorLabel
-import com.example.workouttracker.ui.components.reusable.InputField
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.extensions.customBorder
+import com.example.workouttracker.ui.reusable.DialogButton
+import com.example.workouttracker.ui.reusable.ErrorLabel
+import com.example.workouttracker.ui.reusable.InputField
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingMedium

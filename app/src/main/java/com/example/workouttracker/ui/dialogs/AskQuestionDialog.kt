@@ -17,9 +17,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.workouttracker.ui.components.extensions.customBorder
-import com.example.workouttracker.ui.components.reusable.DialogButton
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.extensions.customBorder
+import com.example.workouttracker.ui.reusable.DialogButton
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.theme.ColorDialogBackground

@@ -43,8 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.reusable.AppBackground
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorDrawer
 import com.example.workouttracker.ui.theme.ColorGrey

@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorDialogBackground

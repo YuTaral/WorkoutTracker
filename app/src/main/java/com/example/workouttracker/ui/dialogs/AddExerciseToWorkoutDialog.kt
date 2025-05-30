@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workouttracker.ui.components.reusable.InputField
+import com.example.workouttracker.ui.reusable.InputField
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.AddExerciseToWorkoutViewModel
@@ -29,9 +29,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.MGExerciseModel
-import com.example.workouttracker.ui.components.extensions.customBorder
-import com.example.workouttracker.ui.components.reusable.CustomCheckbox
-import com.example.workouttracker.ui.components.reusable.DialogButton
+import com.example.workouttracker.ui.extensions.customBorder
+import com.example.workouttracker.ui.reusable.CustomCheckbox
+import com.example.workouttracker.ui.reusable.DialogButton
 import com.example.workouttracker.ui.theme.DialogFooterSize
 
 /**

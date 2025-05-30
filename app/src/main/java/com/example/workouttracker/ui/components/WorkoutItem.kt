@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,6 +17,7 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.SetModel
 import com.example.workouttracker.data.models.WorkoutModel
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingVerySmall

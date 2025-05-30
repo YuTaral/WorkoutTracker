@@ -18,7 +18,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.commandiron.compose_loading.ChasingDots
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorDialogBackground
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingLarge

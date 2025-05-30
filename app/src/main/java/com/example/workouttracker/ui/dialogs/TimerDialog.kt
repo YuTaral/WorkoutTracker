@@ -31,9 +31,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.extensions.customBorder
-import com.example.workouttracker.ui.components.reusable.DialogButton
-import com.example.workouttracker.ui.components.reusable.Label
+import com.example.workouttracker.ui.extensions.customBorder
+import com.example.workouttracker.ui.reusable.DialogButton
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.VibrationEvent
 import com.example.workouttracker.ui.managers.VibrationManager

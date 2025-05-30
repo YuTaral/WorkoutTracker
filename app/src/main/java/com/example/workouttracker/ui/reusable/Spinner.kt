@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.reusable
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

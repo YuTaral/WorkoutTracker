@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.models.TeamMemberModel
 import com.example.workouttracker.data.network.repositories.TeamRepository
-import com.example.workouttracker.ui.components.reusable.MemberTeamState
+import com.example.workouttracker.ui.components.MemberTeamState
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

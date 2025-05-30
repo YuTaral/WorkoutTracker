@@ -1,4 +1,4 @@
-package com.example.workouttracker.ui.components.reusable
+package com.example.workouttracker.ui.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.example.workouttracker.data.models.MuscleGroupModel
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.R
+import com.example.workouttracker.ui.reusable.ImageButton
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.MediumImageButtonSize
 import com.example.workouttracker.ui.theme.PaddingVerySmall

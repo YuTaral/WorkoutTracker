@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.components.reusable.ImageButton
-import com.example.workouttracker.ui.components.reusable.InputField
-import com.example.workouttracker.ui.components.reusable.Label
-import com.example.workouttracker.ui.components.reusable.MemberItem
+import com.example.workouttracker.ui.reusable.ImageButton
+import com.example.workouttracker.ui.reusable.InputField
+import com.example.workouttracker.ui.reusable.Label
+import com.example.workouttracker.ui.components.MemberItem
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.PaddingLarge
