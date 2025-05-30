@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.TeamCoachModel
+import com.example.workouttracker.data.models.TeamMemberModel
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.network.repositories.TeamRepository
 import com.example.workouttracker.ui.dialogs.ManageMembersDialog
@@ -40,9 +42,22 @@ class AddEditTeamViewModel @Inject constructor(
         val nameError: String? = null
     )
 
+    /** Class representing the data when team is being viewed as member */
+    data class ViewTeamAsMemberData(
+        val teamImage: String = "",
+        val teamName: String = "",
+        val teamDescr: String = "",
+        val coach: TeamCoachModel = TeamCoachModel(),
+        val members: List<TeamMemberModel> = listOf()
+    )
+
     /** Dialog state */
     private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
+
+    /** Member UI state */
+    private val _memberUIState = MutableStateFlow(ViewTeamAsMemberData())
+    val memberUIState = _memberUIState.asStateFlow()
 
     /**
      * Initialize the data in the view model when the screen is shown
@@ -67,6 +82,17 @@ class AddEditTeamViewModel @Inject constructor(
 
             viewModelScope.launch(Dispatchers.IO) {
                 teamRepository.refreshMyTeamMembers(teamId = team!!.id)
+            }
+
+            if (teamRepository.selectedTeam.value!!.viewTeamAs == ManageTeamsViewModel.ViewTeamAs.MEMBER.name) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    teamRepository.getTeamDetailsAsMember(
+                        teamId = teamRepository.selectedTeam.value!!.id,
+                        onSuccess = { updateMemberUIState(it) }
+                    )
+                }
+            } else {
+                _memberUIState.value = ViewTeamAsMemberData()
             }
         }
     }
@@ -151,6 +177,35 @@ class AddEditTeamViewModel @Inject constructor(
         }
     }
 
+    /** Ask for confirmation to leave the team */
+    fun askLeaveTeam() {
+        viewModelScope.launch {
+            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+                question = Question.LEAVE_TEAM,
+                show = true,
+                onCancel = {
+                    viewModelScope.launch {
+                        AskQuestionDialogManager.hideQuestion()
+                    }
+                },
+                onConfirm = {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        teamRepository.leaveTeam(
+                            teamId = teamRepository.selectedTeam.value!!.id,
+                            onSuccess = {
+                                viewModelScope.launch {
+                                    AskQuestionDialogManager.hideQuestion()
+                                    PagerManager.changePageSelection(Page.ManageTeams)
+                                }
+                            }
+                        )
+                    }
+                },
+                formatQValues = listOf(teamRepository.selectedTeam.value!!.name)
+            ))
+        }
+    }
+
     /** Send request to add new team */
     private fun addTeam() {
         val team = TeamModel(
@@ -204,6 +259,17 @@ class AddEditTeamViewModel @Inject constructor(
         }
 
         return true
+    }
+
+    /** Update the member ui state with the provided data */
+    private fun updateMemberUIState(data: List<String>) {
+        _memberUIState.update {
+            it.copy(teamImage = teamRepository.selectedTeam.value!!.image)
+                .copy(teamName = teamRepository.selectedTeam.value!!.name)
+                .copy(teamDescr = teamRepository.selectedTeam.value!!.description)
+                .copy(coach = TeamCoachModel(data[0]))
+                .copy(members = data.drop(1).map { TeamMemberModel(it) })
+        }
     }
 
     override fun onImageUploadSuccess(bitmap: Bitmap) {

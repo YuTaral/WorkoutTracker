@@ -154,5 +154,8 @@
     <string name="other_members_lbl">Other members (%s)</string>
     <string name="search_results_lbl">Search results (%s)</string>
     <string name="no_users_found">No users found</string>
+    <string name="leave_team_btn">Leave team</string>
+    <string name="question_leave_team_title">Leave Team</string>
+    <string name="question_leave_team_text">Are you sure you want to leave team \"%s\" ?</string>
 
 </resources>

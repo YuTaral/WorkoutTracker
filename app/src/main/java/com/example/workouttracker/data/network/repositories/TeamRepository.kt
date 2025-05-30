@@ -220,7 +220,7 @@ class TeamRepository @Inject constructor(
      * @param teamId the team id
      * @param onSuccess callback to execute if request is successful
      */
-    suspend fun getJoinedTeamMembers(teamId: Long, onSuccess: (List<String>) -> Unit) {
+    suspend fun getTeamDetailsAsMember(teamId: Long, onSuccess: (List<String>) -> Unit) {
         networkManager.sendRequest(
             request = { apiService.getInstance().getJoinedTeamMembers(teamId) },
             onSuccessCallback = { response ->

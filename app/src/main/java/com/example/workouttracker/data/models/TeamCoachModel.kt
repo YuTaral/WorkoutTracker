@@ -22,6 +22,11 @@ class TeamCoachModel: BaseModel {
 
         fullName = model.fullName
         image = model.image
+    }
 
+    /** Empty constructor to avoid setting objects of type TeamCoachModel to nullable */
+    constructor() : super(0L) {
+        fullName = ""
+        image = ""
     }
 }

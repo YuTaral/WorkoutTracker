@@ -25,6 +25,7 @@ import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.theme.ColorDialogBackground
 import com.example.workouttracker.ui.theme.BottomSheetsDialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingLarge
+import com.example.workouttracker.ui.theme.PaddingSmall
 import kotlinx.coroutines.launch
 
 /**
@@ -67,6 +68,7 @@ fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
                 style = MaterialTheme.typography.titleLarge
             )
             Label(
+                modifier = Modifier.padding(PaddingSmall),
                 text = questionText,
                 maxLines = 10
             )
