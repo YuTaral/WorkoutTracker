@@ -12,6 +12,7 @@ import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.ResourceProvider
+import com.example.workouttracker.utils.SearchHelper
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -38,17 +39,18 @@ class ManageTemplatesViewModel @Inject constructor(
         }
     }
 
-    /** Use job with slight delay to avoid filtering the data on each letter */
-    private val debounceTime = 500L
-    private var searchJob: Job? = null
+    /**
+     * Search helper - uses debounce and job to improve performance and not execute the callback
+     * on each new symbol
+     */
+    val searchHelper = SearchHelper(
+        coroutineScope = viewModelScope,
+        callback = { onSearch(it) }
+    )
 
     /** The templates of the user */
     private var _filteredTemplates = MutableStateFlow<MutableList<WorkoutModel>>(mutableListOf())
     var filteredTemplates = _filteredTemplates.asStateFlow()
-
-    /** The search term for templates */
-    private var _search = MutableStateFlow<String>("")
-    var search = _search.asStateFlow()
 
     /** Valid Spinner actions */
     var spinnerActions: List<SpinnerActions> = listOf(
@@ -65,11 +67,11 @@ class ManageTemplatesViewModel @Inject constructor(
     fun initializeData() {
         viewModelScope.launch {
             templatesRepository.templates.collect { newTemplates ->
-                _filteredTemplates.value = if (_search.value.isEmpty()) {
+                _filteredTemplates.value = if (searchHelper.search.value.isEmpty()) {
                     newTemplates
                 } else {
                     newTemplates.filter {
-                        it.name.contains(_search.value, ignoreCase = true)
+                        it.name.contains(searchHelper.search.value, ignoreCase = true)
                     }.toMutableList()
                 }
             }
@@ -78,26 +80,8 @@ class ManageTemplatesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             templatesRepository.refreshTemplates()
         }
-    }
 
-    /** Filter the muscle groups when the search value changes */
-    fun updateSearch(value: String) {
-        _search.value = value
-
-        searchJob?.cancel()
-
-        searchJob = viewModelScope.launch(Dispatchers.Default) {
-            // Wait for the debounce time before filtering to avoid filtering on each letter
-            delay(debounceTime)
-
-            if (value.isEmpty()) {
-                _filteredTemplates.value = templatesRepository.templates.value
-            } else {
-                _filteredTemplates.value = templatesRepository.templates.value.filter {
-                    it.name.contains(value, ignoreCase = true)
-                } as MutableList<WorkoutModel>
-            }
-        }
+        searchHelper.updateSearchTerm("")
     }
 
     /** Update the selected spinner action with the provided value */

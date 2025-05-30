@@ -15,8 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.UserProfileRepository
@@ -28,6 +26,7 @@ import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.ResourceProvider
+import com.example.workouttracker.utils.SearchHelper
 
 /** View model to control the UI state of add exercise to workout screen */
 @HiltViewModel
@@ -57,9 +56,14 @@ class SelectExerciseViewModel @Inject constructor(
         SELECT_EXERCISE
     }
 
-    /** Use job with slight delay to avoid filtering the data on each letter */
-    private val debounceTime = 500L
-    private var searchJob: Job? = null
+    /**
+     * Search helper - uses debounce and job to improve performance and not execute the callback
+     * on each new symbol
+     */
+    val searchHelper = SearchHelper(
+        coroutineScope = viewModelScope,
+        callback = { onSearch(it) }
+    )
 
     /** The selected muscle group id */
     private var selectedMuscleGroupId = 0L
@@ -77,10 +81,6 @@ class SelectExerciseViewModel @Inject constructor(
     private var _mGExercises: MutableList<MGExerciseModel> = mutableListOf()
     private var _filteredmGExercises = MutableStateFlow<MutableList<MGExerciseModel>>(mutableListOf())
     var filteredmGExercises = _filteredmGExercises.asStateFlow()
-
-    /** The search term for muscle groups / exercises */
-    private var _search = MutableStateFlow<String>("")
-    var search = _search.asStateFlow()
 
     /** Whether the screen is in manage exercise mode */
     private var _manageExercises = MutableStateFlow<Boolean>(false)
@@ -100,7 +100,7 @@ class SelectExerciseViewModel @Inject constructor(
     /** Update the mode with the provided value */
     fun updateMode(newMode: Mode) {
         _mode.value = newMode
-        _search.value = ""
+        searchHelper.updateSearchTerm("")
 
         if (_mode.value == Mode.SELECT_MUSCLE_GROUP) {
             _mGExercises.clear()
@@ -140,32 +140,23 @@ class SelectExerciseViewModel @Inject constructor(
     }
 
     /** Filter the muscle groups when the search value changes */
-    fun updateSearch(value: String) {
-        _search.value = value
-
-        searchJob?.cancel()
-
-        searchJob = viewModelScope.launch(Dispatchers.Default) {
-            // Wait for the debounce time before filtering to avoid filtering on each letter
-            delay(debounceTime)
-
-            // Filter the muscle groups or the exercises
-            if (mode.value == Mode.SELECT_MUSCLE_GROUP) {
-                if (value.isEmpty()) {
-                    _filteredMuscleGroups.value = _muscleGroups
-                } else {
-                    _filteredMuscleGroups.value = _muscleGroups.filter {
-                        it.name.contains(value, ignoreCase = true)
-                    } as MutableList<MuscleGroupModel>
-                }
+    fun onSearch(value: String) {
+        // Filter the muscle groups or the exercises
+        if (mode.value == Mode.SELECT_MUSCLE_GROUP) {
+            if (value.isEmpty()) {
+                _filteredMuscleGroups.value = _muscleGroups
             } else {
-                if (value.isEmpty()) {
-                    _filteredmGExercises.value = _mGExercises
-                } else {
-                    _filteredmGExercises.value = _mGExercises.filter {
-                        it.name.contains(value, ignoreCase = true)
-                    } as MutableList<MGExerciseModel>
-                }
+                _filteredMuscleGroups.value = _muscleGroups.filter {
+                    it.name.contains(value, ignoreCase = true)
+                } as MutableList<MuscleGroupModel>
+            }
+        } else {
+            if (value.isEmpty()) {
+                _filteredmGExercises.value = _mGExercises
+            } else {
+                _filteredmGExercises.value = _mGExercises.filter {
+                    it.name.contains(value, ignoreCase = true)
+                } as MutableList<MGExerciseModel>
             }
         }
     }

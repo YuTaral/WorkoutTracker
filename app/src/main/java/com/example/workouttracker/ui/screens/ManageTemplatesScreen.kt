@@ -36,7 +36,7 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
 
     val lazyListState = rememberLazyListState()
     val selectedAction by vm.selectedSpinnerAction.collectAsStateWithLifecycle()
-    val searchTerm by vm.search.collectAsStateWithLifecycle()
+    val searchTerm by vm.searchHelper.search.collectAsStateWithLifecycle()
     val templates by vm.filteredTemplates.collectAsStateWithLifecycle()
     val user by vm.userRepository.user.collectAsStateWithLifecycle()
 
@@ -59,7 +59,7 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
                 modifier = Modifier.padding(PaddingVerySmall),
                 label = stringResource(id = R.string.search_lbl),
                 onValueChange = {
-                    vm.updateSearch(it)
+                    vm.searchHelper.updateSearchTerm(it)
                 }
             )
 

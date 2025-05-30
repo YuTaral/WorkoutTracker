@@ -57,7 +57,7 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
     }
 
     val mode by vm.mode.collectAsStateWithLifecycle()
-    val searchTerm by vm.search.collectAsStateWithLifecycle()
+    val searchTerm by vm.searchHelper.search.collectAsStateWithLifecycle()
     val manageExercises by vm.manageExercises.collectAsStateWithLifecycle()
     val selectedAction by vm.selectedSpinnerAction.collectAsStateWithLifecycle()
 
@@ -88,9 +88,7 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
             value = searchTerm,
             modifier = Modifier.padding(PaddingVerySmall),
             label = stringResource(id = R.string.search_lbl),
-            onValueChange = {
-                vm.updateSearch(it)
-            }
+            onValueChange = { vm.searchHelper.updateSearchTerm(it) }
         )
 
         if (mode == Mode.SELECT_MUSCLE_GROUP) {
