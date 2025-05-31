@@ -45,4 +45,15 @@ class NotificationModel: BaseModel {
         teamId = model.teamId
         clickDisabled = model.clickDisabled
     }
+
+    constructor(idVal: Long, notificationTextVal: String, dateTimeVal: Date, isActiveVal: Boolean, typeVal: String,
+                imageVal: String, teamIdVal: Long, clickDisabledVal: Boolean) : super(idVal) {
+        notificationText = notificationTextVal
+        dateTime = dateTimeVal
+        isActive = isActiveVal
+        type = typeVal
+        image = imageVal
+        teamId = teamIdVal
+        clickDisabled = clickDisabledVal
+    }
 }

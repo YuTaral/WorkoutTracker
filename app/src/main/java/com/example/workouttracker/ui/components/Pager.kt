@@ -37,6 +37,7 @@ import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorWhite
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
@@ -88,7 +89,9 @@ fun Pager(vm: PagerViewModel = hiltViewModel()) {
                         Text(
                             text = stringResource(id = tab.title),
                             style = MaterialTheme.typography.labelSmall,
-                            color = color
+                            color = color,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
                         )
                     },
                     icon = {

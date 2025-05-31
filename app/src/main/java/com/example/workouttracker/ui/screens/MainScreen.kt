@@ -20,7 +20,8 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 fun MainScreen(
         email: String,
         fullName: String,
-        profileImage: String
+        profileImage: String,
+        notification: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -47,7 +48,10 @@ fun MainScreen(
                     .navigationBarsPadding(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                TopBar(drawerState)
+                TopBar(
+                    drawerState = drawerState,
+                    notification = notification
+                )
                 Pager()
             }
         }
@@ -58,6 +62,6 @@ fun MainScreen(
 @Composable
 private fun DefaultPreview() {
     WorkoutTrackerTheme {
-        MainScreen("test@abv.bg", "Test user", "")
+        MainScreen("test@abv.bg", "Test user", "", true)
     }
 }

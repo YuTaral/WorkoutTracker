@@ -3,11 +3,12 @@ package com.example.workouttracker.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
@@ -21,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,11 +32,17 @@ import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingSmall
+import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.Page
 import kotlinx.coroutines.launch
 
+/**
+ * The top bar of the application
+ * @param drawerState the left drawer state
+ * @param notification whether the user has new notifications
+ */
 @Composable
-fun TopBar(drawerState: DrawerState) {
+fun TopBar(drawerState: DrawerState, notification: Boolean) {
     val scope = rememberCoroutineScope()
 
     Row(modifier = Modifier
@@ -60,12 +68,35 @@ fun TopBar(drawerState: DrawerState) {
                 text = stringResource(id = R.string.profile),
             )
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                imageVector = Icons.Default.Notifications,
-                contentDescription = "Notifications icon",
-                colorFilter = ColorFilter.tint(color = ColorWhite),
-            )
+        Column(
+            modifier = Modifier.clickable(
+                enabled = true,
+                onClick = {
+                    scope.launch {
+                        PagerManager.changePageSelection(Page.Notifications)
+                    }
+                }
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box {
+                Image(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "Notifications icon",
+                    colorFilter = ColorFilter.tint(color = ColorWhite),
+                )
+
+                if (notification) {
+                    Image(
+                        modifier = Modifier
+                            .size(15.dp)
+                            .align(Alignment.TopEnd),
+                        painter = painterResource(R.drawable.icon_notification_circle),
+                        contentDescription = "Notifications icon",
+                    )
+                }
+            }
+
             Label(
                 text = stringResource(id = R.string.notifications),
             )
@@ -94,7 +125,7 @@ fun TopBar(drawerState: DrawerState) {
 @Preview(widthDp = 360)
 @Composable
 private fun TopBarPreview() {
-    MaterialTheme {
-        TopBar(drawerState = rememberDrawerState(initialValue = DrawerValue.Closed))
+    WorkoutTrackerTheme {
+        TopBar(drawerState = rememberDrawerState(initialValue = DrawerValue.Closed), true)
     }
 }

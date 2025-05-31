@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import com.example.workouttracker.R
 import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.network.CustomResponse
+import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationEvent
@@ -20,12 +21,14 @@ import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import dagger.Lazy
 
 /** Class to handle each request and execute the common errors logic when error occurs */
 @Singleton
 class NetworkManager @Inject constructor(
     private val context: Context,
-    private val apiService: APIService
+    private val apiService: APIService,
+    private val customNotificationManager: Lazy<CustomNotificationManager>
 ) {
     /** Use Factory pattern to create the call object. This is needed, because when
      * we need to refresh the token, the new token is returned as response from the server.
@@ -64,7 +67,7 @@ class NetworkManager @Inject constructor(
     ) {
         LoadingManager.showLoading()
 
-        val response: Response<CustomResponse>
+        var response: Response<CustomResponse>? = null
         val responseContent: CustomResponse?
 
         try {
@@ -131,11 +134,10 @@ class NetworkManager @Inject constructor(
             e.printStackTrace()
 
         } finally {
-            // Try to update the notification indication
-//                if (responseContent != null && user.value != null &&
-//                    responseContent.notification != notification.value) {
-//                    updateNotification(responseContent.notification)
-//                }
+             // Try to update the notification indication
+            if (response != null && response.body() != null) {
+                customNotificationManager.get().updateNotification(response.body()!!.notification)
+            }
 
             // Remove the progress dialog
             LoadingManager.hideLoading()

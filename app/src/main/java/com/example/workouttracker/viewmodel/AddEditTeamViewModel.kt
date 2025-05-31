@@ -20,6 +20,7 @@ import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.utils.interfaces.IImagePicker
+import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,7 +85,7 @@ class AddEditTeamViewModel @Inject constructor(
                 teamRepository.refreshMyTeamMembers(teamId = team!!.id)
             }
 
-            if (teamRepository.selectedTeam.value!!.viewTeamAs == ManageTeamsViewModel.ViewTeamAs.MEMBER.name) {
+            if (teamRepository.selectedTeam.value!!.viewTeamAs == ViewTeamAs.MEMBER.name) {
                 viewModelScope.launch(Dispatchers.IO) {
                     teamRepository.getTeamDetailsAsMember(
                         teamId = teamRepository.selectedTeam.value!!.id,
@@ -155,7 +156,7 @@ class AddEditTeamViewModel @Inject constructor(
                             onSuccess = {
                                 viewModelScope.launch {
                                     AskQuestionDialogManager.hideQuestion()
-                                    PagerManager.changePageSelection(Page.ManageTeams)
+                                    PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
                                 }
                             }
                         )
@@ -195,7 +196,7 @@ class AddEditTeamViewModel @Inject constructor(
                             onSuccess = {
                                 viewModelScope.launch {
                                     AskQuestionDialogManager.hideQuestion()
-                                    PagerManager.changePageSelection(Page.ManageTeams)
+                                    PagerManager.changePageSelection(Page.ManageTeams(ViewTeamAs.MEMBER))
                                 }
                             }
                         )
@@ -220,7 +221,7 @@ class AddEditTeamViewModel @Inject constructor(
                 team = team,
                 onSuccess = {
                     viewModelScope.launch {
-                        PagerManager.changePageSelection(Page.ManageTeams)
+                        PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
                     }
                 }
             )
@@ -241,7 +242,7 @@ class AddEditTeamViewModel @Inject constructor(
                 team = team,
                 onSuccess = {
                     viewModelScope.launch {
-                        PagerManager.changePageSelection(Page.ManageTeams)
+                        PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
                     }
                 }
             )

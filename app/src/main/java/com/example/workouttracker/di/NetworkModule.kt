@@ -5,12 +5,14 @@ import com.example.workouttracker.data.managers.NetworkManager
 import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.network.IAPIService
+import com.example.workouttracker.ui.managers.CustomNotificationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import dagger.Lazy
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,7 +27,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNetworkManager(@ApplicationContext context: Context, apiService: APIService): NetworkManager {
-        return NetworkManager(context, apiService)
+    fun provideNetworkManager(
+        @ApplicationContext context: Context,
+        apiService: APIService,
+        notificationManager: Lazy<CustomNotificationManager>
+    ): NetworkManager {
+        return NetworkManager(context, apiService, notificationManager)
     }
 }

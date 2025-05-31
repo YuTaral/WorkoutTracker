@@ -33,11 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import com.example.workouttracker.ui.components.TeamItem
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 
-/** The screen displaying the teams the user owns / participates in  */
+/**
+ * The screen displaying the teams the user owns / participates in
+ * @param teamType the initial value of team type
+ */
 @Composable
-fun ManageTeamsScreen(vm: ManageTeamsViewModel = hiltViewModel()) {
+fun ManageTeamsScreen(teamType: ViewTeamAs, vm: ManageTeamsViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
-        vm.initializeData()
+        vm.initializeData(teamType = teamType)
     }
 
     val selectedTeamType by vm.selectedTeamType.collectAsStateWithLifecycle()
@@ -104,6 +107,6 @@ fun ManageTeamsScreen(vm: ManageTeamsViewModel = hiltViewModel()) {
 @Composable
 private fun ManageTeamsScreenPreview() {
     WorkoutTrackerTheme {
-        ManageTeamsScreen()
+        ManageTeamsScreen(ViewTeamAs.COACH)
     }
 }

@@ -1,6 +1,7 @@
 package com.example.workouttracker.ui.dialogs
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,6 @@ import com.example.workouttracker.R
 import com.example.workouttracker.ui.extensions.customBorder
 import com.example.workouttracker.ui.reusable.DialogButton
 import com.example.workouttracker.ui.reusable.Label
-import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.VibrationEvent
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.ui.theme.ColorAccent
@@ -51,10 +51,16 @@ import kotlinx.coroutines.launch
  * @param seconds the seconds to start from
  * @param autoStart whether to auto start the timer
  * @param onDone callback to execute on done button click
+ * @param sendNotification send notification callback
  */
 @SuppressLint("DefaultLocale")
 @Composable
-fun TimerDialog(seconds: Long, autoStart: Boolean, onDone: () -> Unit) {
+fun TimerDialog(
+    seconds: Long,
+    autoStart: Boolean,
+    onDone: () -> Unit,
+    sendNotification: (Context) -> Unit
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -91,11 +97,7 @@ fun TimerDialog(seconds: Long, autoStart: Boolean, onDone: () -> Unit) {
                 running = false
 
                 if (isAppInBackground) {
-                    CustomNotificationManager.sendNotification(
-                        context = context,
-                        titleId = R.string.time_is_up_lbl,
-                        messageId = R.string.time_finished_lbl
-                    )
+                    sendNotification(context)
                 } else {
                     scope.launch {
                         VibrationManager.makeVibration(
@@ -172,6 +174,6 @@ fun TimerDialog(seconds: Long, autoStart: Boolean, onDone: () -> Unit) {
 @Composable
 private fun TimerDialogPreview() {
     WorkoutTrackerTheme {
-        TimerDialog(160, false, {})
+        TimerDialog(160, false, {}, {})
     }
 }

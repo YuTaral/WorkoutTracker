@@ -3,6 +3,7 @@ package com.example.workouttracker.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.managers.SharedPrefsManager
+import com.example.workouttracker.data.network.repositories.NotificationRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     var userRepository: UserRepository,
+    var notificationRepository: NotificationRepository,
     private var sharedPrefsManager: SharedPrefsManager
-
 ): ViewModel() {
     private val _tokenValidated = MutableStateFlow(false)
     val tokenValidated = _tokenValidated.asStateFlow()

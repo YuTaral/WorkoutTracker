@@ -9,6 +9,7 @@ import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.dialogs.TimerDialog
+import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
@@ -30,7 +31,8 @@ class SelectedWorkoutViewModel @Inject constructor(
     var workoutRepository: WorkoutRepository,
     var userRepository: UserRepository,
     private var exerciseRepository: ExerciseRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private var notificationManager: CustomNotificationManager
 ): ViewModel() {
 
     /** Seconds elapsed since the start of the workout */
@@ -112,6 +114,13 @@ class SelectedWorkoutViewModel @Inject constructor(
                                 }
                             )
                         }
+                    },
+                    sendNotification = {
+                        notificationManager.sendNotification(
+                            context = it,
+                            titleId = R.string.time_is_up_lbl,
+                            messageId = R.string.time_finished_lbl
+                        )
                     })
                 }
             )

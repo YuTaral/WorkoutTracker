@@ -5,13 +5,16 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.workouttracker.R
+import com.example.workouttracker.data.network.repositories.NotificationRepository
 import com.example.workouttracker.ui.MainActivity
+import javax.inject.Inject
 
 /** Notification manager to send notifications to the user */
-object CustomNotificationManager {
+class CustomNotificationManager @Inject constructor(
+    private var notificationRepository: NotificationRepository
+) {
     private var channelId = "timer_notification_channel"
 
     /** Send a notification when the timer finishes
@@ -22,11 +25,8 @@ object CustomNotificationManager {
     fun sendNotification(context: Context, titleId: Int, messageId: Int) {
         val notificationManager = context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Create notification channel for Android 8.0 and higher
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Notification", NotificationManager.IMPORTANCE_HIGH)
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(channelId, "Notification", NotificationManager.IMPORTANCE_HIGH)
+        notificationManager.createNotificationChannel(channel)
 
         // Create an Intent to open the app when the notification is clicked
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -54,5 +54,12 @@ object CustomNotificationManager {
 
         // Send the notification
         notificationManager.notify(1, notification)
+    }
+
+    /** Update the notification in the notifications repo to show the new notifications icon */
+    fun updateNotification(value: Boolean) {
+        if (notificationRepository.notification.value != value) {
+            notificationRepository.updateNotification(value)
+        }
     }
 }

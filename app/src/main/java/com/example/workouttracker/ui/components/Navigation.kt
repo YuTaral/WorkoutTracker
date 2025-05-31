@@ -27,6 +27,7 @@ enum class Destinations {
 fun Navigation(modifier: Modifier, vm: MainViewModel) {
     val navController = rememberNavController()
     val user by vm.userRepository.user.collectAsStateWithLifecycle()
+    val notification by vm.notificationRepository.notification.collectAsStateWithLifecycle()
 
     LaunchedEffect(user) {
         // Check if the current destination is already the one we're trying to navigate to
@@ -59,7 +60,8 @@ fun Navigation(modifier: Modifier, vm: MainViewModel) {
                 MainScreen(
                     email = it.email,
                     fullName = it.fullName,
-                    profileImage = it.profileImage
+                    profileImage = it.profileImage,
+                    notification = notification,
                 )
             }
         }

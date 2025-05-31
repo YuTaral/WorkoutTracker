@@ -153,13 +153,15 @@ class TeamRepository @Inject constructor(
 
     /** Get the teams created by the user
      * @param teamType the team type - as coach or as member
-     * @param onSuccess callback to execute if request is successful
+     * @param callback optional callback to execute after successfully updating the teams
      */
-    suspend fun refreshMyTeams(teamType: String) {
+    suspend fun refreshMyTeams(teamType: String, callback: () -> Unit = {}) {
         networkManager.sendRequest(
             request = { apiService.getInstance().getMyTeams(teamType) },
             onSuccessCallback = { response ->
                 _teams.value = response.data.map { TeamModel(it) } as MutableList<TeamModel>
+
+                callback()
             },
         )
     }
@@ -232,8 +234,9 @@ class TeamRepository @Inject constructor(
     /**
      * Update the selected team and members
      * @param team selected team, may be null
+     * @param callback optional callback to execute after the update
      */
-    suspend fun updateSelectedTeam(team: TeamModel?) {
+    suspend fun updateSelectedTeam(team: TeamModel?, callback: () -> Unit = {}) {
         _selectedTeam.value = team
 
         if (_selectedTeam.value != null) {
@@ -241,5 +244,7 @@ class TeamRepository @Inject constructor(
         } else {
             _teamMembers.value = mutableListOf()
         }
+
+        callback()
     }
 }

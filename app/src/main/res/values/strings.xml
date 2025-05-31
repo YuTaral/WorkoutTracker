@@ -157,5 +157,11 @@
     <string name="leave_team_btn">Leave team</string>
     <string name="question_leave_team_title">Leave Team</string>
     <string name="question_leave_team_text">Are you sure you want to leave team \"%s\" ?</string>
+    <string name="notifications_lbl">Notifications</string>
+    <string name="question_join_team_title">Join %s</string>
+    <string name="question_join_team_text">%s</string>
+    <string name="accept_btn">Accept</string>
+    <string name="decline_btn">Decline</string>
+    <string name="no_new_notifications">You don\'t have any new notifications</string>
 
 </resources>

@@ -7,10 +7,12 @@ import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.ui.screens.SelectedTeamScreen
 import com.example.workouttracker.ui.screens.ManageTeamsScreen
 import com.example.workouttracker.ui.screens.ManageTemplatesScreen
+import com.example.workouttracker.ui.screens.NotificationsScreen
 import com.example.workouttracker.ui.screens.SelectActionScreen
 import com.example.workouttracker.ui.screens.SelectExerciseScreen
 import com.example.workouttracker.ui.screens.SelectedWorkoutScreen
 import com.example.workouttracker.ui.screens.WorkoutsScreen
+import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,13 +46,16 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
     data object ManageTemplates : Page(R.string.templates_lbl, R.drawable.icon_screen_manage_templates,
                                   PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTemplatesScreen() })
 
-    data object ManageTeams : Page(R.string.teams_lbl, R.drawable.icon_screen_manage_teams,
-                               PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTeamsScreen() })
+    data object Notifications : Page(R.string.notifications_lbl, R.drawable.icon_notification_active,
+        PageIndices.FIRST_TEMPORARY.ordinal, content = { NotificationsScreen() })
 
     data object AddTeam: Page(R.string.add_team_lbl, R.drawable.icon_tab_add_team,
                          PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTeamScreen(team = null) })
 
-    class EditTeam(private val team: TeamModel): Page(R.string.edit_team_lbl, R.drawable.icon_tab_edit_team,
+    data class ManageTeams(private val teamType: ViewTeamAs): Page(R.string.teams_lbl, R.drawable.icon_screen_manage_teams,
+        PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTeamsScreen(teamType = teamType) })
+
+    data class EditTeam(private val team: TeamModel): Page(R.string.edit_team_lbl, R.drawable.icon_tab_edit_team,
         PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTeamScreen(team = team) })
 }
 

@@ -77,14 +77,14 @@ fun SelectedTeamScreen(team: TeamModel?, vm: AddEditTeamViewModel = hiltViewMode
         vm.initialize(team)
     }
 
-    if (team != null && team.viewTeamAs == ViewTeamAs.COACH.name) {
+    if (team == null || team.viewTeamAs == ViewTeamAs.COACH.name) {
         AddEditTeamScreen(
             team = team,
             vm = vm
         )
     } else {
         ViewTeamAsMemberScreen(
-            team = team!!,
+            team = team,
             vm = vm
         )
     }

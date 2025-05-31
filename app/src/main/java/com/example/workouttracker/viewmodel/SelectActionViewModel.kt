@@ -8,10 +8,12 @@ import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.dialogs.AddEditTemplateDialog
 import com.example.workouttracker.ui.dialogs.StartTimerDialog
 import com.example.workouttracker.ui.dialogs.TimerDialog
+import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
+import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,11 +33,11 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
         { PagerManager.changePageSelection(Page.ManageTemplates) })
 
     data object ManageTeams : Action(R.drawable.icon_screen_manage_teams, R.string.manage_teams_lbl,
-        { PagerManager.changePageSelection(Page.ManageTeams) })
+        { PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH)) })
 
-    class FinishWorkout(onClick: () -> Unit): Action(R.drawable.icon_finish_workout, R.string.mark_workout_as_finished_lbl, { onClick() })
+    data class FinishWorkout(private val onActionClick: () -> Unit): Action(R.drawable.icon_finish_workout, R.string.mark_workout_as_finished_lbl, { onActionClick() })
 
-    class StartTimer(private val title: String, private val showTimer: (Long) -> Unit):
+    data class StartTimer(private val title: String, private val showTimer: (Long) -> Unit):
         Action(R.drawable.icon_start_timer, R.string.start_timer_lbl,
         {
             DialogManager.showDialog(
@@ -46,7 +48,7 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
         }
     )
 
-    class SaveWorkoutAsTemplate(private val template: WorkoutModel, private val title: String):
+    data class SaveWorkoutAsTemplate(private val template: WorkoutModel, private val title: String):
         Action(R.drawable.icon_action_save_workout_as_template, R.string.save_workout_as_template_lbl,
         {
             DialogManager.showDialog(
@@ -62,7 +64,8 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
 @HiltViewModel
 class SelectActionViewModel @Inject constructor(
     private var workoutRepository: WorkoutRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private var notificationManager: CustomNotificationManager
 ): ViewModel() {
 
     /** The valid actions */
@@ -82,7 +85,7 @@ class SelectActionViewModel @Inject constructor(
             ))
 
             if (workoutRepository.selectedWorkout.value!!.finishDateTime == null) {
-                _actions.value.add(Action.FinishWorkout(onClick = {
+                _actions.value.add(Action.FinishWorkout(onActionClick = {
                     val workout = workoutRepository.selectedWorkout.value!!
                     workout.finishDateTime = Date()
                     workout.durationSeconds = Duration.between(
@@ -124,6 +127,13 @@ class SelectActionViewModel @Inject constructor(
                                         DialogManager.hideDialog("StartTimerDialog")
                                         DialogManager.hideDialog("TimerDialog")
                                     }
+                                },
+                                sendNotification = {
+                                    notificationManager.sendNotification(
+                                        context = it,
+                                        titleId = R.string.time_is_up_lbl,
+                                        messageId = R.string.time_finished_lbl
+                                    )
                                 }
                             )
                         }

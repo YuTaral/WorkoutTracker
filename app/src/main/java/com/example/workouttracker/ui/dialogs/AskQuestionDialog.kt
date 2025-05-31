@@ -64,7 +64,7 @@ fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Label(
-                text = stringResource(id = q.getTitle()),
+                text = String.format(stringResource(id = q.getTitle(), event.formatTitle)),
                 style = MaterialTheme.typography.titleLarge
             )
             Label(

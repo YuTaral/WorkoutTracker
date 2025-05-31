@@ -34,9 +34,12 @@ class ManageTeamsViewModel @Inject constructor(
     private var _selectedTeamType = MutableStateFlow<ViewTeamAs>(ViewTeamAs.COACH)
     var selectedTeamType = _selectedTeamType.asStateFlow()
 
-    /** Initialize the data when the screen is created */
-    fun initializeData() {
-        updateSelectedTeamType(resourceProvider.getString(ViewTeamAs.COACH.getStringId()))
+    /**
+     * Initialize the data when the screen is created
+     * @param teamType selected team type
+     */
+    fun initializeData(teamType: ViewTeamAs) {
+        updateSelectedTeamType(resourceProvider.getString(teamType.getStringId()))
         updateSelectedTeam(null)
     }
 
@@ -58,7 +61,7 @@ class ManageTeamsViewModel @Inject constructor(
             teamRepository.updateSelectedTeam(value)
 
             if (teamRepository.selectedTeam.value == null) {
-                PagerManager.changePageSelection(Page.ManageTeams)
+                PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
             } else {
                 PagerManager.changePageSelection(Page.EditTeam(team = value!!))
             }
