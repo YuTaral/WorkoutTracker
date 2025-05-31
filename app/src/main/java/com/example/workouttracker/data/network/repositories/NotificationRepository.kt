@@ -63,13 +63,12 @@ class NotificationRepository @Inject constructor(
         )
     }
 
-    /** Send refresh request to update notifications
-     * @param onResponse callback to execute when response is received
-     */
-    suspend fun refreshNotifications(onResponse: () -> Unit) {
+    /** Send refresh request to update notifications */
+    suspend fun refreshNotification() {
         networkManager.sendRequest(
             request = { apiService.getInstance().refreshNotifications() },
-            onSuccessCallback = { onResponse() },
+            onSuccessCallback = {  },
+            blockUi = false
         )
     }
 

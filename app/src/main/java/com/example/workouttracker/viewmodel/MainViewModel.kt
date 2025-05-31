@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.data.network.repositories.NotificationRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,11 +22,17 @@ class MainViewModel @Inject constructor(
     var notificationRepository: NotificationRepository,
     private var sharedPrefsManager: SharedPrefsManager
 ): ViewModel() {
+
+    /** Track when the token has been validated */
     private val _tokenValidated = MutableStateFlow(false)
     val tokenValidated = _tokenValidated.asStateFlow()
 
+    /** Job to refresh the notification on every N seconds */
+    private var refreshJob: Job? = null
+
     init {
         checkAutoLogin()
+        scheduleRefreshNotification()
     }
 
     /** Performs a check whether there is stored user and valid token and if so auto login the user */
@@ -47,6 +55,16 @@ class MainViewModel @Inject constructor(
             }
         } else {
             _tokenValidated.value = true
+        }
+    }
+
+    /** Schedule background job to refresh the notification on every 30 seconds */
+    fun scheduleRefreshNotification() {
+        refreshJob = viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                notificationRepository.refreshNotification()
+                delay(30000L)
+            }
         }
     }
 }

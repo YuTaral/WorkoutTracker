@@ -38,9 +38,17 @@ class NetworkManager @Inject constructor(
      */
     private lateinit var requestFactory: () -> Call<CustomResponse>
 
+    /**
+     * Call the request execution function to send the request
+     * @param request the request to send
+     * @param onSuccessCallback the callback to execute on success
+     * @param onErrorCallback the callback to execute if the response code is not success
+     * @param blockUi true to display the loading dialog, false otherwise
+     */
     suspend fun sendRequest(request: () -> Call<CustomResponse>,
                             onSuccessCallback: (CustomResponse) -> Unit,
-                            onErrorCallback: (CustomResponse) -> Unit = {}
+                            onErrorCallback: (CustomResponse) -> Unit = {},
+                            blockUi: Boolean = true
     ) {
         if (!isNetworkAvailable()) {
             SnackbarManager.showSnackbar(R.string.error_msg_no_internet)
@@ -53,19 +61,23 @@ class NetworkManager @Inject constructor(
         requestFactory = request
 
         // Execute the call, passing new Call<CustomResponse> object
-        execute(requestFactory(), onSuccessCallback, onErrorCallback)
+        execute(requestFactory(), onSuccessCallback, onErrorCallback, blockUi)
     }
 
-    /** Execute to request
+    /** Execute the request
      * @param request the request to send
      * @param onSuccessCallback the callback to execute on success
      * @param onErrorCallback the callback to execute if the response code is not success
+     * @param blockUi true to display the loading dialog, false otherwise
      */
     private suspend fun execute(request: Call<CustomResponse>,
                                 onSuccessCallback: (CustomResponse) -> Unit,
-                                onErrorCallback: (CustomResponse) -> Unit = {}
+                                onErrorCallback: (CustomResponse) -> Unit = {},
+                                blockUi: Boolean
     ) {
-        LoadingManager.showLoading()
+        if (blockUi) {
+            LoadingManager.showLoading()
+        }
 
         var response: Response<CustomResponse>? = null
         val responseContent: CustomResponse?
@@ -104,7 +116,9 @@ class NetworkManager @Inject constructor(
                         apiService.updateToken(responseContent.data[0])
 
                         // Remove the progress dialog from the "first" request before resending it
-                        LoadingManager.hideLoading()
+                        if (blockUi) {
+                            LoadingManager.hideLoading()
+                        }
 
                         // Resend the original request
                         sendRequest(requestFactory, onSuccessCallback, onErrorCallback)
@@ -140,7 +154,9 @@ class NetworkManager @Inject constructor(
             }
 
             // Remove the progress dialog
-            LoadingManager.hideLoading()
+            if (blockUi) {
+                LoadingManager.hideLoading()
+            }
         }
     }
 
