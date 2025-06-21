@@ -79,14 +79,24 @@ fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
                         .weight(1f)
                         .customBorder(end = true),
                     text = stringResource(id = q.getCancelButtonText()),
-                    onClick = event.onCancel
+                    onClick = {
+                        event.onCancel()
+                        scope.launch {
+                            AskQuestionDialogManager.hideQuestion()
+                        }
+                    }
                 )
                 DialogButton(
                     modifier = Modifier
                         .weight(1f)
                         .customBorder(),
                     text = stringResource(id = q.getConfirmButtonText()),
-                    onClick = event.onConfirm
+                    onClick = {
+                        event.onConfirm()
+                        scope.launch {
+                            AskQuestionDialogManager.hideQuestion()
+                        }
+                    }
                 )
             }
         }

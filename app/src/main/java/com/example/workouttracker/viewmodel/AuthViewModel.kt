@@ -3,6 +3,7 @@ package com.example.workouttracker.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
+import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.utils.Utils
@@ -20,8 +21,9 @@ import kotlinx.coroutines.launch
 /** AuthViewModel to manage the state of AuthScreen Login or Register */
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    var userRepository: UserRepository,
     private var resourceProvider: ResourceProvider,
-    private var userRepository: UserRepository
+    private var sharedPrefsManager: SharedPrefsManager
 ): ViewModel() {
 
     /** Login UI State representing the state of the Login page */
@@ -125,7 +127,18 @@ class AuthViewModel @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.login(email = state.email, password = state.password)
+            userRepository.login(
+                email = state.email,
+                password = state.password,
+                onSuccess = {
+                    if (sharedPrefsManager.isFirstAppStart()) {
+                        viewModelScope.launch {
+                            userRepository.requestAllPerm()
+                        }
+                        sharedPrefsManager.setFirstStartApp()
+                    }
+                }
+            )
         }
     }
 

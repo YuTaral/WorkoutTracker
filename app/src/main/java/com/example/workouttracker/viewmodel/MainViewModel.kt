@@ -20,7 +20,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     var userRepository: UserRepository,
     var notificationRepository: NotificationRepository,
-    private var sharedPrefsManager: SharedPrefsManager
+    var sharedPrefsManager: SharedPrefsManager
 ): ViewModel() {
 
     /** Track when the token has been validated */

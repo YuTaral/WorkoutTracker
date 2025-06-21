@@ -16,7 +16,8 @@ enum class Question(private val titleId: Int, private val questionId: Int,
     DELETE_TEMPLATE(R.string.question_delete_template_title, R.string.question_delete_template_text, R.string.yes_btn, R.string.no_btn),
     DELETE_TEAM(R.string.question_delete_team_title, R.string.question_delete_team_text, R.string.yes_btn, R.string.no_btn),
     LEAVE_TEAM(R.string.question_leave_team_title, R.string.question_leave_team_text, R.string.yes_btn, R.string.no_btn),
-    JOIN_TEAM(R.string.question_join_team_title, R.string.question_join_team_text, R.string.accept_btn, R.string.decline_btn);
+    JOIN_TEAM(R.string.question_join_team_title, R.string.question_join_team_text, R.string.accept_btn, R.string.decline_btn),
+    GRANT_PERMISSIONS(R.string.question_grant_permissions, R.string.question_grant_permissions_text, R.string.view_permissions_btn, R.string.maybe_later_btn);
 
     /** Returns the question title */
     fun getTitle(): Int {

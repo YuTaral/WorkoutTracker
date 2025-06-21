@@ -10,10 +10,10 @@ import com.example.workouttracker.utils.interfaces.IImagePicker
 
 /** Image upload class to handle image uploading from the album or camera */
 object ImageUploadManager {
-    private lateinit var permissionResultHandler: PermissionResultHandler
+    private lateinit var permissionHandler: PermissionHandler
 
-    fun init (resultHandler: PermissionResultHandler) {
-        permissionResultHandler = resultHandler
+    fun init (resultHandler: PermissionHandler) {
+        permissionHandler = resultHandler
     }
 
     /**
@@ -21,7 +21,7 @@ object ImageUploadManager {
      * the image picker view model
      */
     suspend fun showImagePicker(imagePicker: IImagePicker) {
-        permissionResultHandler.setImagePicker(imagePicker)
+        permissionHandler.setImagePicker(imagePicker)
 
         AskQuestionDialogManager.askQuestion(
             DisplayAskQuestionDialogEvent(
@@ -45,29 +45,29 @@ object ImageUploadManager {
 
     /** Open the camera to allow image capture */
     private fun openCamera() {
-        if (permissionResultHandler.checkPermissionGranted(Manifest.permission.CAMERA)) {
+        if (permissionHandler.checkPermissionGranted(Manifest.permission.CAMERA)) {
             // Permission granted, open the camera
-            permissionResultHandler.cameraLauncher.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+            permissionHandler.cameraLauncher.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
         } else {
             // Ask for the permission
-            permissionResultHandler.cameraPermLauncher.launch(Manifest.permission.CAMERA)
+            permissionHandler.cameraPermLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
     /** Open the gallery to allow image selection */
     private fun openGallery() {
         var permissionGranted = false
-        val readMediaPermString = permissionResultHandler.getMediaPermissionString()
+        val readMediaPermString = permissionHandler.getMediaPermissionString()
 
-        if (permissionResultHandler.checkPermissionGranted(readMediaPermString)) {
+        if (permissionHandler.checkPermissionGranted(readMediaPermString)) {
             permissionGranted = true
         } else {
-            permissionResultHandler.readMediaImagesPermLauncher.launch(readMediaPermString)
+            permissionHandler.readMediaImagesPermLauncher.launch(readMediaPermString)
         }
 
         if (permissionGranted) {
             // Permission granted, open the gallery
-            permissionResultHandler.galleryLauncher.launch(
+            permissionHandler.galleryLauncher.launch(
                 Intent(
                     Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -77,7 +77,7 @@ object ImageUploadManager {
 
     /** Open the photo picker */
     private fun openPhotoPicker() {
-        permissionResultHandler.photoPickerLauncher
+        permissionHandler.photoPickerLauncher
             .launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 }

@@ -3,27 +3,24 @@ package com.example.workouttracker.ui.managers
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.provider.Settings
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.MainActivity
+import com.example.workouttracker.ui.PermissionHost
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.utils.interfaces.IImagePicker
 import kotlinx.coroutines.launch
 
 /** Class to handle the logic when requesting permissions / launching specific result launcher */
-class PermissionResultHandler(mainActivity: MainActivity) {
-    private var activity = mainActivity
+class PermissionHandler(permHost: PermissionHost, askForAll: Boolean) {
+    private var host = permHost
+    private var askForAllPermissions = askForAll
     private var imagePicker: IImagePicker? = null
     var notificationPermLauncher: ActivityResultLauncher<String>
     var cameraPermLauncher: ActivityResultLauncher<String>
@@ -48,9 +45,13 @@ class PermissionResultHandler(mainActivity: MainActivity) {
 
     /** Initialize the launchers for requesting permissions */
     private fun initializeRequestPermissionLaunchers(permission: String): ActivityResultLauncher<String> {
-        return activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            onResultInActivity(isGranted, permission)
-        }
+        return host.registerPermissionLauncher(callback = { isGranted ->
+            if (askForAllPermissions) {
+                onResultInActivity(permission)
+            } else {
+                onResultInActivity(isGranted, permission)
+            }
+        })
     }
 
     /** Execute the logic to ask for all permission one after another when the asking for permissions
@@ -96,12 +97,12 @@ class PermissionResultHandler(mainActivity: MainActivity) {
                 return
             }
 
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+            if (!host.shouldShowRequestPermissionRationale(permission)) {
                 // Permission set to "Don't ask again" or permanently denied, open the settings
                 showSettingsDialogForCamera()
             } else {
                 // Permission denied
-                activity.lifecycleScope.launch {
+                host.getLifecycleScope().launch {
                     SnackbarManager.showSnackbar(R.string.permission_denied_message)
                 }
             }
@@ -111,7 +112,7 @@ class PermissionResultHandler(mainActivity: MainActivity) {
     /** Initialize the launchers for open camera / photos */
     private fun initializeActivityResultLaunchers() {
         // Initialize camera launcher
-        cameraLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        cameraLauncher = host.registerActivityResultLauncher(callback = { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK && result.data?.extras != null) {
 
                 val capturedImageBitmap: Bitmap? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -123,28 +124,25 @@ class PermissionResultHandler(mainActivity: MainActivity) {
                     result.data?.extras?.getParcelable("data")
                 }
 
-                if (capturedImageBitmap == null) {
-                    return@registerForActivityResult
+                if (capturedImageBitmap != null) {
+                    onLauncherResultOk(capturedImageBitmap)
                 }
-
-                onLauncherResultOk(capturedImageBitmap)
-
             }
-        }
+        })
 
         // Initialize gallery launcher
-        galleryLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        galleryLauncher = host.registerActivityResultLauncher(callback = { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK && result.data?.data != null) {
                 onLauncherResultOk(result.data?.data!!)
             }
-        }
+        })
 
         // Initialize photo picker launcher
-        photoPickerLauncher = activity.registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        photoPickerLauncher = host.registerPhotoPickerLauncher(callback = { uri ->
             if (uri != null) {
                 onLauncherResultOk(uri)
             }
-        }
+        })
     }
 
     /** Execute the callback when launcher result is OK
@@ -187,26 +185,26 @@ class PermissionResultHandler(mainActivity: MainActivity) {
 
     /** Ask the user to open settings and change the permission */
     private fun showSettingsDialogForCamera() {
-        activity.lifecycleScope.launch {
+        host.getLifecycleScope().launch {
             AskQuestionDialogManager.askQuestion(
                 DisplayAskQuestionDialogEvent(
                     question = Question.ALLOW_CAMERA_PERMISSION,
                     show = true,
                     onCancel = {
-                        activity.lifecycleScope.launch {
+                        host.getLifecycleScope().launch {
                             AskQuestionDialogManager.hideQuestion()
                         }
                     },
                     onConfirm = {
                         val intent = Intent(
                             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", activity.packageName, null)
+                            Uri.fromParts("package", host.getPackageName(), null)
                         )
 
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        activity.startActivity(intent)
+                        host.startActivity(intent)
 
-                        activity.lifecycleScope.launch {
+                        host.getLifecycleScope().launch {
                             AskQuestionDialogManager.hideQuestion()
                         }
                     }
@@ -237,6 +235,6 @@ class PermissionResultHandler(mainActivity: MainActivity) {
      * @param permission the permission
      */
     fun checkPermissionGranted(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
+        return host.checkPermissionGranted(permission)
     }
 }
