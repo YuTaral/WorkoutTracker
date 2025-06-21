@@ -1,5 +1,6 @@
 package com.example.workouttracker.ui
 
+import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResult
@@ -64,4 +65,7 @@ interface PermissionHost {
      * @return True if the permission is granted, false otherwise.
      */
     fun checkPermissionGranted(permission: String): Boolean
+
+    /** Return content resolver */
+    fun getContentResolver(): ContentResolver
 }

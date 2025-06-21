@@ -168,7 +168,7 @@ class PermissionHandler(permHost: PermissionHost, askForAll: Boolean) {
      * @param uri the image uri
      */
     private fun onLauncherResultOk(uri: Uri) {
-        val bitmap =  Utils.scaleBitmap(uri)
+        val bitmap =  Utils.scaleBitmap(uri, host.getContentResolver())
 
         if (imagePicker == null) {
             return

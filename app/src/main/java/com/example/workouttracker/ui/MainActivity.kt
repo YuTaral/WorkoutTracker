@@ -1,6 +1,7 @@
 package com.example.workouttracker.ui
 
 import android.animation.ObjectAnimator
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -26,7 +27,6 @@ import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.PermissionHandler
 import com.example.workouttracker.ui.managers.ImageUploadManager
 import com.example.workouttracker.ui.managers.Question
-import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.MainViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,6 +65,10 @@ class MainActivity: ComponentActivity(), PermissionHost {
         return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
 
+    override fun getContentResolver(): ContentResolver {
+        return super.getContentResolver()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Show splash screen with animation
         splashScreen()
@@ -72,7 +76,6 @@ class MainActivity: ComponentActivity(), PermissionHost {
         super.onCreate(savedInstanceState)
 
         // Initialize the classes dependent on activity methods
-        Utils.init(this)
         permissionHandler = PermissionHandler(this, vm.sharedPrefsManager.isFirstAppStart())
         ImageUploadManager.init(permissionHandler)
 

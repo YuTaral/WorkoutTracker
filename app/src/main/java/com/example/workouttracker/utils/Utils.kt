@@ -1,7 +1,7 @@
 package com.example.workouttracker.utils
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
@@ -28,11 +28,6 @@ import java.util.TimeZone
 
 /** Object with common methods */
 object Utils {
-    private lateinit var appContext: Context
-
-    fun init(context: Context) {
-        appContext = context.applicationContext
-    }
 
     /** Email validation
      * @param target the email to check
@@ -153,11 +148,10 @@ object Utils {
      * Create and scales a bitmap from the provided uri to fit within the specified width and height
      * while maintaining aspect ratio. Return the bitmap is success, null otherwise
      * @param uri the image uri
+     * @param contentResolver ContentResolver instance, provided by the activity
      */
-    fun scaleBitmap(uri: Uri): Bitmap? {
+    fun scaleBitmap(uri: Uri, contentResolver: ContentResolver): Bitmap? {
         try {
-            val contentResolver = appContext.contentResolver
-
             val bitmap: Bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 // For API 28+ (Pie and above), use ImageDecoder with scaling
                 val source = ImageDecoder.createSource(contentResolver, uri)
