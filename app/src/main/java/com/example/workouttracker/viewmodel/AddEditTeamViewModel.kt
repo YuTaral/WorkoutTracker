@@ -12,7 +12,7 @@ import com.example.workouttracker.ui.dialogs.ManageMembersDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
-import com.example.workouttracker.ui.managers.ImageUploadManager
+import com.example.workouttracker.ui.managers.ImagePickerEventBus
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.SnackbarManager
@@ -32,7 +32,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddEditTeamViewModel @Inject constructor(
     var teamRepository: TeamRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private val imagePickerBus: ImagePickerEventBus
 ): ViewModel(), IImagePicker {
 
     /** Class representing the UI state fields */
@@ -121,7 +122,7 @@ class AddEditTeamViewModel @Inject constructor(
     /** Change the team image on click */
     fun onImageClick() {
         viewModelScope.launch {
-            ImageUploadManager.showImagePicker(imagePicker = this@AddEditTeamViewModel)
+            imagePickerBus.requestImagePicker(this@AddEditTeamViewModel)
         }
     }
 

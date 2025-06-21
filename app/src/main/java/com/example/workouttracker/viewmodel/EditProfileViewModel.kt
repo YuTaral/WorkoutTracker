@@ -9,7 +9,7 @@ import com.example.workouttracker.data.network.repositories.UserProfileRepositor
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
-import com.example.workouttracker.ui.managers.ImageUploadManager
+import com.example.workouttracker.ui.managers.ImagePickerEventBus
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.utils.ResourceProvider
@@ -28,7 +28,8 @@ import javax.inject.Inject
 class EditProfileViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private var userProfileRepository: UserProfileRepository,
-    private var userRepository: UserRepository
+    private var userRepository: UserRepository,
+    private val imagePickerBus: ImagePickerEventBus
 ): ViewModel(), IImagePicker {
 
     /** Class containing all fields in the UI */
@@ -72,7 +73,7 @@ class EditProfileViewModel @Inject constructor(
     /** Change the profile image on click */
     fun onImageClick() {
         viewModelScope.launch {
-            ImageUploadManager.showImagePicker(imagePicker = this@EditProfileViewModel)
+            imagePickerBus.requestImagePicker(this@EditProfileViewModel)
         }
     }
 

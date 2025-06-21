@@ -8,13 +8,10 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.workouttracker.utils.interfaces.IImagePicker
 
-/** Image upload class to handle image uploading from the album or camera */
-object ImageUploadManager {
-    private lateinit var permissionHandler: PermissionHandler
-
-    fun init (resultHandler: PermissionHandler) {
-        permissionHandler = resultHandler
-    }
+/** Image picker class to handle image uploading from the album or camera */
+class ImagePicker(
+    private var permissionHandler: PermissionHandler
+) {
 
     /**
      * Show dialog to select from where to upload the image

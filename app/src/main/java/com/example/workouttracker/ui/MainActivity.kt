@@ -24,19 +24,25 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
+import com.example.workouttracker.ui.managers.ImagePickerEventBus
 import com.example.workouttracker.ui.managers.PermissionHandler
-import com.example.workouttracker.ui.managers.ImageUploadManager
+import com.example.workouttracker.ui.managers.ImagePicker
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.viewmodel.MainViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /** The main activity of the application */
 @AndroidEntryPoint
 class MainActivity: ComponentActivity(), PermissionHost {
     private val vm by viewModels<MainViewModel>()
     private lateinit var permissionHandler: PermissionHandler
+    private lateinit var imagePicker: ImagePicker
+
+    @Inject
+    lateinit var imagePickerBus: ImagePickerEventBus
 
     override fun getLifecycleScope() = lifecycleScope
     override fun getPackageName(): String {
@@ -77,7 +83,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
 
         // Initialize the classes dependent on activity methods
         permissionHandler = PermissionHandler(this, vm.sharedPrefsManager.isFirstAppStart())
-        ImageUploadManager.init(permissionHandler)
+        imagePicker = ImagePicker(permissionHandler)
 
         setContent {
             Screen(vm = vm)
@@ -85,6 +91,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
 
         // Collect events
         askForAllPermissions()
+        showImagePicker()
     }
 
     /** Show animated splash screen until the token is validated */
@@ -133,6 +140,15 @@ class MainActivity: ComponentActivity(), PermissionHost {
                         }
                     ))
                 }
+            }
+        }
+    }
+
+    /** Collect events to show image picker */
+    private fun showImagePicker() {
+        lifecycleScope.launch {
+            imagePickerBus.imagePickerRequests.collect { picker ->
+                imagePicker.showImagePicker(picker)
             }
         }
     }
