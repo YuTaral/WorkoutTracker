@@ -26,7 +26,7 @@ import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.ImagePickerEventBus
 import com.example.workouttracker.ui.managers.PermissionHandler
-import com.example.workouttracker.ui.managers.ImagePicker
+import com.example.workouttracker.ui.managers.ImagePickerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.viewmodel.MainViewModel
 
@@ -39,7 +39,7 @@ import javax.inject.Inject
 class MainActivity: ComponentActivity(), PermissionHost {
     private val vm by viewModels<MainViewModel>()
     private lateinit var permissionHandler: PermissionHandler
-    private lateinit var imagePicker: ImagePicker
+    private lateinit var imagePickerManager: ImagePickerManager
 
     @Inject
     lateinit var imagePickerBus: ImagePickerEventBus
@@ -83,7 +83,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
 
         // Initialize the classes dependent on activity methods
         permissionHandler = PermissionHandler(this, vm.sharedPrefsManager.isFirstAppStart())
-        imagePicker = ImagePicker(permissionHandler)
+        imagePickerManager = ImagePickerManager(permissionHandler)
 
         setContent {
             Screen(vm = vm)
@@ -148,7 +148,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
     private fun showImagePicker() {
         lifecycleScope.launch {
             imagePickerBus.imagePickerRequests.collect { picker ->
-                imagePicker.showImagePicker(picker)
+                imagePickerManager.showImagePicker(picker)
             }
         }
     }

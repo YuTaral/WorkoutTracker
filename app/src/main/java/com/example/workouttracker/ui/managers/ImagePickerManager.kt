@@ -9,7 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.workouttracker.utils.interfaces.IImagePicker
 
 /** Image picker class to handle image uploading from the album or camera */
-class ImagePicker(
+class ImagePickerManager(
     private var permissionHandler: PermissionHandler
 ) {
 
