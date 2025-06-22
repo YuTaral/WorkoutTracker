@@ -39,7 +39,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.viewmodel.Page
 
@@ -50,7 +49,7 @@ fun Pager(vm: PagerViewModel = hiltViewModel()) {
     val selectedTabIndex = pages.indexOf(selectedPage).takeIf { it >= 0 } ?: 0
 
     LaunchedEffect(Unit) {
-        PagerManager.events.collect { page ->
+        vm.pagerManager.events.collect { page ->
             vm.changeSelection(page)
         }
     }

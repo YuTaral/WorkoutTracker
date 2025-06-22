@@ -28,7 +28,8 @@ class WorkoutsViewModel @Inject constructor(
     var workoutRepository: WorkoutRepository,
     private var resourceProvider: ResourceProvider,
     private var datePickerDialog: DatePickerDialogManager,
-    private var dialogManager: DialogManager
+    private var dialogManager: DialogManager,
+    private var pagerManager: PagerManager
 ): ViewModel() {
 
     /** Selected workouts start date */
@@ -94,7 +95,7 @@ class WorkoutsViewModel @Inject constructor(
         workoutRepository.updateSelectedWorkout(workout)
 
         viewModelScope.launch {
-            PagerManager.changePageSelection(Page.SelectedWorkout)
+            pagerManager.changePageSelection(Page.SelectedWorkout)
         }
     }
 

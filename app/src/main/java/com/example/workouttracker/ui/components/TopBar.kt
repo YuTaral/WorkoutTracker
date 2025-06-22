@@ -28,21 +28,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.reusable.Label
-import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.viewmodel.Page
 import kotlinx.coroutines.launch
 
 /**
  * The top bar of the application
  * @param drawerState the left drawer state
  * @param notification whether the user has new notifications
+ * @param displayNotifications display the notifications screen
+ * @param displayActions display the actions screen
  */
 @Composable
-fun TopBar(drawerState: DrawerState, notification: Boolean) {
+fun TopBar(
+    drawerState: DrawerState,
+    notification: Boolean,
+    displayNotifications: () -> Unit,
+    displayActions: () -> Unit
+) {
     val scope = rememberCoroutineScope()
 
     Row(modifier = Modifier
@@ -71,11 +76,7 @@ fun TopBar(drawerState: DrawerState, notification: Boolean) {
         Column(
             modifier = Modifier.clickable(
                 enabled = true,
-                onClick = {
-                    scope.launch {
-                        PagerManager.changePageSelection(Page.Notifications)
-                    }
-                }
+                onClick = { displayNotifications() }
             ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -104,9 +105,7 @@ fun TopBar(drawerState: DrawerState, notification: Boolean) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.clickable {
-                scope.launch {
-                    PagerManager.changePageSelection(Page.Actions)
-                }
+                scope.launch { displayActions() }
             },
         ) {
             Image(
@@ -126,6 +125,6 @@ fun TopBar(drawerState: DrawerState, notification: Boolean) {
 @Composable
 private fun TopBarPreview() {
     WorkoutTrackerTheme {
-        TopBar(drawerState = rememberDrawerState(initialValue = DrawerValue.Closed), true)
+        TopBar(drawerState = rememberDrawerState(initialValue = DrawerValue.Closed), true, {}, {})
     }
 }

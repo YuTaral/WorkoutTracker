@@ -23,7 +23,8 @@ class NotificationsScreenViewModel @Inject constructor(
     var notificationRepository: NotificationRepository,
     private var teamRepository: TeamRepository,
     private var userRepository: UserRepository,
-    private var askQuestionManager: AskQuestionDialogManager
+    private var askQuestionManager: AskQuestionDialogManager,
+    private val pagerManager: PagerManager,
 ): ViewModel() {
 
     /** Initialize the data when the screen is displayed */
@@ -143,7 +144,7 @@ class NotificationsScreenViewModel @Inject constructor(
                             team = teamRepository.teams.value.find { it.id == teamId },
                             callback = {
                                 viewModelScope.launch {
-                                    PagerManager.changePageSelection(
+                                    pagerManager.changePageSelection(
                                         Page.EditTeam(team = teamRepository.selectedTeam.value!!)
                                     )
                                 }

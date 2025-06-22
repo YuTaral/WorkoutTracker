@@ -10,6 +10,7 @@ import com.example.workouttracker.ui.managers.DatePickerDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.LoadingManager
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
@@ -34,7 +35,8 @@ class MainViewModel @Inject constructor(
     var datePickerManager: DatePickerDialogManager,
     var dialogManager: DialogManager,
     var loadingManager: LoadingManager,
-    var snackbarManager: SnackbarManager
+    var snackbarManager: SnackbarManager,
+    var pagerManager: PagerManager
 ): ViewModel() {
 
     /** Track when the token has been validated */
@@ -95,6 +97,17 @@ class MainViewModel @Inject constructor(
                     onConfirm = { callback() }
                 ),
             )
+        }
+    }
+
+
+    /**
+     * Change displayed page
+     * @param page the new page
+     */
+    fun changePage(page: Page) {
+        viewModelScope.launch {
+            pagerManager.changePageSelection(page)
         }
     }
 }

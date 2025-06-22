@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ManageTeamsViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
-    var teamRepository: TeamRepository
+    private val pagerManager: PagerManager,
+    var teamRepository: TeamRepository,
 ): ViewModel() {
 
     /** Enum with team types when fetching teams */
@@ -61,9 +62,9 @@ class ManageTeamsViewModel @Inject constructor(
             teamRepository.updateSelectedTeam(value)
 
             if (teamRepository.selectedTeam.value == null) {
-                PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
+                pagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
             } else {
-                PagerManager.changePageSelection(Page.EditTeam(team = value!!))
+                pagerManager.changePageSelection(Page.EditTeam(team = value!!))
             }
         }
     }
@@ -80,7 +81,7 @@ class ManageTeamsViewModel @Inject constructor(
     /** Show the panel to add new team */
     fun showAddTeam() {
         viewModelScope.launch {
-            PagerManager.changePageSelection(Page.AddTeam)
+            pagerManager.changePageSelection(Page.AddTeam)
         }
     }
 

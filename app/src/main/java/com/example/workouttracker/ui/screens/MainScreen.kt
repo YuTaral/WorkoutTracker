@@ -21,7 +21,9 @@ fun MainScreen(
         email: String,
         fullName: String,
         profileImage: String,
-        notification: Boolean
+        notification: Boolean,
+        displayNotifications: () -> Unit,
+        displayActions: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -50,7 +52,9 @@ fun MainScreen(
             ) {
                 TopBar(
                     drawerState = drawerState,
-                    notification = notification
+                    notification = notification,
+                    displayNotifications = { displayNotifications() },
+                    displayActions = { displayActions() }
                 )
                 Pager()
             }
@@ -62,6 +66,6 @@ fun MainScreen(
 @Composable
 private fun DefaultPreview() {
     WorkoutTrackerTheme {
-        MainScreen("test@abv.bg", "Test user", "", true)
+        MainScreen("test@abv.bg", "Test user", "", true, {}, {})
     }
 }

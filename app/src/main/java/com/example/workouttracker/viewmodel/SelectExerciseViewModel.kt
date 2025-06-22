@@ -38,7 +38,8 @@ class SelectExerciseViewModel @Inject constructor(
     private var userProfileRepository: UserProfileRepository,
     private var resourceProvider: ResourceProvider,
     private var askQuestionManager: AskQuestionDialogManager,
-    private val dialogManager: DialogManager
+    private val dialogManager: DialogManager,
+    private val pagerManager: PagerManager
 ): ViewModel() {
 
     /** Enum representing the actions from the action spinner */
@@ -228,7 +229,7 @@ class SelectExerciseViewModel @Inject constructor(
                                 dialogManager.hideDialog("AddEditMGExerciseDialog")
 
                                 if (updateWorkout) {
-                                    PagerManager.changePageSelection(Page.SelectedWorkout)
+                                    pagerManager.changePageSelection(Page.SelectedWorkout)
                                 }
                             }
                         }

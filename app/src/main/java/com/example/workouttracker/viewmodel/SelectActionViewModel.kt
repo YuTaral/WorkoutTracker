@@ -27,16 +27,16 @@ import javax.inject.Inject
 
 /** Different actions accessed from the actions menu */
 sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () -> Unit ) {
-    data object ManageExercises : Action(R.drawable.icon_screen_manage_exercises, R.string.manage_exercises_lbl,
-        { PagerManager.changePageSelection(Page.ManageExercise) }
+    data class ManageExercises(private val onActionClick: () -> Unit):
+        Action(R.drawable.icon_screen_manage_exercises, R.string.manage_exercises_lbl, { onActionClick() }
     )
 
-    data object ManageTemplates : Action(R.drawable.icon_screen_manage_templates, R.string.manage_templates_lbl,
-        { PagerManager.changePageSelection(Page.ManageTemplates) }
+    data class ManageTemplates(private val onActionClick: () -> Unit):
+        Action(R.drawable.icon_screen_manage_templates, R.string.manage_templates_lbl, { onActionClick() }
     )
 
-    data object ManageTeams : Action(R.drawable.icon_screen_manage_teams, R.string.manage_teams_lbl,
-        { PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH)) }
+    data class ManageTeams(private val onActionClick: () -> Unit):
+        Action(R.drawable.icon_screen_manage_teams, R.string.manage_teams_lbl, { onActionClick() }
     )
 
     data class FinishWorkout(private val onActionClick: () -> Unit):
@@ -59,7 +59,8 @@ class SelectActionViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private var notificationManager: CustomNotificationManager,
     private val dialogManager: DialogManager,
-    private val loadingManager: LoadingManager
+    private val loadingManager: LoadingManager,
+    private val pagerManager: PagerManager
 ): ViewModel() {
 
     /** The valid actions */
@@ -81,9 +82,9 @@ class SelectActionViewModel @Inject constructor(
         }
 
         _actions.value.add(createStartTimerAction())
-        _actions.value.add(Action.ManageExercises)
-        _actions.value.add(Action.ManageTemplates)
-        _actions.value.add(Action.ManageTeams)
+        _actions.value.add(createManageExercisesAction())
+        _actions.value.add(createManageTemplates())
+        _actions.value.add(createManageTeamsAction())
 
         _isInitialized.value = true
     }
@@ -123,7 +124,7 @@ class SelectActionViewModel @Inject constructor(
                             workoutRepository.updateWorkouts(null)
 
                             withContext(Dispatchers.Default) {
-                                PagerManager.changePageSelection(Page.SelectedWorkout)
+                                pagerManager.changePageSelection(Page.SelectedWorkout)
                             }
                         }
                     }
@@ -175,6 +176,38 @@ class SelectActionViewModel @Inject constructor(
         )
     }
 
+    /** Create manage teams action */
+    private fun createManageTeamsAction(): Action {
+        return Action.ManageTeams(
+            onActionClick = {
+                viewModelScope.launch {
+                    pagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
+                }
+            }
+        )
+    }
+
+    /** Create manage templates action */
+    private fun createManageTemplates(): Action {
+        return Action.ManageTemplates(
+            onActionClick = {
+                viewModelScope.launch {
+                    pagerManager.changePageSelection(Page.ManageTemplates)
+                }
+            }
+        )
+    }
+
+    /** Create manage exercises action */
+    private fun createManageExercisesAction(): Action {
+        return Action.ManageExercises(
+            onActionClick = {
+                viewModelScope.launch {
+                    pagerManager.changePageSelection(Page.ManageExercise)
+                }
+            }
+        )
+    }
     /** Reset the data when the screen is being removed */
     fun resetData() {
         _actions.value.clear()

@@ -13,6 +13,7 @@ import com.example.workouttracker.ui.dialogs.EditExerciseFromWorkoutDialog
 import com.example.workouttracker.ui.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.DialogManager
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,10 +32,11 @@ import javax.inject.Inject
 class SelectedWorkoutViewModel @Inject constructor(
     var workoutRepository: WorkoutRepository,
     var userRepository: UserRepository,
+    var pagerManager: PagerManager,
     private var exerciseRepository: ExerciseRepository,
     private var resourceProvider: ResourceProvider,
     private var notificationManager: CustomNotificationManager,
-    private var dialogManager: DialogManager
+    private var dialogManager: DialogManager,
 ): ViewModel() {
 
     /** Seconds elapsed since the start of the workout */
@@ -147,6 +149,13 @@ class SelectedWorkoutViewModel @Inject constructor(
                 dialogName = "EditExerciseFromWorkoutDialog",
                 content = { EditExerciseFromWorkoutDialog(exercise, weightUnit) }
             )
+        }
+    }
+
+    /** Display select exercise screen*/
+    fun displaySelectExercise() {
+        viewModelScope.launch {
+            pagerManager.changePageSelection(Page.SelectExercise)
         }
     }
 

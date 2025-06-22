@@ -30,7 +30,8 @@ class AddEditWorkoutViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private val vibrationManager: VibrationManager,
     private var askQuestionManager: AskQuestionDialogManager,
-    private val dialogManager: DialogManager
+    private val dialogManager: DialogManager,
+    private val pagerManager: PagerManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -178,7 +179,7 @@ class AddEditWorkoutViewModel @Inject constructor(
 
             withContext(Dispatchers.Main) {
                 dialogManager.hideDialog("AddEditWorkoutDialog")
-                PagerManager.changePageSelection(redirectToPage)
+                pagerManager.changePageSelection(redirectToPage)
             }
         }
     }

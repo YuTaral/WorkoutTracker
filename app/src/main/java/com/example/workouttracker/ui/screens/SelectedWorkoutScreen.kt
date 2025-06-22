@@ -48,7 +48,6 @@ import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.components.ExerciseItem
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
-import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
@@ -60,7 +59,6 @@ import com.example.workouttracker.ui.theme.labelMediumAccent
 import com.example.workouttracker.ui.theme.labelMediumGreen
 import com.example.workouttracker.ui.theme.labelMediumOrange
 import com.example.workouttracker.utils.Utils
-import com.example.workouttracker.viewmodel.Page
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,7 +67,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 /** The screen displaying the currently selected workout */
-fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedWorkoutViewModel>()) {
+fun SelectedWorkoutScreen(
+    vm: SelectedWorkoutViewModel = hiltViewModel()
+) {
     val selectedWorkout by vm.workoutRepository.selectedWorkout.collectAsStateWithLifecycle()
     val user by vm.userRepository.user.collectAsStateWithLifecycle()
 
@@ -81,8 +81,8 @@ fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedW
             secondsStateFlow = vm.secondsElapsed,
             weightUnit = user!!.defaultValues.weightUnit.text,
             onRestClick = { seconds, id -> vm.startTimer(seconds, id) },
-            showEditExercise = { exercise, weightUnit -> vm.showEditExercise(exercise, weightUnit) }
-
+            showEditExercise = { exercise, weightUnit -> vm.showEditExercise(exercise, weightUnit) },
+            changePage = { vm.displaySelectExercise() }
         )
     } else {
         vm.stopTimer()
@@ -105,7 +105,8 @@ private fun WorkoutScreen(
     secondsStateFlow: StateFlow<Int>,
     weightUnit: String,
     onRestClick: (Long, Long) -> Unit,
-    showEditExercise: (ExerciseModel, String) -> Unit
+    showEditExercise: (ExerciseModel, String) -> Unit,
+    changePage: () -> Unit
 ) {
     var showNotes by rememberSaveable { mutableStateOf(false) }
     val secondsElapsed by secondsStateFlow.collectAsStateWithLifecycle()
@@ -245,9 +246,7 @@ private fun WorkoutScreen(
                     .align(Alignment.BottomEnd)
                     .padding(end = PaddingSmall),
                 onClick = {
-                    scope.launch {
-                        PagerManager.changePageSelection(Page.SelectExercise)
-                    }
+                    scope.launch { changePage() }
                 },
                 image = Icons.Default.Add
             )
@@ -311,7 +310,8 @@ fun WorkoutScreenPreview() {
             onEditClick = {},
             secondsStateFlow = MutableStateFlow(120).asStateFlow(),
             weightUnit = "Kg", {} as (Long, Long) -> Unit,
-            showEditExercise = {} as (ExerciseModel, String) -> Unit
+            showEditExercise = {} as (ExerciseModel, String) -> Unit,
+            changePage = {}
         )
     }
 }

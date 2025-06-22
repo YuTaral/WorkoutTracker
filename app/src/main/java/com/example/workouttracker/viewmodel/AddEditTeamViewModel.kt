@@ -37,7 +37,8 @@ class AddEditTeamViewModel @Inject constructor(
     private val vibrationManager: VibrationManager,
     private var askQuestionManager: AskQuestionDialogManager,
     private var dialogManager: DialogManager,
-    private val snackbarManager: SnackbarManager
+    private val snackbarManager: SnackbarManager,
+    private val pagerManager: PagerManager
 ): ViewModel(), IImagePicker {
 
     /** Class representing the UI state fields */
@@ -155,7 +156,7 @@ class AddEditTeamViewModel @Inject constructor(
                             teamId = teamRepository.selectedTeam.value!!.id,
                             onSuccess = {
                                 viewModelScope.launch {
-                                    PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
+                                    pagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
                                 }
                             }
                         )
@@ -189,7 +190,7 @@ class AddEditTeamViewModel @Inject constructor(
                             teamId = teamRepository.selectedTeam.value!!.id,
                             onSuccess = {
                                 viewModelScope.launch {
-                                    PagerManager.changePageSelection(Page.ManageTeams(ViewTeamAs.MEMBER))
+                                    pagerManager.changePageSelection(Page.ManageTeams(ViewTeamAs.MEMBER))
                                 }
                             }
                         )
@@ -214,7 +215,7 @@ class AddEditTeamViewModel @Inject constructor(
                 team = team,
                 onSuccess = {
                     viewModelScope.launch {
-                        PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
+                        pagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
                     }
                 }
             )
@@ -235,7 +236,7 @@ class AddEditTeamViewModel @Inject constructor(
                 team = team,
                 onSuccess = {
                     viewModelScope.launch {
-                        PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
+                        pagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
                     }
                 }
             )

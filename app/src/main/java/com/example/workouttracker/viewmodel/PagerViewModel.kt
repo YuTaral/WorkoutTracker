@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.TeamModel
+import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.screens.SelectedTeamScreen
 import com.example.workouttracker.ui.screens.ManageTeamsScreen
 import com.example.workouttracker.ui.screens.ManageTemplatesScreen
@@ -61,7 +62,9 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
 
 /** PagerViewModel to manage the state of the pages of the main screen */
 @HiltViewModel
-class PagerViewModel @Inject constructor(): ViewModel() {
+class PagerViewModel @Inject constructor(
+    var pagerManager: PagerManager
+): ViewModel() {
     private val _pages: MutableStateFlow<List<Page>> = MutableStateFlow(initializePages())
     val pages = _pages.asStateFlow()
 

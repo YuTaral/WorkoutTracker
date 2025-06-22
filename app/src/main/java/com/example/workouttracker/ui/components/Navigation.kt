@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.workouttracker.ui.screens.AuthScreen
 import com.example.workouttracker.ui.screens.MainScreen
 import com.example.workouttracker.viewmodel.MainViewModel
+import com.example.workouttracker.viewmodel.Page
 
 /** Navigation destinations */
 enum class Destinations {
@@ -62,6 +63,8 @@ fun Navigation(modifier: Modifier, vm: MainViewModel) {
                     fullName = it.fullName,
                     profileImage = it.profileImage,
                     notification = notification,
+                    displayNotifications = { vm.changePage(Page.Notifications)},
+                    displayActions = { vm.changePage(Page.Actions) }
                 )
             }
         }
