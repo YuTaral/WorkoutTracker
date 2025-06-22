@@ -29,7 +29,8 @@ class NetworkManager @Inject constructor(
     private val context: Context,
     private val apiService: APIService,
     private val customNotificationManager: Lazy<CustomNotificationManager>,
-    private val vibrationManager: VibrationManager
+    private val vibrationManager: VibrationManager,
+    private val loadingManager: LoadingManager
 ) {
     /** Use Factory pattern to create the call object. This is needed, because when
      * we need to refresh the token, the new token is returned as response from the server.
@@ -77,7 +78,7 @@ class NetworkManager @Inject constructor(
                                 blockUi: Boolean
     ) {
         if (blockUi) {
-            LoadingManager.showLoading()
+            loadingManager.showLoading()
         }
 
         var response: Response<CustomResponse>? = null
@@ -118,7 +119,7 @@ class NetworkManager @Inject constructor(
 
                         // Remove the progress dialog from the "first" request before resending it
                         if (blockUi) {
-                            LoadingManager.hideLoading()
+                            loadingManager.hideLoading()
                         }
 
                         // Resend the original request
@@ -156,7 +157,7 @@ class NetworkManager @Inject constructor(
 
             // Remove the progress dialog
             if (blockUi) {
-                LoadingManager.hideLoading()
+                loadingManager.hideLoading()
             }
         }
     }

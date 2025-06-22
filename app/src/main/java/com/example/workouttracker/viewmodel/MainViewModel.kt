@@ -9,6 +9,7 @@ import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
+import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.VibrationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +31,8 @@ class MainViewModel @Inject constructor(
     var vibrationManager: VibrationManager,
     var askQuestionManager: AskQuestionDialogManager,
     var datePickerManager: DatePickerDialogManager,
-    var dialogManager: DialogManager
+    var dialogManager: DialogManager,
+    var loadingManager: LoadingManager
 ): ViewModel() {
 
     /** Track when the token has been validated */

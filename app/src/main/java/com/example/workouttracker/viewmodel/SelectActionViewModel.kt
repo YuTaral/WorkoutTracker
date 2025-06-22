@@ -9,6 +9,7 @@ import com.example.workouttracker.ui.dialogs.StartTimerDialog
 import com.example.workouttracker.ui.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.DialogManager
+import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.viewmodel.Action.SaveWorkoutAsTemplate
@@ -57,7 +58,8 @@ class SelectActionViewModel @Inject constructor(
     private var workoutRepository: WorkoutRepository,
     private var resourceProvider: ResourceProvider,
     private var notificationManager: CustomNotificationManager,
-    private val dialogManager: DialogManager
+    private val dialogManager: DialogManager,
+    private val loadingManager: LoadingManager
 ): ViewModel() {
 
     /** The valid actions */
@@ -177,5 +179,21 @@ class SelectActionViewModel @Inject constructor(
     fun resetData() {
         _actions.value.clear()
         _isInitialized.value = false
+    }
+
+    /**
+     * Show / hide the loading dialog
+     * @param show true to show it, false to hide it
+     */
+    fun showHideLoading(show: Boolean) {
+        if (show) {
+            viewModelScope.launch {
+                loadingManager.showLoading()
+            }
+        } else {
+            viewModelScope.launch {
+                loadingManager.hideLoading()
+            }
+        }
     }
 }

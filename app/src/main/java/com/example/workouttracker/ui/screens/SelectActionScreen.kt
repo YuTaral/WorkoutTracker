@@ -16,7 +16,6 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.SelectActionViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
-import com.example.workouttracker.ui.managers.LoadingManager
 
 /**
  * Screen used to allow the user to select additional actions -
@@ -39,9 +38,9 @@ fun SelectActionScreen(vm: SelectActionViewModel = hiltViewModel()) {
 
     LaunchedEffect(initialized) {
         if (initialized) {
-            LoadingManager.hideLoading()
+            vm.showHideLoading(false)
         } else {
-            LoadingManager.showLoading()
+            vm.showHideLoading(true)
         }
     }
 

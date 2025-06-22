@@ -54,7 +54,7 @@ fun Screen(vm: MainViewModel) {
             modifier = Modifier.fillMaxSize(),
         ) { innerPadding ->
             WorkoutTrackerTheme {
-                ShowLoading()
+                ShowLoading(loadingManager = vm.loadingManager)
                 ShowSnackbar(snackbarHostState, context)
                 MakeVibration(context, vibrationManager = vm.vibrationManager)
                 AskQuestion(askQuestionDialogManager = vm.askQuestionManager)
@@ -84,12 +84,12 @@ private fun CustomSnackbarHost(snackbarHostState: SnackbarHostState) {
 
 /** Composable to show/hide the loading dialog */
 @Composable
-private fun ShowLoading() {
+private fun ShowLoading(loadingManager: LoadingManager) {
     var showLoading by rememberSaveable { mutableStateOf(false) }
 
     // Show loading
     LaunchedEffect(Unit) {
-        LoadingManager.events.collect { isLoading ->
+        loadingManager.events.collect { isLoading ->
             showLoading = isLoading
         }
     }
