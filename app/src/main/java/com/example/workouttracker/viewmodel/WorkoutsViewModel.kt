@@ -23,7 +23,8 @@ import javax.inject.Inject
 class WorkoutsViewModel @Inject constructor(
     var userRepository: UserRepository,
     var workoutRepository: WorkoutRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private var datePickerDialog: DatePickerDialogManager
 ): ViewModel() {
 
     /** Selected workouts start date */
@@ -53,15 +54,15 @@ class WorkoutsViewModel @Inject constructor(
     /** Display the date picker dialog */
     fun showDatePicker() {
         viewModelScope.launch {
-            DatePickerDialogManager.showDialog(
+            datePickerDialog.showDialog(
                 onCancel = {
                     viewModelScope.launch {
-                        DatePickerDialogManager.hideDialog()
+                        datePickerDialog.hideDialog()
                     }
                 },
                 onDatePick = { newDate ->
                     viewModelScope.launch {
-                        DatePickerDialogManager.hideDialog()
+                        datePickerDialog.hideDialog()
                     }
 
                     updateStartDate(newDate)

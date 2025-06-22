@@ -58,7 +58,7 @@ fun Screen(vm: MainViewModel) {
                 ShowSnackbar(snackbarHostState, context)
                 MakeVibration(context, vibrationManager = vm.vibrationManager)
                 AskQuestion(askQuestionDialogManager = vm.askQuestionManager)
-                ShowDatePicker()
+                ShowDatePicker(datePickerDialog = vm.datePickerManager)
                 ShowDialog()
 
                 Navigation(modifier = Modifier.padding(innerPadding), vm = vm)
@@ -157,13 +157,13 @@ private fun AskQuestion(askQuestionDialogManager: AskQuestionDialogManager) {
 
 /** Show/hide the date picker dialog */
 @Composable
-private fun ShowDatePicker() {
+private fun ShowDatePicker(datePickerDialog: DatePickerDialogManager) {
     var showDatePickEvent by remember {
         mutableStateOf(DisplayDatePickerEvent(false) {})
     }
 
     LaunchedEffect(Unit) {
-        DatePickerDialogManager.events.collect { event ->
+        datePickerDialog.events.collect { event ->
             showDatePickEvent = event
         }
     }

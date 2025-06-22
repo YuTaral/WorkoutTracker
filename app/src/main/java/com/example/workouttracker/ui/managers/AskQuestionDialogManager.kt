@@ -55,6 +55,8 @@ data class DisplayAskQuestionDialogEvent(
 /** Class to trigger events when we need to ask user for confirmation */
 @Singleton
 class AskQuestionDialogManager @Inject constructor() {
+
+    /** Shared flow to emit events */
     private val _events = MutableSharedFlow<DisplayAskQuestionDialogEvent>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 

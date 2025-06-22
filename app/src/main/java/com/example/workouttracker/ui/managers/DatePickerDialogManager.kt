@@ -3,6 +3,8 @@ package com.example.workouttracker.ui.managers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import java.util.Date
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Show date picker event class */
 data class DisplayDatePickerEvent(
@@ -12,7 +14,10 @@ data class DisplayDatePickerEvent(
 )
 
 /** Class to handle showing date picker dialog */
-object DatePickerDialogManager {
+@Singleton
+class DatePickerDialogManager @Inject constructor() {
+
+    /** Shared flow to emit events */
     private val _events = MutableSharedFlow<DisplayDatePickerEvent>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 
