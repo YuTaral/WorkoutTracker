@@ -21,7 +21,8 @@ import javax.inject.Inject
 class AddEditMGExerciseViewModel @Inject constructor(
     private var workoutsRepository: WorkoutRepository,
     private var exerciseRepository: ExerciseRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private val vibrationManager: VibrationManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -170,7 +171,7 @@ class AddEditMGExerciseViewModel @Inject constructor(
     /** Validate the fields in the UI, return true if valid, false otherwise */
     private fun validate(): Boolean {
         if (_uiState.value.name.isEmpty()) {
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             updateNameError(resourceProvider.getString(R.string.error_msg_enter_exercise_name))
             return false
         } else {

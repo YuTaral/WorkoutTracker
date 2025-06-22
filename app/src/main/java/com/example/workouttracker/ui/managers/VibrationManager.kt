@@ -7,6 +7,8 @@ import android.os.VibrationEffect
 import android.os.VibratorManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Vibration event class */
 data class VibrationEvent(
@@ -15,12 +17,14 @@ data class VibrationEvent(
 )
 
 /** Class to handle vibrations logic to warn the user when needed */
-object VibrationManager {
+@Singleton
+class VibrationManager @Inject constructor() {
 
+    /** Flow to emit events to make vibration */
     private val _events = MutableSharedFlow<VibrationEvent>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 
-    /** Make vibration with the specified pattern */
+    /** Emit event with the specific vibration pattern */
     suspend fun makeVibration(event: VibrationEvent = VibrationEvent(pattern = VALIDATION_FAILED_VIBRATION)) {
         _events.emit(event)
     }

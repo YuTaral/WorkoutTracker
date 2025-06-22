@@ -27,7 +27,8 @@ import kotlinx.coroutines.withContext
 class AddEditWorkoutViewModel @Inject constructor(
     private var workoutsRepository: WorkoutRepository,
     private var workoutTemplatesRepository: WorkoutTemplatesRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private val vibrationManager: VibrationManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -189,7 +190,7 @@ class AddEditWorkoutViewModel @Inject constructor(
     /** Validate the fields in the UI, return true if valid, false otherwise */
     private fun validate(): Boolean {
         if (_uiState.value.name.isEmpty()) {
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             updateNameError(resourceProvider.getString(R.string.error_msg_enter_workout_name))
             return false
         } else {

@@ -54,7 +54,7 @@ fun Screen(vm: MainViewModel) {
             WorkoutTrackerTheme {
                 ShowLoading()
                 ShowSnackbar(snackbarHostState, context)
-                MakeVibration(context)
+                MakeVibration(context, vibrationManager = vm.vibrationManager)
                 AskQuestion()
                 ShowDatePicker()
                 ShowDialog()
@@ -118,11 +118,11 @@ private fun ShowSnackbar(snackbarHostState: SnackbarHostState, context: Context)
 
 /** Composable function to trigger vibration effect */
 @Composable
-private fun MakeVibration(context: Context) {
+private fun MakeVibration(context: Context, vibrationManager: VibrationManager) {
     // Trigger vibrations
     LaunchedEffect(Unit) {
-        VibrationManager.events.collect { event ->
-            VibrationManager.makeVibration(context, event)
+        vibrationManager.events.collect { event ->
+            vibrationManager.makeVibration(context, event)
         }
     }
 }

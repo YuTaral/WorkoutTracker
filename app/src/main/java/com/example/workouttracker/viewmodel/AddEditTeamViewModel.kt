@@ -33,7 +33,8 @@ import javax.inject.Inject
 class AddEditTeamViewModel @Inject constructor(
     var teamRepository: TeamRepository,
     private var resourceProvider: ResourceProvider,
-    private val imagePickerBus: ImagePickerEventBus
+    private val imagePickerBus: ImagePickerEventBus,
+    private val vibrationManager: VibrationManager
 ): ViewModel(), IImagePicker {
 
     /** Class representing the UI state fields */
@@ -253,7 +254,7 @@ class AddEditTeamViewModel @Inject constructor(
     /** Validate the fields in the UI, return true if valid, false otherwise */
     private fun validate(): Boolean {
         if (_uiState.value.name.isEmpty()) {
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             updateNameError(resourceProvider.getString(R.string.error_msg_enter_team_name))
             return false
         } else {

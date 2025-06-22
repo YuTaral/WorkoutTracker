@@ -21,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ChangePasswordViewModel @Inject constructor(
     private var userRepository: UserRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private val vibrationManager: VibrationManager
 ): ViewModel() {
 
     /** Login UI State representing the state of the Login page */
@@ -104,7 +105,7 @@ class ChangePasswordViewModel @Inject constructor(
 
         if (state.oldPassword.isEmpty()) {
             updateOldPasswordError(resourceProvider.getString(R.string.error_msg_blank_pass))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             success = false
 
         } else {
@@ -113,7 +114,7 @@ class ChangePasswordViewModel @Inject constructor(
 
         if (state.newPassword.isEmpty()) {
             updateNewPasswordError(resourceProvider.getString(R.string.error_msg_blank_pass))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             success = false
 
         } else {
@@ -122,7 +123,7 @@ class ChangePasswordViewModel @Inject constructor(
 
         if (state.confirmPassword.isEmpty()) {
             updateConfirmPasswordError(resourceProvider.getString(R.string.error_msg_blank_pass))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             success = false
 
         } else {
@@ -131,7 +132,7 @@ class ChangePasswordViewModel @Inject constructor(
 
         if (state.confirmPassword != state.newPassword) {
             updateConfirmPasswordError(resourceProvider.getString(R.string.error_msg_pass_match))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             success = false
         } else {
             updateConfirmPasswordError(null)
@@ -139,7 +140,7 @@ class ChangePasswordViewModel @Inject constructor(
 
         if (state.oldPassword == state.newPassword) {
             updateNewPasswordError(resourceProvider.getString(R.string.error_msg_pass_matches))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             success = false
         } else {
             updateNewPasswordError(null)

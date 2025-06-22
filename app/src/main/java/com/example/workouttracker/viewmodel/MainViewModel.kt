@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.data.network.repositories.NotificationRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
+import com.example.workouttracker.ui.managers.VibrationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     var userRepository: UserRepository,
     var notificationRepository: NotificationRepository,
-    var sharedPrefsManager: SharedPrefsManager
+    var sharedPrefsManager: SharedPrefsManager,
+    var vibrationManager: VibrationManager
 ): ViewModel() {
 
     /** Track when the token has been validated */

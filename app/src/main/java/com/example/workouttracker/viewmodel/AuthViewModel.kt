@@ -23,7 +23,8 @@ import kotlinx.coroutines.launch
 class AuthViewModel @Inject constructor(
     var userRepository: UserRepository,
     private var resourceProvider: ResourceProvider,
-    private var sharedPrefsManager: SharedPrefsManager
+    private var sharedPrefsManager: SharedPrefsManager,
+    private val vibrationManager: VibrationManager
 ): ViewModel() {
 
     /** Login UI State representing the state of the Login page */
@@ -111,7 +112,7 @@ class AuthViewModel @Inject constructor(
 
         if (!Utils.isValidEmail(state.email)) {
             updateLoginEmailError(resourceProvider.getString(R.string.invalid_email_format))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             return
 
         } else {
@@ -120,7 +121,7 @@ class AuthViewModel @Inject constructor(
 
         if (state.password.isEmpty()) {
             updateLoginPasswordError(resourceProvider.getString(R.string.blank_password))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             return
         } else {
             updateLoginPasswordError(null)
@@ -148,7 +149,7 @@ class AuthViewModel @Inject constructor(
 
         if (!Utils.isValidEmail(state.email)) {
             updateRegisterEmailError(resourceProvider.getString(R.string.invalid_email_format))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             return
         } else {
             updateRegisterEmailError(null)
@@ -156,7 +157,7 @@ class AuthViewModel @Inject constructor(
 
         if (state.password.isEmpty()) {
             updateRegisterPassError(resourceProvider.getString(R.string.blank_password))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             return
         } else {
             updateRegisterPassError(null)
@@ -164,7 +165,7 @@ class AuthViewModel @Inject constructor(
 
         if (state.confirmPassword != state.password) {
             updateConfirmPassError(resourceProvider.getString(R.string.passwords_do_not_match))
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             return
         } else {
             updateConfirmPassError(null)

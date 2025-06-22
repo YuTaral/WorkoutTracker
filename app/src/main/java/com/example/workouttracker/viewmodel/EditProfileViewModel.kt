@@ -29,7 +29,8 @@ class EditProfileViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private var userProfileRepository: UserProfileRepository,
     private var userRepository: UserRepository,
-    private val imagePickerBus: ImagePickerEventBus
+    private val imagePickerBus: ImagePickerEventBus,
+    private val vibrationManager: VibrationManager
 ): ViewModel(), IImagePicker {
 
     /** Class containing all fields in the UI */
@@ -80,7 +81,7 @@ class EditProfileViewModel @Inject constructor(
     /** Save the changes to the profile */
     fun save() {
         if (uiState.value.fullName.isEmpty()) {
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             updateNameError(resourceProvider.getString(R.string.error_msg_username_cannot_be_blank))
             return
         } else {

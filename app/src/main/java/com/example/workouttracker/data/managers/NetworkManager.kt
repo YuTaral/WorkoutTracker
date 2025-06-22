@@ -28,7 +28,8 @@ import dagger.Lazy
 class NetworkManager @Inject constructor(
     private val context: Context,
     private val apiService: APIService,
-    private val customNotificationManager: Lazy<CustomNotificationManager>
+    private val customNotificationManager: Lazy<CustomNotificationManager>,
+    private val vibrationManager: VibrationManager
 ) {
     /** Use Factory pattern to create the call object. This is needed, because when
      * we need to refresh the token, the new token is returned as response from the server.
@@ -52,7 +53,7 @@ class NetworkManager @Inject constructor(
     ) {
         if (!isNetworkAvailable()) {
             SnackbarManager.showSnackbar(R.string.error_msg_no_internet)
-            VibrationManager.makeVibration()
+            vibrationManager.makeVibration()
             onErrorCallback(getEmptyResponse())
             return
         }
@@ -184,7 +185,7 @@ class NetworkManager @Inject constructor(
             SnackbarManager.showSnackbar(message)
         }
 
-        VibrationManager.makeVibration(VibrationEvent(pattern = Constants.REQUEST_ERROR_VIBRATION))
+        vibrationManager.makeVibration(VibrationEvent(pattern = Constants.REQUEST_ERROR_VIBRATION))
     }
 
     /** Create CustomResponse object with fail code when CustomResponse is not available */

@@ -24,7 +24,8 @@ import javax.inject.Inject
 class AddEditTemplateViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private var workoutRepository: WorkoutRepository,
-    private var workoutTemplatesRepository: WorkoutTemplatesRepository
+    private var workoutTemplatesRepository: WorkoutTemplatesRepository,
+    private val vibrationManager: VibrationManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -84,7 +85,7 @@ class AddEditTemplateViewModel @Inject constructor(
     /** Validate the fields in the UI, return true if valid, false otherwise */
     private fun validate(): Boolean {
         if (_uiState.value.name.isEmpty()) {
-            viewModelScope.launch { VibrationManager.makeVibration() }
+            viewModelScope.launch { vibrationManager.makeVibration() }
             updateNameError(resourceProvider.getString(R.string.error_msg_enter_template_name))
             return false
         } else {
