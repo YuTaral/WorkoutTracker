@@ -15,37 +15,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.extensions.customBorder
 import com.example.workouttracker.ui.reusable.DialogButton
 import com.example.workouttracker.ui.reusable.Label
-import com.example.workouttracker.ui.managers.VibrationEvent
-import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.utils.Constants.TIMER_END_VIBRATION
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.example.workouttracker.viewmodel.TimerViewModel
 
 /** Timer dialog to show timer
  * @param seconds the seconds to start from
@@ -55,59 +47,47 @@ import kotlinx.coroutines.launch
  */
 @SuppressLint("DefaultLocale")
 @Composable
-fun TimerDialog(
-    seconds: Long,
-    autoStart: Boolean,
-    onDone: () -> Unit,
-    sendNotification: (Context) -> Unit
+fun TimerDialog(vm: TimerViewModel = hiltViewModel(),
+                seconds: Long,
+                autoStart: Boolean,
+                onDone: () -> Unit,
+                sendNotification: (Context) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        vm.initializeData(
+            seconds = seconds,
+            autoStart = autoStart,
+            sendNotification = sendNotification
+        )
+    }
+
+    val timeLeft by vm.timeLeft.collectAsStateWithLifecycle()
+    val running by vm.isRunning.collectAsStateWithLifecycle()
+    val timeFinished by vm.isFinished.collectAsStateWithLifecycle()
+    val isAppInBackground by vm.isAppInBackground.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
-    var isAppInBackground by rememberSaveable { mutableStateOf(false) }
-    var timeLeft by rememberSaveable { mutableLongStateOf(seconds) }
-    var running by rememberSaveable { mutableStateOf(autoStart) }
-    val progress = (timeLeft / seconds.toFloat())
-    var timeFinished by rememberSaveable { mutableStateOf(timeLeft == 0L) }
-    val h = timeLeft / 3600
-    val m = (timeLeft % 3600) / 60
-    val s = timeLeft % 60
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            isAppInBackground = when (event) {
+            val value  = when (event) {
                 Lifecycle.Event.ON_STOP -> true
                 Lifecycle.Event.ON_START -> false
                 else -> isAppInBackground
             }
+            vm.updateIsInBackground(value)
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            vm.cancelJob()
         }
     }
 
-    LaunchedEffect(running) {
-        while (running) {
-            if (timeLeft > 0) {
-                delay(1000L)
-                timeLeft -= 1
-            } else {
-                timeFinished = true
-                running = false
+    val h = timeLeft / 3600
+    val m = (timeLeft % 3600) / 60
+    val s = timeLeft % 60
 
-                if (isAppInBackground) {
-                    sendNotification(context)
-                } else {
-                    scope.launch {
-                        VibrationManager.makeVibration(
-                            event = VibrationEvent(pattern = TIMER_END_VIBRATION)
-                        )
-                    }
-                }
-            }
-        }
-    }
+    val progress = (timeLeft / seconds.toFloat())
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Box(
@@ -147,13 +127,7 @@ fun TimerDialog(
                         else if (running) stringResource(R.string.pause_btn)
                         else stringResource(R.string.start_btn),
                 onClick = {
-                    if (timeFinished) {
-                        timeFinished = false
-                        timeLeft = seconds
-                        running = true
-                    } else {
-                        running = !running
-                    }
+                    vm.updateRunning()
                 }
             )
 
@@ -174,6 +148,6 @@ fun TimerDialog(
 @Composable
 private fun TimerDialogPreview() {
     WorkoutTrackerTheme {
-        TimerDialog(160, false, {}, {})
+        TimerDialog(seconds = 160, autoStart = false, onDone = {}, sendNotification = {})
     }
 }
