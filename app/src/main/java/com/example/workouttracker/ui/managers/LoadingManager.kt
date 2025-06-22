@@ -8,6 +8,8 @@ import javax.inject.Singleton
 /** Class to handle showing loading dialog when needed (e.g request in progress) */
 @Singleton
 class LoadingManager @Inject constructor() {
+
+    /** Shared flow to emit events */
     private val _events = MutableSharedFlow<Boolean>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 

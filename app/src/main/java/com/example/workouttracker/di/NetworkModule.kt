@@ -7,6 +7,7 @@ import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.network.IAPIService
 import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.LoadingManager
+import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
 import dagger.Module
 import dagger.Provides
@@ -34,8 +35,9 @@ object NetworkModule {
         apiService: APIService,
         notificationManager: Lazy<CustomNotificationManager>,
         vibrationManager: VibrationManager,
-        loadingManager: LoadingManager
+        loadingManager: LoadingManager,
+        snackbarManager: SnackbarManager
     ): NetworkManager {
-        return NetworkManager(context, apiService, notificationManager, vibrationManager, loadingManager)
+        return NetworkManager(context, apiService, notificationManager, vibrationManager, loadingManager, snackbarManager)
     }
 }

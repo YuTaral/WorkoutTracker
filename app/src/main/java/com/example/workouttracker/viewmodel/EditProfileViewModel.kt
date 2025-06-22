@@ -30,7 +30,8 @@ class EditProfileViewModel @Inject constructor(
     private var userRepository: UserRepository,
     private val imagePickerBus: ImagePickerEventBus,
     private val vibrationManager: VibrationManager,
-    private val dialogManager: DialogManager
+    private val dialogManager: DialogManager,
+    private val snackbarManager: SnackbarManager
 ): ViewModel(), IImagePicker {
 
     /** Class containing all fields in the UI */
@@ -115,7 +116,7 @@ class EditProfileViewModel @Inject constructor(
 
     override fun onImageUploadFail() {
         viewModelScope.launch {
-            SnackbarManager.showSnackbar(R.string.error_msg_failed_to_upload_image)
+            snackbarManager.showSnackbar(R.string.error_msg_failed_to_upload_image)
         }
     }
 }

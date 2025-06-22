@@ -55,7 +55,7 @@ fun Screen(vm: MainViewModel) {
         ) { innerPadding ->
             WorkoutTrackerTheme {
                 ShowLoading(loadingManager = vm.loadingManager)
-                ShowSnackbar(snackbarHostState, context)
+                ShowSnackbar(snackbarHostState, context, snackbarManager = vm.snackbarManager)
                 MakeVibration(context, vibrationManager = vm.vibrationManager)
                 AskQuestion(askQuestionDialogManager = vm.askQuestionManager)
                 ShowDatePicker(datePickerDialog = vm.datePickerManager)
@@ -101,9 +101,9 @@ private fun ShowLoading(loadingManager: LoadingManager) {
 
 /** Composable function to show snackbar */
 @Composable
-private fun ShowSnackbar(snackbarHostState: SnackbarHostState, context: Context) {
+private fun ShowSnackbar(snackbarHostState: SnackbarHostState, context: Context, snackbarManager: SnackbarManager) {
     LaunchedEffect(Unit) {
-        SnackbarManager.events.collect { event ->
+        snackbarManager.events.collect { event ->
             snackbarHostState.currentSnackbarData?.dismiss()
 
             val message = if (event.messageId > 0) getString(context, event.messageId)

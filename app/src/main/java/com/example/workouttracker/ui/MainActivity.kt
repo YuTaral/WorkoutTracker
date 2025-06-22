@@ -85,7 +85,12 @@ class MainActivity: ComponentActivity(), PermissionHost {
         permissionHandler = PermissionHandler(
             permHost = this,
             askForAll = vm.sharedPrefsManager.isFirstAppStart(),
-            showQuestion = { vm.showAllowCameraQuestion { permissionHandler.goToCameraSettings() } }
+            showQuestion = { vm.showAllowCameraQuestion { permissionHandler.goToCameraSettings() } },
+            showSnackbar = {
+                lifecycleScope.launch {
+                    vm.snackbarManager.showSnackbar(it)
+                }
+            }
         )
         imagePickerManager = ImagePickerManager(permissionHandler, vm.askQuestionManager)
 

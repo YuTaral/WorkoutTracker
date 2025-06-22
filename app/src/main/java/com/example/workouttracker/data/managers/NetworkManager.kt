@@ -30,7 +30,8 @@ class NetworkManager @Inject constructor(
     private val apiService: APIService,
     private val customNotificationManager: Lazy<CustomNotificationManager>,
     private val vibrationManager: VibrationManager,
-    private val loadingManager: LoadingManager
+    private val loadingManager: LoadingManager,
+    private val snackbarManager: SnackbarManager
 ) {
     /** Use Factory pattern to create the call object. This is needed, because when
      * we need to refresh the token, the new token is returned as response from the server.
@@ -53,7 +54,7 @@ class NetworkManager @Inject constructor(
                             blockUi: Boolean = true
     ) {
         if (!isNetworkAvailable()) {
-            SnackbarManager.showSnackbar(R.string.error_msg_no_internet)
+            snackbarManager.showSnackbar(R.string.error_msg_no_internet)
             vibrationManager.makeVibration()
             onErrorCallback(getEmptyResponse())
             return
@@ -181,9 +182,9 @@ class NetworkManager @Inject constructor(
         }
 
         if (message.isEmpty()) {
-            SnackbarManager.showSnackbar(R.string.error_msg_unexpected)
+            snackbarManager.showSnackbar(R.string.error_msg_unexpected)
         } else {
-            SnackbarManager.showSnackbar(message)
+            snackbarManager.showSnackbar(message)
         }
 
         vibrationManager.makeVibration(VibrationEvent(pattern = Constants.REQUEST_ERROR_VIBRATION))

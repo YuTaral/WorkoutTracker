@@ -3,6 +3,8 @@ package com.example.workouttracker.ui.managers
 import android.support.annotation.StringRes
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Snackbar event class */
 data class SnackbarEvent(
@@ -11,7 +13,8 @@ data class SnackbarEvent(
 )
 
 /** Class to handle snackbar to show message to the user */
-object SnackbarManager {
+@Singleton
+class SnackbarManager @Inject constructor() {
     private val _events = MutableSharedFlow<SnackbarEvent>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 

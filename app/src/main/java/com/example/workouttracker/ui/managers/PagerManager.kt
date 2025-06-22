@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 /** Pager manager used to change the selected page */
 object PagerManager {
+
+    /** Shared flow to emit events */
     private val _events = MutableSharedFlow<Page>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 

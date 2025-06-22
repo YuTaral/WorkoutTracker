@@ -18,10 +18,16 @@ import com.example.workouttracker.utils.interfaces.IImagePicker
 import kotlinx.coroutines.launch
 
 /** Class to handle the logic when requesting permissions / launching specific result launcher */
-class PermissionHandler(permHost: PermissionHost, askForAll: Boolean, showQuestion: () -> Unit) {
+class PermissionHandler(
+    permHost: PermissionHost,
+    askForAll: Boolean,
+    showQuestion: () -> Unit,
+    showSnackbar: (Int) -> Unit
+) {
     private var host = permHost
     private var askForAllPermissions = askForAll
     private var showGoToSettingsQuestion = showQuestion
+    private var showSnackbarMsg = showSnackbar
     private var imagePicker: IImagePicker? = null
     var notificationPermLauncher: ActivityResultLauncher<String>
     var cameraPermLauncher: ActivityResultLauncher<String>
@@ -104,7 +110,7 @@ class PermissionHandler(permHost: PermissionHost, askForAll: Boolean, showQuesti
             } else {
                 // Permission denied
                 host.getLifecycleScope().launch {
-                    SnackbarManager.showSnackbar(R.string.permission_denied_message)
+                    showSnackbarMsg(R.string.permission_denied_message)
                 }
             }
         }

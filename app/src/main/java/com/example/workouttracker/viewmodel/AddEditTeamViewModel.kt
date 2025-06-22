@@ -36,7 +36,8 @@ class AddEditTeamViewModel @Inject constructor(
     private val imagePickerBus: ImagePickerEventBus,
     private val vibrationManager: VibrationManager,
     private var askQuestionManager: AskQuestionDialogManager,
-    private var dialogManager: DialogManager
+    private var dialogManager: DialogManager,
+    private val snackbarManager: SnackbarManager
 ): ViewModel(), IImagePicker {
 
     /** Class representing the UI state fields */
@@ -271,7 +272,7 @@ class AddEditTeamViewModel @Inject constructor(
 
     override fun onImageUploadFail() {
         viewModelScope.launch {
-            SnackbarManager.showSnackbar(R.string.error_msg_failed_to_upload_image)
+            snackbarManager.showSnackbar(R.string.error_msg_failed_to_upload_image)
         }
     }
 }
