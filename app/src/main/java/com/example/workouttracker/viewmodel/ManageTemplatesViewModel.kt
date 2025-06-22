@@ -25,7 +25,8 @@ import javax.inject.Inject
 class ManageTemplatesViewModel @Inject constructor(
     var userRepository: UserRepository,
     private var templatesRepository: WorkoutTemplatesRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private var askQuestionManager: AskQuestionDialogManager
 ): ViewModel() {
 
     /** Enum representing the actions from the action spinner */
@@ -140,24 +141,12 @@ class ManageTemplatesViewModel @Inject constructor(
      */
     private fun askDeleteTemplate(template: WorkoutModel) {
         viewModelScope.launch {
-            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+            askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.DELETE_TEMPLATE,
                 show = true,
-                onCancel = {
-                    viewModelScope.launch {
-                        AskQuestionDialogManager.hideQuestion()
-                    }
-                },
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
-                        templatesRepository.deleteWorkoutTemplate(
-                            id = template.id,
-                            onSuccess = {
-                                viewModelScope.launch {
-                                    AskQuestionDialogManager.hideQuestion()
-                                }
-                            }
-                        )
+                        templatesRepository.deleteWorkoutTemplate(id = template.id,)
                     }
                 },
                 formatQValues = listOf(template.name)

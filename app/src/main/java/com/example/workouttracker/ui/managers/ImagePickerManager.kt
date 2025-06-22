@@ -10,7 +10,8 @@ import com.example.workouttracker.utils.interfaces.IImagePicker
 
 /** Image picker class to handle image uploading from the album or camera */
 class ImagePickerManager(
-    private var permissionHandler: PermissionHandler
+    private var permissionHandler: PermissionHandler,
+    private var askQuestionDialogManager: AskQuestionDialogManager
 ) {
 
     /**
@@ -20,7 +21,7 @@ class ImagePickerManager(
     suspend fun showImagePicker(imagePicker: IImagePicker) {
         permissionHandler.setImagePicker(imagePicker)
 
-        AskQuestionDialogManager.askQuestion(
+        askQuestionDialogManager.askQuestion(
             DisplayAskQuestionDialogEvent(
                 question = Question.IMAGE_SELECTION_OPTIONS,
                 show = true,

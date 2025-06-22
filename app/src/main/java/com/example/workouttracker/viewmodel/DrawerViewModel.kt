@@ -21,28 +21,20 @@ import com.example.workouttracker.ui.dialogs.ExerciseDefaultValuesDialog
 @HiltViewModel
 class DrawerViewModel @Inject constructor(
     private var userRepository: UserRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private var askQuestionManager: AskQuestionDialogManager
 ): ViewModel() {
 
     /** Logout user */
     fun logout() {
         viewModelScope.launch {
-            AskQuestionDialogManager.askQuestion(
+            askQuestionManager.askQuestion(
                 DisplayAskQuestionDialogEvent(
                     question = Question.LOG_OUT,
                     show = true,
-                    onCancel = {
-                        viewModelScope.launch {
-                            AskQuestionDialogManager.hideQuestion()
-                        }
-                    },
                     onConfirm = {
                         viewModelScope.launch(Dispatchers.IO) {
-                            userRepository.logout(onSuccess = {
-                                viewModelScope.launch {
-                                    AskQuestionDialogManager.hideQuestion()
-                                }
-                            })
+                            userRepository.logout()
                         }
                     }
                 ),

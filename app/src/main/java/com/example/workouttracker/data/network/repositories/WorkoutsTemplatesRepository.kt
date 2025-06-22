@@ -35,12 +35,11 @@ class WorkoutTemplatesRepository @Inject constructor(
      * @param id the template id
      * @param onSuccess callback to execute if request is successful
      */
-    suspend fun deleteWorkoutTemplate(id: Long, onSuccess: () -> Unit) {
+    suspend fun deleteWorkoutTemplate(id: Long) {
         networkManager.sendRequest(
             request = { apiService.getInstance().deleteWorkoutTemplate(id) },
             onSuccessCallback = { response ->
                 refreshTemplates(response.data.map { WorkoutModel(it) }.toMutableList())
-                onSuccess()
             }
         )
     }

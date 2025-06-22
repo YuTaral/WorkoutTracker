@@ -7,7 +7,6 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.UserModel
 import com.example.workouttracker.data.network.repositories.UserProfileRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
-import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.ImagePickerEventBus
 import com.example.workouttracker.ui.managers.SnackbarManager
@@ -30,7 +29,7 @@ class EditProfileViewModel @Inject constructor(
     private var userProfileRepository: UserProfileRepository,
     private var userRepository: UserRepository,
     private val imagePickerBus: ImagePickerEventBus,
-    private val vibrationManager: VibrationManager
+    private val vibrationManager: VibrationManager,
 ): ViewModel(), IImagePicker {
 
     /** Class containing all fields in the UI */
@@ -110,15 +109,11 @@ class EditProfileViewModel @Inject constructor(
     }
 
     override fun onImageUploadSuccess(bitmap: Bitmap) {
-        viewModelScope.launch {
-            AskQuestionDialogManager.hideQuestion()
-        }
         updateImage(Utils.convertBitmapToString(bitmap))
     }
 
     override fun onImageUploadFail() {
         viewModelScope.launch {
-            AskQuestionDialogManager.hideQuestion()
             SnackbarManager.showSnackbar(R.string.error_msg_failed_to_upload_image)
         }
     }

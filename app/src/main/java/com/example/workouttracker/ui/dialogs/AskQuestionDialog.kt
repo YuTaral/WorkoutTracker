@@ -13,32 +13,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.workouttracker.ui.extensions.customBorder
 import com.example.workouttracker.ui.reusable.DialogButton
 import com.example.workouttracker.ui.reusable.Label
-import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.theme.ColorDialogBackground
 import com.example.workouttracker.ui.theme.BottomSheetsDialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingSmall
-import kotlinx.coroutines.launch
 
 /**
  * Bottom sheets dialog to ask user for confirmation
  * @param event the event containing the question and any data needed to ask the question
  * and execute the callback
+ * @param hideQuestion callback to execute to hide the question dialog
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
+fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent, hideQuestion: () -> Unit) {
     val q = event.question!!
     val state = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
     val questionText = String.format(
         stringResource(id = q.getQuestionText()),
         *event.formatQValues.toTypedArray()
@@ -48,11 +45,7 @@ fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
         sheetState = state,
         containerColor = ColorDialogBackground,
         dragHandle = {},
-        onDismissRequest = {
-            scope.launch {
-                AskQuestionDialogManager.hideQuestion()
-            }
-        }
+        onDismissRequest = { hideQuestion() }
     ) {
         Column(
             modifier = Modifier
@@ -81,9 +74,7 @@ fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
                     text = stringResource(id = q.getCancelButtonText()),
                     onClick = {
                         event.onCancel()
-                        scope.launch {
-                            AskQuestionDialogManager.hideQuestion()
-                        }
+                        hideQuestion()
                     }
                 )
                 DialogButton(
@@ -93,9 +84,7 @@ fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent) {
                     text = stringResource(id = q.getConfirmButtonText()),
                     onClick = {
                         event.onConfirm()
-                        scope.launch {
-                            AskQuestionDialogManager.hideQuestion()
-                        }
+                        hideQuestion()
                     }
                 )
             }

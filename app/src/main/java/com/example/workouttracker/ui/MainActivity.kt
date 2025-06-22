@@ -49,7 +49,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
         return super.getPackageName()
     }
 
-    override fun shouldShowRequestPermissionRationale(permission: String): Boolean {
+    override fun shouldShowRationaleForPermission(permission: String): Boolean {
         return ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
     }
 
@@ -64,7 +64,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
     }
 
     override fun startActivity(intent: Intent) {
-        startActivity(intent)
+        super.startActivity(intent)
     }
 
     override fun checkPermissionGranted(permission: String): Boolean {
@@ -82,15 +82,19 @@ class MainActivity: ComponentActivity(), PermissionHost {
         super.onCreate(savedInstanceState)
 
         // Initialize the classes dependent on activity methods
-        permissionHandler = PermissionHandler(this, vm.sharedPrefsManager.isFirstAppStart())
-        imagePickerManager = ImagePickerManager(permissionHandler)
+        permissionHandler = PermissionHandler(
+            permHost = this,
+            askForAll = vm.sharedPrefsManager.isFirstAppStart(),
+            showQuestion = { vm.showAllowCameraQuestion { permissionHandler.goToCameraSettings() } }
+        )
+        imagePickerManager = ImagePickerManager(permissionHandler, vm.askQuestionManager)
 
         setContent {
             Screen(vm = vm)
         }
 
         // Collect events
-        askForAllPermissions()
+        askForAllPermissions(askQuestionManager = vm.askQuestionManager)
         showImagePicker()
     }
 
@@ -128,11 +132,11 @@ class MainActivity: ComponentActivity(), PermissionHost {
     }
 
     /** Ask user to grant all permissions */
-    private fun askForAllPermissions() {
+    private fun askForAllPermissions(askQuestionManager: AskQuestionDialogManager) {
         lifecycleScope.launch {
             vm.userRepository.requestPermissions.collect {
                 vm.viewModelScope.launch {
-                    AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+                    askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                         question = Question.GRANT_PERMISSIONS,
                         show = true,
                         onConfirm = {

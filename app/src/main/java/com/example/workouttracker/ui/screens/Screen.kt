@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,6 +38,7 @@ import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 
 /**
  * The application root screen containing the navigation and the logic to show snackbar, make vibrations
@@ -55,7 +57,7 @@ fun Screen(vm: MainViewModel) {
                 ShowLoading()
                 ShowSnackbar(snackbarHostState, context)
                 MakeVibration(context, vibrationManager = vm.vibrationManager)
-                AskQuestion()
+                AskQuestion(askQuestionDialogManager = vm.askQuestionManager)
                 ShowDatePicker()
                 ShowDialog()
 
@@ -129,19 +131,27 @@ private fun MakeVibration(context: Context, vibrationManager: VibrationManager) 
 
 /** Composable to show/hide ask question dialog */
 @Composable
-private fun AskQuestion() {
+private fun AskQuestion(askQuestionDialogManager: AskQuestionDialogManager) {
     var showQuestionDialog by remember {
         mutableStateOf(DisplayAskQuestionDialogEvent(null, false))
     }
+    var scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        AskQuestionDialogManager.events.collect { event ->
+        askQuestionDialogManager.events.collect { event ->
             showQuestionDialog = event
         }
     }
 
     if (showQuestionDialog.show) {
-        AskQuestionDialog(showQuestionDialog)
+        AskQuestionDialog(
+            event = showQuestionDialog,
+            hideQuestion = {
+                scope.launch {
+                    askQuestionDialogManager.hideQuestion()
+                }
+            }
+        )
     }
 }
 

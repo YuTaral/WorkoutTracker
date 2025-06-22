@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.data.network.repositories.NotificationRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
+import com.example.workouttracker.ui.managers.AskQuestionDialogManager
+import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
+import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.VibrationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +25,8 @@ class MainViewModel @Inject constructor(
     var userRepository: UserRepository,
     var notificationRepository: NotificationRepository,
     var sharedPrefsManager: SharedPrefsManager,
-    var vibrationManager: VibrationManager
+    var vibrationManager: VibrationManager,
+    var askQuestionManager: AskQuestionDialogManager
 ): ViewModel() {
 
     /** Track when the token has been validated */
@@ -67,6 +71,22 @@ class MainViewModel @Inject constructor(
                 notificationRepository.refreshNotification()
                 delay(30000L)
             }
+        }
+    }
+
+    /**
+     * Show the dialog to ask user to grant camera permissions
+     * @param callback callback to execute on confirm
+     */
+    fun showAllowCameraQuestion(callback: () -> Unit) {
+        viewModelScope.launch {
+            askQuestionManager.askQuestion(
+                DisplayAskQuestionDialogEvent(
+                    question = Question.ALLOW_CAMERA_PERMISSION,
+                    show = true,
+                    onConfirm = { callback() }
+                ),
+            )
         }
     }
 }

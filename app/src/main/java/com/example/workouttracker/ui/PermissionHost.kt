@@ -51,7 +51,7 @@ interface PermissionHost {
      * @param permission The permission being requested.
      * @return True if a rationale should be shown, false otherwise.
      */
-    fun shouldShowRequestPermissionRationale(permission: String): Boolean
+    fun shouldShowRationaleForPermission(permission: String): Boolean
 
     /**
      * Starts the given intent from the activity.

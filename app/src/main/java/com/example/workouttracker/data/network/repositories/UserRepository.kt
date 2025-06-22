@@ -87,16 +87,13 @@ class UserRepository @Inject constructor(
             onSuccessCallback = { onSuccess() })
     }
 
-    /** Logout the user
-     * @param onSuccess callback to execute if request is successful
-     */
-    suspend fun logout(onSuccess: () -> Unit) {
+    /** Logout the user */
+    suspend fun logout() {
         networkManager.sendRequest(
             request = { apiService.getInstance().logout() },
             onSuccessCallback = {
                 updateUser(null)
                 updateToken("")
-                onSuccess()
             })
     }
 

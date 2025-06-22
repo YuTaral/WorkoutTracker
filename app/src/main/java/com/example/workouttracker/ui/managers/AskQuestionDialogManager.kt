@@ -3,6 +3,8 @@ package com.example.workouttracker.ui.managers
 import com.example.workouttracker.R
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Enum with all questions */
 enum class Question(private val titleId: Int, private val questionId: Int,
@@ -51,7 +53,8 @@ data class DisplayAskQuestionDialogEvent(
 )
 
 /** Class to trigger events when we need to ask user for confirmation */
-object AskQuestionDialogManager {
+@Singleton
+class AskQuestionDialogManager @Inject constructor() {
     private val _events = MutableSharedFlow<DisplayAskQuestionDialogEvent>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 

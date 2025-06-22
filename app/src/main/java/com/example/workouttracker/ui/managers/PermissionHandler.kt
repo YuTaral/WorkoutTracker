@@ -18,9 +18,10 @@ import com.example.workouttracker.utils.interfaces.IImagePicker
 import kotlinx.coroutines.launch
 
 /** Class to handle the logic when requesting permissions / launching specific result launcher */
-class PermissionHandler(permHost: PermissionHost, askForAll: Boolean) {
+class PermissionHandler(permHost: PermissionHost, askForAll: Boolean, showQuestion: () -> Unit) {
     private var host = permHost
     private var askForAllPermissions = askForAll
+    private var showGoToSettingsQuestion = showQuestion
     private var imagePicker: IImagePicker? = null
     var notificationPermLauncher: ActivityResultLauncher<String>
     var cameraPermLauncher: ActivityResultLauncher<String>
@@ -97,9 +98,9 @@ class PermissionHandler(permHost: PermissionHost, askForAll: Boolean) {
                 return
             }
 
-            if (!host.shouldShowRequestPermissionRationale(permission)) {
+            if (!host.shouldShowRationaleForPermission(permission)) {
                 // Permission set to "Don't ask again" or permanently denied, open the settings
-                showSettingsDialogForCamera()
+                showGoToSettingsQuestion()
             } else {
                 // Permission denied
                 host.getLifecycleScope().launch {
@@ -183,34 +184,15 @@ class PermissionHandler(permHost: PermissionHost, askForAll: Boolean) {
         imagePicker = null
     }
 
-    /** Ask the user to open settings and change the permission */
-    private fun showSettingsDialogForCamera() {
-        host.getLifecycleScope().launch {
-            AskQuestionDialogManager.askQuestion(
-                DisplayAskQuestionDialogEvent(
-                    question = Question.ALLOW_CAMERA_PERMISSION,
-                    show = true,
-                    onCancel = {
-                        host.getLifecycleScope().launch {
-                            AskQuestionDialogManager.hideQuestion()
-                        }
-                    },
-                    onConfirm = {
-                        val intent = Intent(
-                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", host.getPackageName(), null)
-                        )
+    /** Open camera permission settings */
+    fun goToCameraSettings() {
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", host.getPackageName(), null)
+        )
 
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        host.startActivity(intent)
-
-                        host.getLifecycleScope().launch {
-                            AskQuestionDialogManager.hideQuestion()
-                        }
-                    }
-                ),
-            )
-        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        host.startActivity(intent)
     }
 
     /** Return the read media permission string based on the build version */

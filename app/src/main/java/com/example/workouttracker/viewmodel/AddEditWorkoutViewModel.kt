@@ -28,7 +28,8 @@ class AddEditWorkoutViewModel @Inject constructor(
     private var workoutsRepository: WorkoutRepository,
     private var workoutTemplatesRepository: WorkoutTemplatesRepository,
     private var resourceProvider: ResourceProvider,
-    private val vibrationManager: VibrationManager
+    private val vibrationManager: VibrationManager,
+    private var askQuestionManager: AskQuestionDialogManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -143,21 +144,15 @@ class AddEditWorkoutViewModel @Inject constructor(
     /** Delete the workout */
     fun deleteWorkout() {
         viewModelScope.launch {
-            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+            askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.DELETE_WORKOUT,
                 show = true,
-                onCancel = {
-                    viewModelScope.launch {
-                        AskQuestionDialogManager.hideQuestion()
-                    }
-                },
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         workoutsRepository.deleteWorkout(
                             workoutId = workoutsRepository.selectedWorkout.value!!.id,
                             onSuccess = {
                                 viewModelScope.launch {
-                                    AskQuestionDialogManager.hideQuestion()
                                     onWorkoutActionSuccess(null, Page.Workouts)
                                 }
                             }

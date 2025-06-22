@@ -36,7 +36,8 @@ class SelectExerciseViewModel @Inject constructor(
     private var userRepository: UserRepository,
     private var workoutRepository: WorkoutRepository,
     private var userProfileRepository: UserProfileRepository,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private var askQuestionManager: AskQuestionDialogManager
 ): ViewModel() {
 
     /** Enum representing the actions from the action spinner */
@@ -268,24 +269,14 @@ class SelectExerciseViewModel @Inject constructor(
      */
     private fun askDeleteExercise(mGExercise: MGExerciseModel) {
         viewModelScope.launch {
-            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+            askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.DELETE_MG_EXERCISE,
                 show = true,
-                onCancel = {
-                    viewModelScope.launch {
-                        AskQuestionDialogManager.hideQuestion()
-                    }
-                },
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         exerciseRepository.deleteExercise(
                             mGExerciseId = mGExercise.id,
-                            onSuccess = { data ->
-                                populateMGExercises(data)
-                                viewModelScope.launch {
-                                    AskQuestionDialogManager.hideQuestion()
-                                }
-                            }
+                            onSuccess = { data -> populateMGExercises(data) }
                         )
                     }
                 },

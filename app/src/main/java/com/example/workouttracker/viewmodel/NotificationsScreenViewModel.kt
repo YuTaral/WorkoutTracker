@@ -15,7 +15,6 @@ import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /** View model to control the state of notifications screen */
@@ -23,7 +22,8 @@ import javax.inject.Inject
 class NotificationsScreenViewModel @Inject constructor(
     var notificationRepository: NotificationRepository,
     private var teamRepository: TeamRepository,
-    private var userRepository: UserRepository
+    private var userRepository: UserRepository,
+    private var askQuestionManager: AskQuestionDialogManager
 ): ViewModel() {
 
     /** Initialize the data when the screen is displayed */
@@ -77,7 +77,7 @@ class NotificationsScreenViewModel @Inject constructor(
                 notificationId = notification.id,
                 onSuccess = { notificationDetails ->
                     viewModelScope.launch {
-                        AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+                        askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                             question = Question.JOIN_TEAM,
                             show = true,
                             onCancel = { declineInvite(notification.teamId!!) },
@@ -103,10 +103,6 @@ class NotificationsScreenViewModel @Inject constructor(
                 onSuccess = {
                     viewModelScope.launch(Dispatchers.IO) {
                         notificationRepository.refreshNotifications()
-
-                        withContext(Dispatchers.Main) {
-                            AskQuestionDialogManager.hideQuestion()
-                        }
                     }
                 }
             )
@@ -128,7 +124,6 @@ class NotificationsScreenViewModel @Inject constructor(
                             teamId = teamId,
                             teamType = ViewTeamAs.MEMBER
                         )
-                        AskQuestionDialogManager.hideQuestion()
                     }
                 }
             )

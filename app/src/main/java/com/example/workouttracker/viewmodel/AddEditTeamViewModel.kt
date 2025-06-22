@@ -34,7 +34,8 @@ class AddEditTeamViewModel @Inject constructor(
     var teamRepository: TeamRepository,
     private var resourceProvider: ResourceProvider,
     private val imagePickerBus: ImagePickerEventBus,
-    private val vibrationManager: VibrationManager
+    private val vibrationManager: VibrationManager,
+    private var askQuestionManager: AskQuestionDialogManager
 ): ViewModel(), IImagePicker {
 
     /** Class representing the UI state fields */
@@ -143,21 +144,15 @@ class AddEditTeamViewModel @Inject constructor(
     /** Ask question to confirm team deletion */
     fun askDeleteTeam() {
         viewModelScope.launch {
-            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+            askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.DELETE_TEAM,
                 show = true,
-                onCancel = {
-                    viewModelScope.launch {
-                        AskQuestionDialogManager.hideQuestion()
-                    }
-                },
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         teamRepository.deleteTeam(
                             teamId = teamRepository.selectedTeam.value!!.id,
                             onSuccess = {
                                 viewModelScope.launch {
-                                    AskQuestionDialogManager.hideQuestion()
                                     PagerManager.changePageSelection(Page.ManageTeams(teamType = ViewTeamAs.COACH))
                                 }
                             }
@@ -183,21 +178,15 @@ class AddEditTeamViewModel @Inject constructor(
     /** Ask for confirmation to leave the team */
     fun askLeaveTeam() {
         viewModelScope.launch {
-            AskQuestionDialogManager.askQuestion(DisplayAskQuestionDialogEvent(
+            askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.LEAVE_TEAM,
                 show = true,
-                onCancel = {
-                    viewModelScope.launch {
-                        AskQuestionDialogManager.hideQuestion()
-                    }
-                },
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         teamRepository.leaveTeam(
                             teamId = teamRepository.selectedTeam.value!!.id,
                             onSuccess = {
                                 viewModelScope.launch {
-                                    AskQuestionDialogManager.hideQuestion()
                                     PagerManager.changePageSelection(Page.ManageTeams(ViewTeamAs.MEMBER))
                                 }
                             }
@@ -276,17 +265,12 @@ class AddEditTeamViewModel @Inject constructor(
     }
 
     override fun onImageUploadSuccess(bitmap: Bitmap) {
-        viewModelScope.launch {
-            AskQuestionDialogManager.hideQuestion()
-        }
         updateImage(Utils.convertBitmapToString(bitmap))
     }
 
     override fun onImageUploadFail() {
         viewModelScope.launch {
-            AskQuestionDialogManager.hideQuestion()
             SnackbarManager.showSnackbar(R.string.error_msg_failed_to_upload_image)
         }
     }
-
 }
