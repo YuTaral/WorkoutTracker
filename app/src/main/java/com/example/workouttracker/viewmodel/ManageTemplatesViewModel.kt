@@ -26,7 +26,8 @@ class ManageTemplatesViewModel @Inject constructor(
     var userRepository: UserRepository,
     private var templatesRepository: WorkoutTemplatesRepository,
     private var resourceProvider: ResourceProvider,
-    private var askQuestionManager: AskQuestionDialogManager
+    private var askQuestionManager: AskQuestionDialogManager,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** Enum representing the actions from the action spinner */
@@ -113,7 +114,7 @@ class ManageTemplatesViewModel @Inject constructor(
      */
     private fun showStartWorkout(template: WorkoutModel) {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.add_workout_title),
                 dialogName = "AddEditWorkoutDialog",
                 content = { AddEditWorkoutDialog(workout = template, mode = Mode.ADD) }
@@ -127,7 +128,7 @@ class ManageTemplatesViewModel @Inject constructor(
      */
     private fun showEditTemplate(template: WorkoutModel) {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.edit_template_title),
                 dialogName = "AddEditWorkoutDialog",
                 content = { AddEditWorkoutDialog(workout = template, mode = Mode.EDIT) }

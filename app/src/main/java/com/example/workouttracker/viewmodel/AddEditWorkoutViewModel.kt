@@ -29,7 +29,8 @@ class AddEditWorkoutViewModel @Inject constructor(
     private var workoutTemplatesRepository: WorkoutTemplatesRepository,
     private var resourceProvider: ResourceProvider,
     private val vibrationManager: VibrationManager,
-    private var askQuestionManager: AskQuestionDialogManager
+    private var askQuestionManager: AskQuestionDialogManager,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -123,7 +124,7 @@ class AddEditWorkoutViewModel @Inject constructor(
                         template = workout,
                         onSuccess = {
                             viewModelScope.launch {
-                                DialogManager.hideDialog("AddEditWorkoutDialog")
+                                dialogManager.hideDialog("AddEditWorkoutDialog")
                             }
                         }
                     )
@@ -176,7 +177,7 @@ class AddEditWorkoutViewModel @Inject constructor(
             workoutsRepository.updateWorkouts(null)
 
             withContext(Dispatchers.Main) {
-                DialogManager.hideDialog("AddEditWorkoutDialog")
+                dialogManager.hideDialog("AddEditWorkoutDialog")
                 PagerManager.changePageSelection(redirectToPage)
             }
         }

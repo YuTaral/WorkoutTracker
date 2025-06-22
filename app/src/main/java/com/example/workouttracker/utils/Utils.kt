@@ -10,15 +10,9 @@ import android.net.Uri
 import android.os.Build
 import android.util.Base64
 import android.util.Patterns
-import com.example.workouttracker.R
-import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
-import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.Constants.IMAGE_HEIGHT
 import com.example.workouttracker.utils.Constants.IMAGE_WIDTH
-import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.text.SimpleDateFormat
@@ -101,17 +95,6 @@ object Utils {
         localFormatter.timeZone = TimeZone.getDefault()
 
         return localFormatter.format(date)
-    }
-
-    /** Display the add workout dialog */
-    fun showAddWorkoutDialog(viewModelScope: CoroutineScope, resourceProvider: ResourceProvider) {
-        viewModelScope.launch {
-            DialogManager.showDialog(
-                title = resourceProvider.getString(R.string.add_workout_title),
-                dialogName = "AddEditWorkoutDialog",
-                content = { AddEditWorkoutDialog(workout = null, mode = Mode.ADD) }
-            )
-        }
     }
 
     /**

@@ -30,6 +30,7 @@ class EditProfileViewModel @Inject constructor(
     private var userRepository: UserRepository,
     private val imagePickerBus: ImagePickerEventBus,
     private val vibrationManager: VibrationManager,
+    private val dialogManager: DialogManager
 ): ViewModel(), IImagePicker {
 
     /** Class containing all fields in the UI */
@@ -101,7 +102,7 @@ class EditProfileViewModel @Inject constructor(
                 onSuccess = {
                     userRepository.updateUser(it)
                     viewModelScope.launch {
-                        DialogManager.hideDialog("EditProfileDialog")
+                        dialogManager.hideDialog("EditProfileDialog")
                     }
                 }
             )

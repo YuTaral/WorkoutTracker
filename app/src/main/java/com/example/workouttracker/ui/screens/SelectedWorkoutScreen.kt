@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.components.ExerciseItem
 import com.example.workouttracker.ui.reusable.ImageButton
@@ -79,7 +80,9 @@ fun SelectedWorkoutScreen(vm: SelectedWorkoutViewModel = hiltViewModel<SelectedW
             onEditClick =  { vm.showEditWorkoutDialog() },
             secondsStateFlow = vm.secondsElapsed,
             weightUnit = user!!.defaultValues.weightUnit.text,
-            onRestClick = { seconds, id -> vm.startTimer(seconds, id) }
+            onRestClick = { seconds, id -> vm.startTimer(seconds, id) },
+            showEditExercise = { exercise, weightUnit -> vm.showEditExercise(exercise, weightUnit) }
+
         )
     } else {
         vm.stopTimer()
@@ -101,7 +104,8 @@ private fun WorkoutScreen(
     onEditClick: () -> Unit,
     secondsStateFlow: StateFlow<Int>,
     weightUnit: String,
-    onRestClick: (Long, Long) -> Unit
+    onRestClick: (Long, Long) -> Unit,
+    showEditExercise: (ExerciseModel, String) -> Unit
 ) {
     var showNotes by rememberSaveable { mutableStateOf(false) }
     val secondsElapsed by secondsStateFlow.collectAsStateWithLifecycle()
@@ -219,7 +223,8 @@ private fun WorkoutScreen(
                     ExerciseItem(
                         exercise = item,
                         weightUnit = weightUnit,
-                        onRestClick = { seconds, id -> onRestClick(seconds, id) }
+                        onRestClick = { seconds, id -> onRestClick(seconds, id) },
+                        showEditExercise = { exercise, weightUnit -> showEditExercise(exercise, weightUnit) }
                     )
                 }
             }
@@ -305,7 +310,8 @@ fun WorkoutScreenPreview() {
             ),
             onEditClick = {},
             secondsStateFlow = MutableStateFlow(120).asStateFlow(),
-            weightUnit = "Kg", {} as (Long, Long) -> Unit
+            weightUnit = "Kg", {} as (Long, Long) -> Unit,
+            showEditExercise = {} as (ExerciseModel, String) -> Unit
         )
     }
 }

@@ -25,7 +25,8 @@ class AddEditTemplateViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private var workoutRepository: WorkoutRepository,
     private var workoutTemplatesRepository: WorkoutTemplatesRepository,
-    private val vibrationManager: VibrationManager
+    private val vibrationManager: VibrationManager,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -113,7 +114,7 @@ class AddEditTemplateViewModel @Inject constructor(
                 template = template,
                 onSuccess = {
                     viewModelScope.launch {
-                        DialogManager.hideDialog("AddEditTemplateDialog")
+                        dialogManager.hideDialog("AddEditTemplateDialog")
                         PagerManager.changePageSelection(Page.ManageTemplates)
                     }
                 }

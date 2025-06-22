@@ -2,6 +2,8 @@ package com.example.workouttracker.ui.managers
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Show dialog event class */
 data class DisplayDialogEvent(
@@ -17,7 +19,10 @@ sealed class DialogAction {
 }
 
 /** Class to handle showing dialogs of different type */
-object DialogManager {
+@Singleton
+class DialogManager @Inject constructor() {
+
+    /** Shared flow to emit events to show / hide dialogs */
     private val _events = MutableSharedFlow<DialogAction>(replay = 0, extraBufferCapacity = 3)
     val events = _events.asSharedFlow()
 

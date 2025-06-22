@@ -2,13 +2,16 @@ package com.example.workouttracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
+import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
+import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.ResourceProvider
-import com.example.workouttracker.utils.Utils
+import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +27,8 @@ class WorkoutsViewModel @Inject constructor(
     var userRepository: UserRepository,
     var workoutRepository: WorkoutRepository,
     private var resourceProvider: ResourceProvider,
-    private var datePickerDialog: DatePickerDialogManager
+    private var datePickerDialog: DatePickerDialogManager,
+    private var dialogManager: DialogManager
 ): ViewModel() {
 
     /** Selected workouts start date */
@@ -73,7 +77,13 @@ class WorkoutsViewModel @Inject constructor(
 
     /** Display the add workout dialog */
     fun showAddWorkoutDialog() {
-        Utils.showAddWorkoutDialog(viewModelScope, resourceProvider)
+        viewModelScope.launch {
+            dialogManager.showDialog(
+                title = resourceProvider.getString(R.string.add_workout_title),
+                dialogName = "AddEditWorkoutDialog",
+                content = { AddEditWorkoutDialog(workout = null, mode = Mode.ADD) }
+            )
+        }
     }
 
     /**

@@ -22,7 +22,8 @@ import com.example.workouttracker.ui.dialogs.ExerciseDefaultValuesDialog
 class DrawerViewModel @Inject constructor(
     private var userRepository: UserRepository,
     private var resourceProvider: ResourceProvider,
-    private var askQuestionManager: AskQuestionDialogManager
+    private var askQuestionManager: AskQuestionDialogManager,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** Logout user */
@@ -45,7 +46,7 @@ class DrawerViewModel @Inject constructor(
     /** Show change default values dialog */
     fun showChangeDefaultValues() {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.exercise_default_values),
                 dialogName = "ExerciseDefaultValuesDialog",
                 content = { ExerciseDefaultValuesDialog(values = null, exerciseName = "") }
@@ -56,7 +57,7 @@ class DrawerViewModel @Inject constructor(
     /** Show change password dialog */
     fun showChangePassword() {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.change_password),
                 dialogName = "ChangePasswordDialog",
                 content = { ChangePasswordDialog() }
@@ -67,7 +68,7 @@ class DrawerViewModel @Inject constructor(
     /** Show edit profile dialog */
     fun showEditProfile() {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.edit_profile),
                 dialogName = "EditProfileDialog",
                 content = { EditProfileDialog() }

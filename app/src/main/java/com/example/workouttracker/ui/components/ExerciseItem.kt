@@ -36,8 +36,6 @@ import com.example.workouttracker.data.models.MuscleGroupModel
 import com.example.workouttracker.data.models.SetModel
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
-import com.example.workouttracker.ui.dialogs.EditExerciseFromWorkoutDialog
-import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.PaddingVerySmall
@@ -53,7 +51,12 @@ import kotlinx.coroutines.launch
  * @param onRestClick callback to execute on the rest timer click
  */
 @Composable
-fun ExerciseItem(exercise: ExerciseModel, weightUnit: String, onRestClick: (Long, Long) -> Unit) {
+fun ExerciseItem(
+    exercise: ExerciseModel,
+    weightUnit: String,
+    onRestClick: (Long, Long) -> Unit,
+    showEditExercise: (ExerciseModel, String) -> Unit
+) {
     var showSets by rememberSaveable { mutableStateOf(true) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (showSets) 180f else 0f,
@@ -81,11 +84,7 @@ fun ExerciseItem(exercise: ExerciseModel, weightUnit: String, onRestClick: (Long
                 modifier = Modifier.size(SmallImageButtonSize),
                 onClick = {
                     scope.launch {
-                        DialogManager.showDialog(
-                            title = exercise.name,
-                            dialogName = "EditExerciseFromWorkoutDialog",
-                            content = { EditExerciseFromWorkoutDialog(exercise, weightUnit) }
-                        )
+                        showEditExercise(exercise, weightUnit)
                     }
                 },
                 image = Icons.Default.Edit,
@@ -183,6 +182,6 @@ fun ExerciseItemPreview() {
             ),
             mGExerciseIdVal = 1L,
             notesVal = "Additional notes to exercise"
-        ), weightUnit = "Kg", {} as (Long, Long) -> Unit)
+        ), weightUnit = "Kg", {} as (Long, Long) -> Unit, {} as (ExerciseModel, String) -> Unit)
     }
 }

@@ -4,15 +4,16 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.dialogs.EditExerciseFromWorkoutDialog
 import com.example.workouttracker.ui.dialogs.TimerDialog
 import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.utils.ResourceProvider
-import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,8 @@ class SelectedWorkoutViewModel @Inject constructor(
     var userRepository: UserRepository,
     private var exerciseRepository: ExerciseRepository,
     private var resourceProvider: ResourceProvider,
-    private var notificationManager: CustomNotificationManager
+    private var notificationManager: CustomNotificationManager,
+    private var dialogManager: DialogManager
 ): ViewModel() {
 
     /** Seconds elapsed since the start of the workout */
@@ -65,14 +67,20 @@ class SelectedWorkoutViewModel @Inject constructor(
 
     /** Display the add workout dialog */
     fun showAddWorkoutDialog() {
-        Utils.showAddWorkoutDialog(viewModelScope, resourceProvider)
+        viewModelScope.launch {
+            dialogManager.showDialog(
+                title = resourceProvider.getString(R.string.add_workout_title),
+                dialogName = "AddEditWorkoutDialog",
+                content = { AddEditWorkoutDialog(workout = null, mode = Mode.ADD) }
+            )
+        }
     }
 
     /** Display the edit workout dialog */
     @SuppressLint("StateFlowValueCalledInComposition")
     fun showEditWorkoutDialog() {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.edit_workout_title),
                 dialogName = "AddEditWorkoutDialog",
                 content = { AddEditWorkoutDialog(
@@ -90,7 +98,7 @@ class SelectedWorkoutViewModel @Inject constructor(
      */
     fun startTimer(seconds: Long, setId: Long) {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.timer_lbl),
                 dialogName = "TimerDialog",
                 content = { TimerDialog(
@@ -109,7 +117,7 @@ class SelectedWorkoutViewModel @Inject constructor(
                                     }
 
                                     viewModelScope.launch {
-                                        DialogManager.hideDialog("TimerDialog")
+                                        dialogManager.hideDialog("TimerDialog")
                                     }
                                 }
                             )
@@ -123,6 +131,21 @@ class SelectedWorkoutViewModel @Inject constructor(
                         )
                     })
                 }
+            )
+        }
+    }
+
+    /**
+     * Show the dialog to edit exercise from workout
+     * @param exercise the exercise
+     * @param weightUnit the weight unit
+     */
+    fun showEditExercise(exercise: ExerciseModel, weightUnit: String) {
+        viewModelScope.launch {
+            dialogManager.showDialog(
+                title = exercise.name,
+                dialogName = "EditExerciseFromWorkoutDialog",
+                content = { EditExerciseFromWorkoutDialog(exercise, weightUnit) }
             )
         }
     }

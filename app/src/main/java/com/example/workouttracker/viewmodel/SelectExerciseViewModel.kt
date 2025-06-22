@@ -37,7 +37,8 @@ class SelectExerciseViewModel @Inject constructor(
     private var workoutRepository: WorkoutRepository,
     private var userProfileRepository: UserProfileRepository,
     private var resourceProvider: ResourceProvider,
-    private var askQuestionManager: AskQuestionDialogManager
+    private var askQuestionManager: AskQuestionDialogManager,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** Enum representing the actions from the action spinner */
@@ -205,7 +206,7 @@ class SelectExerciseViewModel @Inject constructor(
         val manageExerciseActive = _manageExercises.value && _selectedSpinnerAction.value != SpinnerActions.CHANGE_EXERCISE_DEFAULT_VALUES
 
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.add_exercise_lbl),
                 dialogName = "AddEditMGExerciseDialog",
                 content = {
@@ -224,7 +225,7 @@ class SelectExerciseViewModel @Inject constructor(
                             }
 
                             viewModelScope.launch {
-                                DialogManager.hideDialog("AddEditMGExerciseDialog")
+                                dialogManager.hideDialog("AddEditMGExerciseDialog")
 
                                 if (updateWorkout) {
                                     PagerManager.changePageSelection(Page.SelectedWorkout)
@@ -243,7 +244,7 @@ class SelectExerciseViewModel @Inject constructor(
      */
     private fun showUpdateExercise(mGExercise: MGExerciseModel) {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.update_exercise_lbl),
                 dialogName = "AddEditMGExerciseDialog",
                 content = {
@@ -254,7 +255,7 @@ class SelectExerciseViewModel @Inject constructor(
                         onSaveCallback = { updateWorkout, data ->
                             populateMGExercises(data.map { MGExerciseModel(it) })
                             viewModelScope.launch {
-                                DialogManager.hideDialog("AddEditMGExerciseDialog")
+                                dialogManager.hideDialog("AddEditMGExerciseDialog")
                             }
                         }
                     )
@@ -295,7 +296,7 @@ class SelectExerciseViewModel @Inject constructor(
                 mgExerciseId = mGExercise.id,
                 onSuccess = {
                     viewModelScope.launch {
-                        DialogManager.showDialog(
+                        dialogManager.showDialog(
                             title = resourceProvider.getString(R.string.exercise_default_values),
                             dialogName = "ExerciseDefaultValuesDialog",
                             content = { ExerciseDefaultValuesDialog(values = it, exerciseName = mGExercise.name) }
@@ -314,7 +315,7 @@ class SelectExerciseViewModel @Inject constructor(
         viewModelScope.launch {
             val weightUnit =  userRepository.user.value!!.defaultValues.weightUnit.text
 
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = mGExercise.name,
                 dialogName = "AddExerciseToWorkoutDialog",
                 content = { AddExerciseToWorkoutDialog(

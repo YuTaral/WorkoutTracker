@@ -7,6 +7,7 @@ import com.example.workouttracker.data.network.repositories.NotificationReposito
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
+import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.VibrationManager
@@ -28,7 +29,8 @@ class MainViewModel @Inject constructor(
     var sharedPrefsManager: SharedPrefsManager,
     var vibrationManager: VibrationManager,
     var askQuestionManager: AskQuestionDialogManager,
-    var datePickerManager: DatePickerDialogManager
+    var datePickerManager: DatePickerDialogManager,
+    var dialogManager: DialogManager
 ): ViewModel() {
 
     /** Track when the token has been validated */

@@ -17,7 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,23 +27,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.workouttracker.ui.reusable.Label
-import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorDialogBackground
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import kotlinx.coroutines.launch
 
 /**
  * Composable function to display a dialog
  * @param title the dialog title
  * @param dialogName the dialog name
  * @param content the dialog content
+ * @param hideDialog hide the dialog on close click
  */
 @Composable
-fun BaseDialog(title: String, dialogName: String, content: @Composable () -> Unit) {
-    val scope = rememberCoroutineScope()
+fun BaseDialog(
+    title: String,
+    dialogName: String,
+    content: @Composable () -> Unit,
+    hideDialog: (String) -> Unit,
+) {
 
     Dialog(
         onDismissRequest = { },
@@ -87,11 +89,7 @@ fun BaseDialog(title: String, dialogName: String, content: @Composable () -> Uni
                         .align(Alignment.CenterEnd),
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                    onClick = {
-                        scope.launch {
-                            DialogManager.hideDialog(dialogName)
-                        }
-                    }
+                    onClick = { hideDialog(dialogName) }
                 ) {
                     Image(
                         modifier = Modifier.size(40.dp),
@@ -116,6 +114,7 @@ fun BaseDialogPreview() {
             content = {
                 Label(text = "Dialog content goes here")
             },
+            hideDialog = {}
         )
     }
 }

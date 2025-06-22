@@ -24,7 +24,8 @@ import javax.inject.Inject
 class AddExerciseToWorkoutViewModel @Inject constructor(
     private var userRepository: UserRepository,
     private var exerciseRepository: ExerciseRepository,
-    private var workoutRepository: WorkoutRepository
+    private var workoutRepository: WorkoutRepository,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -96,7 +97,7 @@ class AddExerciseToWorkoutViewModel @Inject constructor(
                     }
 
                     viewModelScope.launch {
-                        DialogManager.hideDialog("AddExerciseToWorkoutDialog")
+                        dialogManager.hideDialog("AddExerciseToWorkoutDialog")
                         PagerManager.changePageSelection(Page.SelectedWorkout)
                     }
                 }

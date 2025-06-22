@@ -59,7 +59,7 @@ fun Screen(vm: MainViewModel) {
                 MakeVibration(context, vibrationManager = vm.vibrationManager)
                 AskQuestion(askQuestionDialogManager = vm.askQuestionManager)
                 ShowDatePicker(datePickerDialog = vm.datePickerManager)
-                ShowDialog()
+                ShowDialog(dialogManager = vm.dialogManager)
 
                 Navigation(modifier = Modifier.padding(innerPadding), vm = vm)
             }
@@ -180,13 +180,14 @@ private fun ShowDatePicker(datePickerDialog: DatePickerDialogManager) {
 
 /** Composable to show/hide dialog of different types */
 @Composable
-private fun ShowDialog() {
+private fun ShowDialog(dialogManager: DialogManager) {
     var dialogEvents by remember {
         mutableStateOf<List<DisplayDialogEvent>>(emptyList())
     }
+    var scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        DialogManager.events.collect { event ->
+        dialogManager.events.collect { event ->
             dialogEvents = when (event) {
                 is DialogAction.Show -> {
                     dialogEvents + event.event
@@ -203,6 +204,11 @@ private fun ShowDialog() {
             title = event.title,
             dialogName = event.dialogName,
             content = event.content,
+            hideDialog = {
+                scope.launch {
+                    dialogManager.hideDialog(event.dialogName)
+                }
+            }
         )
     }
 }

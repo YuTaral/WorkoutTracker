@@ -22,7 +22,8 @@ import javax.inject.Inject
 class ChangePasswordViewModel @Inject constructor(
     private var userRepository: UserRepository,
     private var resourceProvider: ResourceProvider,
-    private val vibrationManager: VibrationManager
+    private val vibrationManager: VibrationManager,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** Login UI State representing the state of the Login page */
@@ -91,7 +92,7 @@ class ChangePasswordViewModel @Inject constructor(
                 password = uiState.value.newPassword,
                 onSuccess = {
                     viewModelScope.launch {
-                        DialogManager.hideDialog("ChangePasswordDialog")
+                        dialogManager.hideDialog("ChangePasswordDialog")
                     }
                 }
             )

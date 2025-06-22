@@ -25,7 +25,8 @@ import javax.inject.Inject
 class EditExerciseFromWorkoutViewModel @Inject constructor(
     private var exerciseRepository: ExerciseRepository,
     private var userRepository: UserRepository,
-    private var workoutRepository: WorkoutRepository
+    private var workoutRepository: WorkoutRepository,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** The state of each set row */
@@ -202,7 +203,7 @@ class EditExerciseFromWorkoutViewModel @Inject constructor(
                 mGExerciseId = editExercise.mGExerciseId!!,
                 onSuccess = {
                     viewModelScope.launch {
-                        DialogManager.showDialog(
+                        dialogManager.showDialog(
                             title = editExercise.name,
                             dialogName = "MGExerciseDescDialog",
                             content = { MGExerciseDescDialog(it) }
@@ -226,7 +227,7 @@ class EditExerciseFromWorkoutViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            DialogManager.hideDialog("EditExerciseFromWorkoutDialog")
+            dialogManager.hideDialog("EditExerciseFromWorkoutDialog")
         }
     }
 

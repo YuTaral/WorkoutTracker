@@ -35,7 +35,8 @@ class AddEditTeamViewModel @Inject constructor(
     private var resourceProvider: ResourceProvider,
     private val imagePickerBus: ImagePickerEventBus,
     private val vibrationManager: VibrationManager,
-    private var askQuestionManager: AskQuestionDialogManager
+    private var askQuestionManager: AskQuestionDialogManager,
+    private var dialogManager: DialogManager
 ): ViewModel(), IImagePicker {
 
     /** Class representing the UI state fields */
@@ -167,7 +168,7 @@ class AddEditTeamViewModel @Inject constructor(
     /** Show manage members dialog */
     fun showManageMembers() {
         viewModelScope.launch {
-            DialogManager.showDialog(
+            dialogManager.showDialog(
                 title = resourceProvider.getString(R.string.manage_team_members_lbl),
                 dialogName = "ManageMembersDialog",
                 content = { ManageMembersDialog() }

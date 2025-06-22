@@ -21,7 +21,8 @@ import kotlinx.coroutines.launch
 class ExerciseDefaultValuesViewModel @Inject constructor(
     var userRepository: UserRepository,
     private var userProfileRepository: UserProfileRepository,
-    private var workoutRepository: WorkoutRepository
+    private var workoutRepository: WorkoutRepository,
+    private val dialogManager: DialogManager
 ): ViewModel() {
 
     /** Class containing all fields in the UI */
@@ -119,7 +120,7 @@ class ExerciseDefaultValuesViewModel @Inject constructor(
                     }
 
                     viewModelScope.launch {
-                        DialogManager.hideDialog("ExerciseDefaultValuesDialog")
+                        dialogManager.hideDialog("ExerciseDefaultValuesDialog")
                     }
                 }
             )

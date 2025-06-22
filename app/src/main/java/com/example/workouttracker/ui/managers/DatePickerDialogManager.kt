@@ -17,7 +17,7 @@ data class DisplayDatePickerEvent(
 @Singleton
 class DatePickerDialogManager @Inject constructor() {
 
-    /** Shared flow to emit events */
+    /** Shared flow to emit events to show / hide the dialog */
     private val _events = MutableSharedFlow<DisplayDatePickerEvent>(replay = 0, extraBufferCapacity = 1)
     val events = _events.asSharedFlow()
 
