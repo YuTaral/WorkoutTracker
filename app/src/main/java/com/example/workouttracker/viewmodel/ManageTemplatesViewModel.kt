@@ -144,7 +144,6 @@ class ManageTemplatesViewModel @Inject constructor(
         viewModelScope.launch {
             askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.DELETE_TEMPLATE,
-                show = true,
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         templatesRepository.deleteWorkoutTemplate(id = template.id,)

@@ -32,7 +32,6 @@ class DrawerViewModel @Inject constructor(
             askQuestionManager.askQuestion(
                 DisplayAskQuestionDialogEvent(
                     question = Question.LOG_OUT,
-                    show = true,
                     onConfirm = {
                         viewModelScope.launch(Dispatchers.IO) {
                             userRepository.logout()

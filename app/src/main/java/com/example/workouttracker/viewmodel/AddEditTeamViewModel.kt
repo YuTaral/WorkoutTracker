@@ -149,7 +149,6 @@ class AddEditTeamViewModel @Inject constructor(
         viewModelScope.launch {
             askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.DELETE_TEAM,
-                show = true,
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         teamRepository.deleteTeam(
@@ -183,7 +182,6 @@ class AddEditTeamViewModel @Inject constructor(
         viewModelScope.launch {
             askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.LEAVE_TEAM,
-                show = true,
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         teamRepository.leaveTeam(

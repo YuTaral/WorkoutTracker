@@ -80,7 +80,6 @@ class NotificationsScreenViewModel @Inject constructor(
                     viewModelScope.launch {
                         askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                             question = Question.JOIN_TEAM,
-                            show = true,
                             onCancel = { declineInvite(notification.teamId!!) },
                             onConfirm = { acceptInvite(notification.teamId!!) },
                             formatQValues = listOf(notificationDetails.description),

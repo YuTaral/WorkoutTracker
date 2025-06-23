@@ -143,7 +143,6 @@ class MainActivity: ComponentActivity(), PermissionHost {
                 vm.viewModelScope.launch {
                     askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                         question = Question.GRANT_PERMISSIONS,
-                        show = true,
                         onConfirm = {
                             permissionHandler.cameraPermLauncher.launch(android.Manifest.permission.CAMERA)
                         }

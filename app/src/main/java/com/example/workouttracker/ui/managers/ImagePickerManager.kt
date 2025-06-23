@@ -24,7 +24,6 @@ class ImagePickerManager(
         askQuestionDialogManager.askQuestion(
             DisplayAskQuestionDialogEvent(
                 question = Question.IMAGE_SELECTION_OPTIONS,
-                show = true,
                 onCancel = {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         // Use Photo Picker for Android 13+

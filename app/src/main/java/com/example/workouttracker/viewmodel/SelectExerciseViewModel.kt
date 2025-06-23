@@ -273,7 +273,6 @@ class SelectExerciseViewModel @Inject constructor(
         viewModelScope.launch {
             askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.DELETE_MG_EXERCISE,
-                show = true,
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         exerciseRepository.deleteExercise(

@@ -148,7 +148,6 @@ class AddEditWorkoutViewModel @Inject constructor(
         viewModelScope.launch {
             askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
                 question = Question.DELETE_WORKOUT,
-                show = true,
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
                         workoutsRepository.deleteWorkout(

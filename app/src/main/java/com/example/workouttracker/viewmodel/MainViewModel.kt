@@ -97,7 +97,6 @@ class MainViewModel @Inject constructor(
             askQuestionManager.askQuestion(
                 DisplayAskQuestionDialogEvent(
                     question = Question.ALLOW_CAMERA_PERMISSION,
-                    show = true,
                     onConfirm = { callback() }
                 ),
             )

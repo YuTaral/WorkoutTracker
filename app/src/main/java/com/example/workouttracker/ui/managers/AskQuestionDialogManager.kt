@@ -44,8 +44,8 @@ enum class Question(private val titleId: Int, private val questionId: Int,
 
 /** Data class containing the show/hide dialog event */
 data class DisplayAskQuestionDialogEvent(
-    val question: Question?,
-    val show: Boolean = false,
+    val question: Question? = null,
+    val show: Boolean = true,
     val onCancel: () -> Unit = {},
     val onConfirm: () -> Unit = {},
     val formatQValues: List<String> = listOf(),
@@ -67,6 +67,6 @@ class AskQuestionDialogManager @Inject constructor() {
 
     /** Hide Ask Question dialog */
     suspend fun hideQuestion() {
-        _events.emit(DisplayAskQuestionDialogEvent(null, false))
+        _events.emit(DisplayAskQuestionDialogEvent(show = false))
     }
 }
