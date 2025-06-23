@@ -110,8 +110,15 @@ class MainActivity: ComponentActivity(), PermissionHost {
                 !vm.tokenValidated.value
             }
             setOnExitAnimationListener { screen ->
+                val iconView = try {
+                    screen.iconView
+                } catch (_: NullPointerException) {
+                    screen.remove()
+                    return@setOnExitAnimationListener
+                }
+
                 val zoomX = ObjectAnimator.ofFloat(
-                    screen.iconView,
+                    iconView,
                     View.SCALE_X,
                     0.5f,
                     0.0f
@@ -121,7 +128,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
                 zoomX.doOnEnd { screen.remove() }
 
                 val zoomY = ObjectAnimator.ofFloat(
-                    screen.iconView,
+                    iconView,
                     View.SCALE_Y,
                     0.5f,
                     0.0f
