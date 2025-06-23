@@ -48,7 +48,6 @@ class MainViewModel @Inject constructor(
 
     init {
         checkAutoLogin()
-        scheduleRefreshNotification()
     }
 
     /** Performs a check whether there is stored user and valid token and if so auto login the user */
@@ -79,9 +78,14 @@ class MainViewModel @Inject constructor(
         refreshJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
                 notificationRepository.refreshNotification()
-                delay(30000L)
+                delay(5000L)
             }
         }
+    }
+
+    /** Cancel the refresh notification */
+    fun cancelRefreshNotification() {
+        refreshJob?.cancel()
     }
 
     /**

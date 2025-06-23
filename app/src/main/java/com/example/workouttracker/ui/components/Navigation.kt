@@ -39,11 +39,13 @@ fun Navigation(modifier: Modifier, vm: MainViewModel) {
                 navController.navigate(Destinations.MAIN.name) {
                     popUpTo(Destinations.AUTH.name) { inclusive = true }
                 }
+                vm.scheduleRefreshNotification()
             }
             user == null && currentRoute != Destinations.AUTH.name -> {
                 navController.navigate(Destinations.AUTH.name) {
                     popUpTo(Destinations.MAIN.name) { inclusive = true }
                 }
+                vm.cancelRefreshNotification()
             }
         }
     }

@@ -67,7 +67,7 @@ class NotificationRepository @Inject constructor(
     suspend fun refreshNotification() {
         networkManager.sendRequest(
             request = { apiService.getInstance().refreshNotifications() },
-            onSuccessCallback = {  },
+            onSuccessCallback = { },
             blockUi = false
         )
     }
