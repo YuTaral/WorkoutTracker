@@ -177,5 +177,6 @@
     <string name="question_assign_workout_text">Are you sure you want to assign \n\"%s\" \n\ to the selected members</string>
     <string name="assign_btn">Assign</string>
     <string name="no_templates">You don\'t have any workout templates. Start a workout and save it to create your first workout template</string>
+    <string name="no_teams">You don\'t have any teams. Go to manage teams to create your first team</string>
 
 </resources>

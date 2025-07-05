@@ -124,16 +124,26 @@ private fun SelectTeamScreen(teamsStateFlow: StateFlow<MutableList<TeamModel>>, 
             style = MaterialTheme.typography.titleSmall
         )
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = lazyListState,
-            contentPadding = PaddingValues(bottom = LazyListBottomPadding)
-        ) {
-            items(teams) {
-                TeamItem(
-                    team = it,
-                    onClick = { onClick(it) }
-                )
+        if (teams.isEmpty()) {
+            Label(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.no_teams),
+                textAlign = TextAlign.Center,
+                style = labelMediumGrey,
+                maxLines = 5
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = lazyListState,
+                contentPadding = PaddingValues(bottom = LazyListBottomPadding)
+            ) {
+                items(teams) {
+                    TeamItem(
+                        team = it,
+                        onClick = { onClick(it) }
+                    )
+                }
             }
         }
     }
