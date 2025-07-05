@@ -86,6 +86,7 @@ dependencies {
     implementation (libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.compose.calendar)
+    implementation(libs.compose.animation)
     kapt(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

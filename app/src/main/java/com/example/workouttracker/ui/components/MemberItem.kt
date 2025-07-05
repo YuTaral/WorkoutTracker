@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
@@ -34,6 +35,7 @@ import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.utils.Utils
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import com.example.workouttracker.ui.reusable.CustomCheckbox
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.labelSmall
@@ -59,18 +61,34 @@ enum class MemberTeamState(private var stringId: Int, private var style: TextSty
  * Display single member of team
  * @param member the team member
  * @param showButton whether to show button for invite / remove
+ * @param showSelection show checkbox for selection
  * @param onAction action to execute on button click
+ * @param onSelect callback to execute when the row is selected
  */
 @Composable
-fun MemberItem(member: TeamMemberModel, showButton: Boolean, onAction: (TeamMemberModel) -> Unit) {
+fun MemberItem(
+        member: TeamMemberModel,
+        showButton: Boolean,
+        showSelection: Boolean = false,
+        onAction: (TeamMemberModel) -> Unit = {},
+        onSelect: (TeamMemberModel) -> Unit = {}
+) {
     val state = MemberTeamState.valueOf(member.teamState)
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = PaddingSmall)
+            .clickable(
+                enabled = true,
+                onClick = {
+                    onSelect(member)
+                }
+            )
     ) {
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             val imagePainter: Painter = if (!member.image.isEmpty()) {
                 val bitmap = Utils.convertStringToBitmap(member.image)
                 BitmapPainter(bitmap.asImageBitmap())
@@ -119,6 +137,12 @@ fun MemberItem(member: TeamMemberModel, showButton: Boolean, onAction: (TeamMemb
                               else painterResource(id = R.drawable.icon_remove_member),
                     contentDescription = null,
                 )
+            } else if (showSelection && state == MemberTeamState.ACCEPTED) {
+                CustomCheckbox(
+                    checked = member.selectedForAssign,
+                    onValueChange = { onSelect(member) },
+                    text = ""
+                )
             }
         }
 
@@ -135,6 +159,6 @@ fun MemberItem(member: TeamMemberModel, showButton: Boolean, onAction: (TeamMemb
 @Composable
 private fun MemberItemPreview() {
     WorkoutTrackerTheme {
-        MemberItem(TeamMemberModel(1L, 1L, "1", "Test user", "", MemberTeamState.INVITED.name), true, {})
+        MemberItem(TeamMemberModel(1L, 1L, "1", "Test user", "", MemberTeamState.INVITED.name), true, false, {})
     }
 }

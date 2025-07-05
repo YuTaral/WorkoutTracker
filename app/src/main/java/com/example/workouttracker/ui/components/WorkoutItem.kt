@@ -37,7 +37,6 @@ import java.util.Date
 @Composable
 fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutModel) -> Unit) {
     var exercisesText = ""
-    var summaryText = ""
     var totalWeight = 0.0
     var totalReps = 0
     var completedWeight = 0.0
@@ -81,7 +80,19 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
             }
         }
 
-        if (!workout.template) {
+        if (workout.template) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                for (e: ExerciseModel in workout.exercises) {
+                    Label(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = String.format(stringResource(id = R.string.exercise_summary), e.name, e.sets.size),
+                        style = labelMediumGrey,
+                        textAlign = TextAlign.Start
+                    )
+                }
+            }
+
+        } else {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Label(
@@ -103,50 +114,41 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
                     }
                 }
             }
-        }
 
-        for (e: ExerciseModel in workout.exercises) {
-            exercisesText = exercisesText + e.name + ", "
+            for (e: ExerciseModel in workout.exercises) {
+                exercisesText = exercisesText + e.name + ", "
 
-            for (s : SetModel in e.sets) {
-                totalWeight += s.weight
-                totalReps += s.reps
+                for (s : SetModel in e.sets) {
+                    totalWeight += s.weight
+                    totalReps += s.reps
 
-                if (s.completed) {
-                    completedWeight += s.weight
-                    completedReps += s.reps
+                    if (s.completed) {
+                        completedWeight += s.weight
+                        completedReps += s.reps
+                    }
                 }
             }
-        }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Label(
+                        modifier = Modifier.padding(end = PaddingVerySmall),
+                        text = stringResource(id = R.string.exercises_lbl),
+                        style = labelMediumGrey
+                    )
+                    if (exercisesText.length > 2) {
+                        Label(text = exercisesText.dropLast(2))
+                    }
+                }
+            }
+
             Row(modifier = Modifier.fillMaxWidth()) {
-                Label(
-                    modifier = Modifier.padding(end = PaddingVerySmall),
-                    text = stringResource(id = R.string.exercises_lbl),
-                    style = labelMediumGrey
-                )
-                if (exercisesText.length > 2) {
-                    Label(text = exercisesText.dropLast(2))
-                }
-            }
-        }
-
-        Row(modifier = Modifier.fillMaxWidth()) {
-            summaryText = if (workout.template) {
-                String.format(
-                    stringResource(id = R.string.template_summary),
-                    Utils.formatDouble(totalWeight), weightUnit, totalReps
-                )
-            } else {
-                String.format(
+                Label(text = String.format(
                     stringResource(id = R.string.workout_summary_lbl),
                     Utils.formatDouble(completedWeight), Utils.formatDouble(totalWeight),
                     weightUnit, completedReps, totalReps
-                )
+                ))
             }
-
-            Label(text = summaryText)
         }
 
         HorizontalDivider(color = ColorBorder, thickness = 1.dp)

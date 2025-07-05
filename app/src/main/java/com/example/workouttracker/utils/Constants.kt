@@ -60,6 +60,7 @@ object Constants {
         const val USERS_TO_INVITE  = "$TEAMS/users-to-invite"
         const val MY_TEAM_MEMBERS  = "$TEAMS/my-team-members"
         const val JOINED_TEAM_MEMBERS  = "$TEAMS/joined-team-members"
+        const val ASSIGN_WORKOUT  = "$TEAMS/assign-workout"
 
         const val JOIN_TEAM_NOTIFICATION_DETAILS  = "$NOTIFICATIONS/join-team-notification-details"
         const val REFRESH_NOTIFICATIONS = "$NOTIFICATIONS/refresh-notifications"

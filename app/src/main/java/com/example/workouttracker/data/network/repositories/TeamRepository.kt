@@ -4,7 +4,6 @@ import com.example.workouttracker.data.models.TeamMemberModel
 import com.example.workouttracker.data.managers.NetworkManager
 import com.example.workouttracker.data.models.NotificationModel
 import com.example.workouttracker.data.models.TeamModel
-import com.example.workouttracker.data.models.TeamWithMembersModel
 import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.utils.Utils
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -154,25 +153,30 @@ class TeamRepository @Inject constructor(
     /** Get the teams created by the user
      * @param teamType the team type - as coach or as member
      * @param callback optional callback to execute after successfully updating the teams
+     * @param onlyWithMembers whether to fetch teams only with members
      */
-    suspend fun refreshMyTeams(teamType: String, callback: () -> Unit = {}) {
-        networkManager.sendRequest(
-            request = { apiService.getInstance().getMyTeams(teamType) },
-            onSuccessCallback = { response ->
-                _teams.value = response.data.map { TeamModel(it) } as MutableList<TeamModel>
+    suspend fun refreshMyTeams(teamType: String, callback: () -> Unit = {}, onlyWithMembers: Boolean = false) {
+        if (onlyWithMembers) {
+            getMyTeamsWithMembers()
+        } else {
+            networkManager.sendRequest(
+                request = { apiService.getInstance().getMyTeams(teamType) },
+                onSuccessCallback = { response ->
+                    _teams.value = response.data.map { TeamModel(it) } as MutableList<TeamModel>
 
-                callback()
-            },
-        )
+                    callback()
+                },
+            )
+        }
     }
 
-    /** Get the teams created by the user, which have 1 or more members
-     * @param onSuccess callback to execute if request is successful
-     */
-    suspend fun getMyTeamsWithMembers(onSuccess: (List<TeamWithMembersModel>) -> Unit) {
+    /** Get the teams created by the user, which have 1 or more members */
+    suspend fun getMyTeamsWithMembers() {
         networkManager.sendRequest(
             request = { apiService.getInstance().getMyTeamsWithMembers() },
-            onSuccessCallback = { response -> onSuccess(response.data.map { TeamWithMembersModel(it) } )},
+            onSuccessCallback = { response ->
+                _teams.value = response.data.map { TeamModel(it) } as MutableList<TeamModel>
+            },
         )
     }
 
@@ -246,5 +250,45 @@ class TeamRepository @Inject constructor(
         }
 
         callback()
+    }
+
+    /**
+     * Assign the workout to the members
+     * @param workoutId the workout id
+     * @param memberIds the member ids
+     * @param onSuccess callback to execute on success
+     */
+    suspend fun assignWorkout(workoutId: Long, memberIds: List<Long>, onSuccess: () -> Unit) {
+        val params = mapOf("workoutId" to workoutId.toString(), "memberIds" to memberIds.toString())
+
+        networkManager.sendRequest(
+            request = { apiService.getInstance().assignWorkout(params) },
+            onSuccessCallback = { onSuccess() }
+        )
+    }
+
+    /**
+     * Create new instance of the model to trigger recomposition changing the selection property
+     * @param member the member to select / unselected
+     */
+    fun updateMemberSelection(member: TeamMemberModel) {
+        val updatedList = _teamMembers.value.map {
+            if (member.id == it.id) {
+                TeamMemberModel(
+                    idVal = member.id,
+                    teamIdVal = member.teamId,
+                    userIdVal = member.userId,
+                    fullNameVal = member.fullName,
+                    imageVal = member.image,
+                    teamStateVal = member.teamState
+                ).apply {
+                    selectedForAssign = !member.selectedForAssign
+                }
+            } else {
+                it
+            }
+        }
+
+        _teamMembers.value = updatedList
     }
 }

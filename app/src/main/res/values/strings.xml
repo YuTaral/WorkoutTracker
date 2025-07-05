@@ -167,5 +167,15 @@
     <string name="question_grant_permissions_text">To make sure the app works smoothly and gives you the best experience, we need to request some permissions. These will help us provide essential features like notifications, camera access and images access.\nYour privacy is important to us, and we will never share your data without your consent.\nWould you like to grant these permissions now?</string>
     <string name="view_permissions_btn">View permissions</string>
     <string name="maybe_later_btn">Maybe later</string>
+    <string name="assign_workout_action">Assign workout</string>
+    <string name="select_team_lbl">Select team</string>
+    <string name="select_members_lbl">Select members</string>
+    <string name="select_workout_lbl">Select workout</string>
+    <string name="exercise_summary">%s x %d set(s)</string>
+    <string name="no_members_selected">Select members first</string>
+    <string name="question_assign_workout_title">Assign workout</string>
+    <string name="question_assign_workout_text">Are you sure you want to assign \n\"%s\" \n\ to the selected members</string>
+    <string name="assign_btn">Assign</string>
+    <string name="no_templates">You don\'t have any workout templates. Start a workout and save it to create your first workout template</string>
 
 </resources>

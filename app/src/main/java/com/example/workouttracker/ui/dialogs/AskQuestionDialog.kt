@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.example.workouttracker.ui.extensions.customBorder
 import com.example.workouttracker.ui.reusable.DialogButton
 import com.example.workouttracker.ui.reusable.Label
@@ -61,9 +62,12 @@ fun AskQuestionDialog(event: DisplayAskQuestionDialogEvent, hideQuestion: () -> 
                 style = MaterialTheme.typography.titleLarge
             )
             Label(
-                modifier = Modifier.padding(PaddingSmall),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(PaddingSmall),
                 text = questionText,
-                maxLines = 10
+                maxLines = 10,
+                textAlign = TextAlign.Center
             )
 
             Row(modifier = Modifier.fillMaxWidth().height(BottomSheetsDialogFooterSize)) {

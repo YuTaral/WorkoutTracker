@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.ui.managers.PagerManager
+import com.example.workouttracker.ui.screens.AssignWorkoutScreen
 import com.example.workouttracker.ui.screens.SelectedTeamScreen
 import com.example.workouttracker.ui.screens.ManageTeamsScreen
 import com.example.workouttracker.ui.screens.ManageTemplatesScreen
@@ -52,6 +53,9 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
 
     data object AddTeam: Page(R.string.add_team_lbl, R.drawable.icon_tab_add_team,
                          PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTeamScreen(team = null) })
+
+    data object AssignWorkout: Page(R.string.assign_workout_action, R.drawable.icon_tab_assign_workout,
+        PageIndices.FIRST_TEMPORARY.ordinal, content = { AssignWorkoutScreen() })
 
     data class ManageTeams(private val teamType: ViewTeamAs): Page(R.string.teams_lbl, R.drawable.icon_screen_manage_teams,
         PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTeamsScreen(teamType = teamType) })

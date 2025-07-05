@@ -147,6 +147,9 @@ interface IAPIService {
     @GET(Constants.RequestEndPoints.JOINED_TEAM_MEMBERS)
     fun getJoinedTeamMembers(@Query("teamId") teamId: Long): Call<CustomResponse>
 
+    @POST(Constants.RequestEndPoints.ASSIGN_WORKOUT)
+    fun assignWorkout(@Body params: Map<String, String>): Call<CustomResponse>
+
     /** NOTIFICATION REQUESTS
      * -------------------------------------------------------------------------------- */
     @PATCH(Constants.RequestEndPoints.NOTIFICATIONS)

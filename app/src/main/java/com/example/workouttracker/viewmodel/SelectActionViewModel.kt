@@ -50,6 +50,11 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
     data class SaveWorkoutAsTemplate(private val onActionClick: () -> Unit):
         Action(R.drawable.icon_action_save_workout_as_template, R.string.save_workout_as_template_lbl, { onActionClick() }
     )
+
+    data class AssignWorkout(private val onActionClick: () -> Unit):
+        Action(R.drawable.icon_assign_workout, R.string.assign_workout_action, { onActionClick() }
+    )
+
 }
 
 /** View model to manage the state of Select Action screen */
@@ -85,6 +90,7 @@ class SelectActionViewModel @Inject constructor(
         _actions.value.add(createManageExercisesAction())
         _actions.value.add(createManageTemplates())
         _actions.value.add(createManageTeamsAction())
+        _actions.value.add(createAssignAction())
 
         _isInitialized.value = true
     }
@@ -208,6 +214,18 @@ class SelectActionViewModel @Inject constructor(
             }
         )
     }
+
+    /** Create assign workout action */
+    private fun createAssignAction(): Action {
+        return Action.AssignWorkout(
+            onActionClick = {
+                viewModelScope.launch {
+                    pagerManager.changePageSelection(Page.AssignWorkout)
+                }
+            }
+        )
+    }
+
     /** Reset the data when the screen is being removed */
     fun resetData() {
         _actions.value.clear()
