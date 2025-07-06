@@ -27,6 +27,7 @@ class DatePickerDialogManager @Inject constructor() {
      */
     suspend fun showDialog(onCancel: () -> Unit, onDatePick: (Date) -> Unit) {
         _events.emit(DisplayDatePickerEvent(
+            show = true,
             onCancel = onCancel,
             onDatePick = onDatePick)
         )
