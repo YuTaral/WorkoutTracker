@@ -69,5 +69,7 @@ object Constants {
         const val REFRESH_NOTIFICATIONS = "$NOTIFICATIONS/refresh-notifications"
 
         const val GET_WORKOUT_TEMPLATE = "$WORKOUT_TEMPLATES/get-template-by-assigned-workout"
+
+        const val FINISH_WORKOUT = "$WORKOUTS/finish"
     }
 }

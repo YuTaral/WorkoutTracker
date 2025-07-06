@@ -59,6 +59,19 @@ class WorkoutRepository @Inject constructor(
         )
     }
 
+    /** Finish the workout
+     * @param workoutId the workout id
+     * @param onSuccess callback to execute if request is successful
+     */
+    suspend fun finishWorkout(workoutId: Long, onSuccess: (WorkoutModel) -> Unit) {
+        networkManager.sendRequest(
+            request = {
+                apiService.getInstance().finishWorkout(workoutId)
+          },
+            onSuccessCallback = { response -> onSuccess(WorkoutModel(response.data[0])) }
+        )
+    }
+
     /** Delete the workout
      * @param workoutId the workout id
      * @param onSuccess callback to execute if request is successful

@@ -21,8 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.Duration
-import java.util.Date
 import javax.inject.Inject
 
 /** Different actions accessed from the actions menu */
@@ -41,7 +39,7 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
 
     data class FinishWorkout(private val onActionClick: () -> Unit):
         Action(R.drawable.icon_finish_workout, R.string.mark_workout_as_finished_lbl, { onActionClick() }
-        )
+    )
 
     data class StartTimer(private val onActionClick: () -> Unit):
         Action(R.drawable.icon_start_timer, R.string.start_timer_lbl, { onActionClick() }
@@ -115,15 +113,9 @@ class SelectActionViewModel @Inject constructor(
     /** Create finish workout action */
     private fun createFinishWorkout(): Action {
         return Action.FinishWorkout(onActionClick = {
-            val workout = workoutRepository.selectedWorkout.value!!
-            workout.finishDateTime = Date()
-            workout.durationSeconds = Duration.between(
-                workout.startDateTime!!.toInstant(), workout.finishDateTime!!.toInstant()
-            ).seconds.toInt()
-
             viewModelScope.launch(Dispatchers.IO) {
-                workoutRepository.updateWorkout(
-                    workout = workout,
+                workoutRepository.finishWorkout(
+                    workoutId = workoutRepository.selectedWorkout.value!!.id,
                     onSuccess = {
                         workoutRepository.updateSelectedWorkout(it)
                         viewModelScope.launch(Dispatchers.IO) {

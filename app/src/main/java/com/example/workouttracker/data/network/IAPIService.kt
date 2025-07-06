@@ -49,6 +49,9 @@ interface IAPIService {
     @PATCH(Constants.RequestEndPoints.WORKOUTS)
     fun updateWorkout(@Body params: Map<String, String>): Call<CustomResponse>
 
+    @PATCH(Constants.RequestEndPoints.FINISH_WORKOUT)
+    fun finishWorkout(@Query("workoutId") workoutId: Long): Call<CustomResponse>
+
     @DELETE(Constants.RequestEndPoints.WORKOUTS)
     fun deleteWorkout(@Query("workoutId") workoutId: Long): Call<CustomResponse>
 
