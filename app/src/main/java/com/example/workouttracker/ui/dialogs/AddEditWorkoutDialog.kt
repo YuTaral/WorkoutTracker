@@ -42,15 +42,22 @@ import java.util.Date
  * Add / edit workout dialog content
  * @param workout the workout to edit if in edit mode, null otherwise
  * @param mode the dialog mode
+ * @param assignedWorkoutId larger than 0 if the workout is not started from assignment
  */
 @Composable
-fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: Mode, vm: AddEditWorkoutViewModel = hiltViewModel()) {
+fun AddEditWorkoutDialog(
+    workout: WorkoutModel?,
+    mode: Mode,
+    assignedWorkoutId: Long = 0,
+    vm: AddEditWorkoutViewModel = hiltViewModel()
+) {
     val notesFocusReq = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     var nameInputId = R.string.workout_name_lbl
     var exercisesText = ""
-
+    var startSaveBtnId = R.string.save_btn
+    
     if (workout != null && workout.template && mode == Mode.EDIT) {
         nameInputId = R.string.template_name_lbl
     }
@@ -146,12 +153,16 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: Mode, vm: AddEditWorkoutV
                 )
             }
 
+            if (mode == Mode.ADD) {
+                startSaveBtnId = R.string.start_btn
+            }
+
             DialogButton(
                 modifier = Modifier
                     .customBorder()
                     .weight(1f),
-                text = stringResource(R.string.save_btn),
-                onClick = { vm.saveWorkout() }
+                text = stringResource(id = startSaveBtnId),
+                onClick = { vm.saveWorkout(assignedWorkoutId = assignedWorkoutId) }
             )
         }
     }

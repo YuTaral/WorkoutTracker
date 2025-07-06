@@ -32,11 +32,12 @@ class WorkoutRepository @Inject constructor(
 
     /** Add new workout
      * @param workout the workout data
+     * @param assignedWorkoutId larger than 0 if the workout is not started from assignment
      * @param onSuccess callback to execute if request is successful
      */
-    suspend fun addWorkout(workout: WorkoutModel, onSuccess: (WorkoutModel) -> Unit) {
+    suspend fun addWorkout(workout: WorkoutModel, assignedWorkoutId: Long, onSuccess: (WorkoutModel) -> Unit) {
         // Send a request to add the workout
-        val params = mapOf("workout" to Utils.serializeObject(workout))
+        val params = mapOf("workout" to Utils.serializeObject(workout), "assignedWorkoutId" to assignedWorkoutId.toString())
 
         networkManager.sendRequest(
             request = { apiService.getInstance().addWorkout(params) },

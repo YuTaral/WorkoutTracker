@@ -91,8 +91,11 @@ class AddEditWorkoutViewModel @Inject constructor(
         _uiState.update { it.copy(nameError = value) }
     }
 
-    /** Add/edit the workout if it's valid */
-    fun saveWorkout() {
+    /**
+     * Add/edit the workout if it's valid
+     * @param assignedWorkoutId larger than 0 if the workout is not started from assignment
+     */
+    fun saveWorkout(assignedWorkoutId: Long) {
         if (!validate()) {
             return
         }
@@ -109,6 +112,7 @@ class AddEditWorkoutViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 workoutsRepository.addWorkout(
                     workout = newWorkout,
+                    assignedWorkoutId = assignedWorkoutId,
                     onSuccess = { createdWorkout ->
                         onWorkoutActionSuccess(createdWorkout, Page.SelectedWorkout)
                     }

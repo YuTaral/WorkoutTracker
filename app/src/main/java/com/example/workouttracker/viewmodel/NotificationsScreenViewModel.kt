@@ -74,7 +74,11 @@ class NotificationsScreenViewModel @Inject constructor(
                             dialogManager.showDialog(
                                 title = resourceProvider.getString(R.string.start_workout_title),
                                 dialogName = "AddEditWorkoutDialog",
-                                content = { AddEditWorkoutDialog(workout = it, mode = Mode.ADD) }
+                                content = { AddEditWorkoutDialog(
+                                    workout = it,
+                                    mode = Mode.ADD,
+                                    assignedWorkoutId = notification.assignedWorkoutId
+                                ) }
                             )
 
                             withContext(Dispatchers.IO) {
