@@ -56,6 +56,7 @@
     <string name="latest_workouts_lbl">Latest Workouts</string>
     <string name="select_date_lbl">Select Date</string>
     <string name="add_workout_title">Add workout</string>
+    <string name="start_workout_title">Start workout</string>
     <string name="edit_template_title">Edit template</string>
     <string name="edit_workout_title">Edit workout</string>
     <string name="workout_name_lbl">Workout name</string>

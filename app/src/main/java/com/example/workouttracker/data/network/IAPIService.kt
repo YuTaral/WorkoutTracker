@@ -106,6 +106,9 @@ interface IAPIService {
     @GET(Constants.RequestEndPoints.WORKOUT_TEMPLATES)
     fun getWorkoutTemplates(): Call<CustomResponse>
 
+    @GET(Constants.RequestEndPoints.GET_WORKOUT_TEMPLATE)
+    fun getWorkoutTemplate(@Query("assignedWorkoutId") assignedWorkoutId: Long): Call<CustomResponse>
+
     /** TEAM REQUESTS
      * -------------------------------------------------------------------------------- */
     @POST(Constants.RequestEndPoints.TEAMS)

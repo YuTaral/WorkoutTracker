@@ -2,19 +2,26 @@ package com.example.workouttracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.workouttracker.R
 import com.example.workouttracker.data.models.NotificationModel
 import com.example.workouttracker.data.network.repositories.NotificationRepository
 import com.example.workouttracker.data.network.repositories.TeamRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
+import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
+import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
+import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.Constants.NotificationType
+import com.example.workouttracker.utils.ResourceProvider
+import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /** View model to control the state of notifications screen */
@@ -23,8 +30,11 @@ class NotificationsScreenViewModel @Inject constructor(
     var notificationRepository: NotificationRepository,
     private var teamRepository: TeamRepository,
     private var userRepository: UserRepository,
+    private var templateRepository: WorkoutTemplatesRepository,
     private var askQuestionManager: AskQuestionDialogManager,
     private val pagerManager: PagerManager,
+    private val dialogManager: DialogManager,
+    private val resourceProvider: ResourceProvider
 ): ViewModel() {
 
     /** Initialize the data when the screen is displayed */
@@ -55,6 +65,26 @@ class NotificationsScreenViewModel @Inject constructor(
                 teamId = notification.teamId!!,
                 teamType = ViewTeamAs.COACH
             )
+        } else if (notification.type == NotificationType.WORKOUT_ASSIGNED.toString()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                templateRepository.getTemplate(
+                    assignedWorkoutId = notification.assignedWorkoutId!!,
+                    onSuccess = {
+                        viewModelScope.launch {
+                            dialogManager.showDialog(
+                                title = resourceProvider.getString(R.string.start_workout_title),
+                                dialogName = "AddEditWorkoutDialog",
+                                content = { AddEditWorkoutDialog(workout = it, mode = Mode.ADD) }
+                            )
+
+                            withContext(Dispatchers.IO) {
+                                notificationRepository.reviewNotification(id = notification.id)
+                                notificationRepository.refreshNotifications()
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
 

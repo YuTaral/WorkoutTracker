@@ -74,4 +74,15 @@ class WorkoutTemplatesRepository @Inject constructor(
     fun refreshTemplates(newTemplates: MutableList<WorkoutModel>) {
         _templates.value = newTemplates
     }
+
+    /**
+     * Get the template data
+     * @param assignedWorkoutId the assigned workout id
+     */
+    suspend fun getTemplate(assignedWorkoutId: Long, onSuccess: (WorkoutModel) -> Unit) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().getWorkoutTemplate(assignedWorkoutId = assignedWorkoutId) },
+            onSuccessCallback = { onSuccess(WorkoutModel(it.data[0]))}
+        )
+    }
 }

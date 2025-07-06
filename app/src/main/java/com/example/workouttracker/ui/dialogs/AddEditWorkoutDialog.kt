@@ -22,15 +22,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.extensions.customBorder
 import com.example.workouttracker.ui.reusable.DialogButton
 import com.example.workouttracker.ui.reusable.ErrorLabel
 import com.example.workouttracker.ui.reusable.InputField
+import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
+import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel
 import java.util.Date
@@ -46,6 +49,7 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: Mode, vm: AddEditWorkoutV
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     var nameInputId = R.string.workout_name_lbl
+    var exercisesText = ""
 
     if (workout != null && workout.template && mode == Mode.EDIT) {
         nameInputId = R.string.template_name_lbl
@@ -99,6 +103,32 @@ fun AddEditWorkoutDialog(workout: WorkoutModel?, mode: Mode, vm: AddEditWorkoutV
             minLines = 4,
             maxLines = 4
         )
+
+        if (mode == Mode.ADD && workout!!.template) {
+            for (e: ExerciseModel in workout.exercises) {
+                exercisesText = exercisesText + e.name + ", "
+            }
+
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = PaddingSmall)
+            ) {
+                Label(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.exercises_template_dialog_lbl),
+                    style = labelMediumGrey
+                )
+                if (exercisesText.length > 2) {
+                    Label(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = PaddingSmall),
+                        text = exercisesText.dropLast(2),
+                        maxLines = 4
+                    )
+                }
+            }
+        }
 
         Row(modifier = Modifier
             .height(DialogFooterSize)

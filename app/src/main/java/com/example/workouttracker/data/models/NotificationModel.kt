@@ -30,6 +30,9 @@ class NotificationModel: BaseModel {
     @SerializedName("ClickDisabled")
     val clickDisabled: Boolean
 
+    @SerializedName("AssignedWorkoutId")
+    val assignedWorkoutId: Long?
+
     /** Constructor to deserialized NotificationModel object
      * @param data serialized NotificationModel object
      */
@@ -44,6 +47,7 @@ class NotificationModel: BaseModel {
         image = model.image
         teamId = model.teamId
         clickDisabled = model.clickDisabled
+        assignedWorkoutId = model.assignedWorkoutId
     }
 
     constructor(idVal: Long, notificationTextVal: String, dateTimeVal: Date, isActiveVal: Boolean, typeVal: String,
@@ -55,5 +59,6 @@ class NotificationModel: BaseModel {
         image = imageVal
         teamId = teamIdVal
         clickDisabled = clickDisabledVal
+        assignedWorkoutId = 0
     }
 }

@@ -19,7 +19,8 @@ object Constants {
     enum class NotificationType {
         INVITED_TO_TEAM,
         JOINED_TEAM,
-        DECLINED_TEAM_INVITATION
+        DECLINED_TEAM_INVITATION,
+        WORKOUT_ASSIGNED
     }
 
     /** Object containing request end point values */
@@ -64,5 +65,7 @@ object Constants {
 
         const val JOIN_TEAM_NOTIFICATION_DETAILS  = "$NOTIFICATIONS/join-team-notification-details"
         const val REFRESH_NOTIFICATIONS = "$NOTIFICATIONS/refresh-notifications"
+
+        const val GET_WORKOUT_TEMPLATE = "$WORKOUT_TEMPLATES/get-template-by-assigned-workout"
     }
 }
