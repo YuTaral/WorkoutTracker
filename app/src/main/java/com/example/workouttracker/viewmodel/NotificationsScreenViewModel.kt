@@ -55,40 +55,10 @@ class NotificationsScreenViewModel @Inject constructor(
         } else if (notification.type == NotificationType.JOINED_TEAM.toString() ||
             notification.type == NotificationType.DECLINED_TEAM_INVITATION.toString()) {
 
-            if (notification.isActive) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    notificationRepository.reviewNotification(id = notification.id)
-                }
-            }
+            reviewAndRedirectToTeam(notification)
 
-            redirectToTeam(
-                teamId = notification.teamId!!,
-                teamType = ViewTeamAs.COACH
-            )
         } else if (notification.type == NotificationType.WORKOUT_ASSIGNED.toString()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                templateRepository.getTemplate(
-                    assignedWorkoutId = notification.assignedWorkoutId!!,
-                    onSuccess = {
-                        viewModelScope.launch {
-                            dialogManager.showDialog(
-                                title = resourceProvider.getString(R.string.start_workout_title),
-                                dialogName = "AddEditWorkoutDialog",
-                                content = { AddEditWorkoutDialog(
-                                    workout = it,
-                                    mode = Mode.ADD,
-                                    assignedWorkoutId = notification.assignedWorkoutId
-                                ) }
-                            )
-
-                            withContext(Dispatchers.IO) {
-                                notificationRepository.reviewNotification(id = notification.id)
-                                notificationRepository.refreshNotifications()
-                            }
-                        }
-                    }
-                )
-            }
+           startWorkoutAssignment(notification)
         }
     }
 
@@ -119,6 +89,53 @@ class NotificationsScreenViewModel @Inject constructor(
                             formatQValues = listOf(notificationDetails.description),
                             formatTitle = notificationDetails.teamName
                         ))
+                    }
+                }
+            )
+        }
+    }
+
+    /**
+     * Mark the notification as reviewed the notification and redirect to team screen
+     * @param notification the notification data
+     */
+    private fun reviewAndRedirectToTeam(notification: NotificationModel) {
+        if (notification.isActive) {
+            viewModelScope.launch(Dispatchers.IO) {
+                notificationRepository.reviewNotification(id = notification.id)
+            }
+        }
+
+        redirectToTeam(
+            teamId = notification.teamId!!,
+            teamType = ViewTeamAs.COACH
+        )
+    }
+
+    /**
+     * Start workout assignment
+     * @param notification the notification data
+     */
+    private fun startWorkoutAssignment(notification: NotificationModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            templateRepository.getTemplate(
+                assignedWorkoutId = notification.assignedWorkoutId!!,
+                onSuccess = {
+                    viewModelScope.launch {
+                        dialogManager.showDialog(
+                            title = resourceProvider.getString(R.string.start_workout_title),
+                            dialogName = "AddEditWorkoutDialog",
+                            content = { AddEditWorkoutDialog(
+                                workout = it,
+                                mode = Mode.ADD,
+                                assignedWorkoutId = notification.assignedWorkoutId
+                            ) }
+                        )
+
+                        withContext(Dispatchers.IO) {
+                            notificationRepository.reviewNotification(id = notification.id)
+                            notificationRepository.refreshNotifications()
+                        }
                     }
                 }
             )
