@@ -111,7 +111,7 @@ fun AddEditWorkoutDialog(
             maxLines = 4
         )
 
-        if (mode == Mode.ADD && workout!!.template) {
+        if (mode == Mode.ADD && workout != null && workout.template) {
             for (e: ExerciseModel in workout.exercises) {
                 exercisesText = exercisesText + e.name + ", "
             }
