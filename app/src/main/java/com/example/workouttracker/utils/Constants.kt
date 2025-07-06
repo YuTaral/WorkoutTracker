@@ -14,6 +14,7 @@ object Constants {
     val TIMER_END_VIBRATION = longArrayOf(0, 500, 500, 500, 500, 500)
     const val IMAGE_WIDTH = 256
     const val IMAGE_HEIGHT = 256
+    const val SUCCESS_MSG = "Success"
 
     /** Enum with notification types */
     enum class NotificationType {

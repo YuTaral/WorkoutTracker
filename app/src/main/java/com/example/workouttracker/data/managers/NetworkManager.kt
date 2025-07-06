@@ -93,6 +93,10 @@ class NetworkManager @Inject constructor(
                 // execute the success callback
                 onSuccessCallback(response.body()!!)
 
+                if (response.body()!!.message != Constants.SUCCESS_MSG) {
+                    snackbarManager.showSnackbar(message = response.body()!!.message)
+                }
+
             } else if (response.errorBody() != null) {
                 // Extract the error body which must contain CustomResponse and set the
                 // responseBody which will be processed in onError(onErrorCallback)
