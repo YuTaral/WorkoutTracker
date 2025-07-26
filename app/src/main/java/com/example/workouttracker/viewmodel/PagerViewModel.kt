@@ -3,6 +3,7 @@ package com.example.workouttracker.viewmodel
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.AssignedWorkoutModel
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.screens.AssignWorkoutScreen
@@ -14,6 +15,7 @@ import com.example.workouttracker.ui.screens.NotificationsScreen
 import com.example.workouttracker.ui.screens.SelectActionScreen
 import com.example.workouttracker.ui.screens.SelectExerciseScreen
 import com.example.workouttracker.ui.screens.SelectedWorkoutScreen
+import com.example.workouttracker.ui.screens.ViewAssignedWorkoutScreen
 import com.example.workouttracker.ui.screens.WorkoutsScreen
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,12 +66,20 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
     data class EditTeam(private val team: TeamModel): Page(R.string.edit_team_lbl, R.drawable.icon_tab_edit_team,
         PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTeamScreen(team = team) })
 
-    data class AssignedWorkout(private val teamId: Long):
+    data class AssignedWorkouts(private val teamId: Long):
         Page(
             R.string.assigned_workouts_action,
             R.drawable.icon_screen_workouts,
             PageIndices.FIRST_TEMPORARY.ordinal,
-            content = { AssignedWorkoutsScreen(teamId = teamId) }
+            content = { AssignedWorkoutsScreen() }
+        )
+
+    data class ViewAssignedWorkout(private val assignedWorkout: AssignedWorkoutModel, private val weightUnit: String):
+        Page(
+            R.string.view_assigned_workout_action,
+            R.drawable.icon_screen_selected_workout,
+            PageIndices.SECOND_TEMPORARY.ordinal,
+            content = { ViewAssignedWorkoutScreen(assignedWorkout, weightUnit) }
         )
 }
 

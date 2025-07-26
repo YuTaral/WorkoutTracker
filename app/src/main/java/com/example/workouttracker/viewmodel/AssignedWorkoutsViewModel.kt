@@ -19,6 +19,7 @@ import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 import com.example.workouttracker.R
+import com.example.workouttracker.ui.managers.PagerManager
 
 /** View model to control the state of assigned workouts */
 @HiltViewModel
@@ -26,7 +27,8 @@ class AssignedWorkoutsViewModel @Inject constructor(
     var teamRepository: TeamRepository,
     var userRepository: UserRepository,
     private var datePickerDialog: DatePickerDialogManager,
-    private var resourceProvider: ResourceProvider
+    private var resourceProvider: ResourceProvider,
+    private var pagerManager: PagerManager
 ): ViewModel() {
 
     /** The assigned workouts */
@@ -43,13 +45,19 @@ class AssignedWorkoutsViewModel @Inject constructor(
 
     /**
      * Initialize the data when the screen is displayed
-     * @param teamId the team id (0 if not used)
+     * @param team the initially selected team, null if not used
      */
-    fun initializeData(teamId: Long) {
+    fun initializeData(team: TeamModel?) {
+        if (team == null && _teamFilter.value.id == 0L) {
+            _teamFilter.value = getDefaultTeamFilter()
+        } else if (team != null) {
+            _teamFilter.value = team
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             teamRepository.getAssignedWorkouts(
                 startDate = Utils.formatDateToISO8601(_startDate.value),
-                teamId = teamId,
+                teamId = _teamFilter.value.id,
                 onSuccess = { _assignedWorkouts.value = it.toMutableList() },
                 onFail = { _assignedWorkouts.value.clear() }
             )
@@ -75,6 +83,19 @@ class AssignedWorkoutsViewModel @Inject constructor(
 
                     updateStartDate(newDate)
                 }
+            )
+        }
+    }
+
+    /**
+     * Handle click on an assigned workout
+     * @param assignedWorkout the assigned workout to view
+     */
+    fun onClick(assignedWorkout: AssignedWorkoutModel) {
+        viewModelScope.launch {
+            pagerManager.changePageSelection(Page.ViewAssignedWorkout(
+                assignedWorkout = assignedWorkout,
+                weightUnit = userRepository.user.value!!.defaultValues.weightUnit.text)
             )
         }
     }

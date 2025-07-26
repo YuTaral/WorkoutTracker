@@ -186,5 +186,6 @@
     <string name="not_started_lbl">Not started</string>
     <string name="all_teams_lbl">All teams</string>
     <string name="all_members_lbl">All members</string>
+    <string name="view_assigned_workout_action">Assigned</string>
 
 </resources>

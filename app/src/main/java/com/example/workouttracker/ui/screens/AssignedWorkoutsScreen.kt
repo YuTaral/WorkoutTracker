@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.ui.components.AssignedWorkoutItem
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
@@ -39,12 +40,12 @@ import com.example.workouttracker.viewmodel.AssignedWorkoutsViewModel
 
 /**
  * Screen to allow coaches to view assigned workouts
- * @param teamId the team id (0 if not used)
+ * @param team the team to filter by, null if not used
  */
 @Composable
-fun AssignedWorkoutsScreen(teamId: Long, vm: AssignedWorkoutsViewModel = hiltViewModel()) {
+fun AssignedWorkoutsScreen(team: TeamModel? = null, vm: AssignedWorkoutsViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
-        vm.initializeData(teamId = teamId)
+        vm.initializeData(team = team)
     }
 
     val workouts by vm.assignedWorkouts.collectAsStateWithLifecycle()
@@ -114,7 +115,7 @@ fun AssignedWorkoutsScreen(teamId: Long, vm: AssignedWorkoutsViewModel = hiltVie
                         AssignedWorkoutItem(
                             assignedWorkout = item,
                             weightUnit = user!!.defaultValues.weightUnit.text,
-                            onClick = {  },
+                            onClick = { vm.onClick(it) },
                         )
                     }
                 }
@@ -127,6 +128,6 @@ fun AssignedWorkoutsScreen(teamId: Long, vm: AssignedWorkoutsViewModel = hiltVie
 @Composable
 private fun DrawerContentPreview() {
     WorkoutTrackerTheme {
-        AssignedWorkoutsScreen(0L)
+        AssignedWorkoutsScreen()
     }
 }

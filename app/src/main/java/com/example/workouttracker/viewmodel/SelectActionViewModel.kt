@@ -227,7 +227,7 @@ class SelectActionViewModel @Inject constructor(
         return Action.AssignedWorkouts(
             onActionClick = {
                 viewModelScope.launch {
-                    pagerManager.changePageSelection(Page.AssignedWorkout(0L))
+                    pagerManager.changePageSelection(Page.AssignedWorkouts(0L))
                 }
             }
         )

@@ -49,13 +49,15 @@ import kotlinx.coroutines.launch
  * @param exercise the exercise model
  * @param weightUnit the selected weight unit
  * @param onRestClick callback to execute on the rest timer click
+ * @param hideEdit whether to hide the edit button
  */
 @Composable
 fun ExerciseItem(
     exercise: ExerciseModel,
     weightUnit: String,
-    onRestClick: (Long, Long) -> Unit,
-    showEditExercise: (ExerciseModel, String) -> Unit
+    onRestClick: (Long, Long) -> Unit = { _, _ -> },
+    showEditExercise: (ExerciseModel, String) -> Unit = { _, _ -> },
+    hideEdit: Boolean = false
 ) {
     var showSets by rememberSaveable { mutableStateOf(true) }
     val rotationAngle by animateFloatAsState(
@@ -80,16 +82,19 @@ fun ExerciseItem(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.Top
         ) {
-            ImageButton(
-                modifier = Modifier.size(SmallImageButtonSize),
-                onClick = {
-                    scope.launch {
-                        showEditExercise(exercise, weightUnit)
-                    }
-                },
-                image = Icons.Default.Edit,
-                size = SmallImageButtonSize - 5.dp
-            )
+
+            if (!hideEdit) {
+                ImageButton(
+                    modifier = Modifier.size(SmallImageButtonSize),
+                    onClick = {
+                        scope.launch {
+                            showEditExercise(exercise, weightUnit)
+                        }
+                    },
+                    image = Icons.Default.Edit,
+                    size = SmallImageButtonSize - 5.dp
+                )
+            }
 
             Label(
                 modifier = Modifier
