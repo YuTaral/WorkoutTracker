@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.R
@@ -78,9 +80,16 @@ fun AssignedWorkoutsScreen(teamId: Long, vm: AssignedWorkoutsViewModel = hiltVie
 
             Spinner(
                 modifier = Modifier.padding(horizontal = PaddingSmall),
-                items = myTeams.map { it.name },
-                selectedItem = teamFilter.name,
-                onItemSelected = { }
+                items = myTeams.associate { it.id.toString() to it.name },
+                selectedItemKey = teamFilter.id.toString(),
+                onItemSelected = {
+                    vm.updateTeamFilter(it)
+                }
+            )
+
+            HorizontalDivider(
+                thickness = 1.dp,
+                modifier = Modifier.padding(PaddingSmall)
             )
 
             if (workouts.isEmpty()) {

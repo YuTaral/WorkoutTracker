@@ -55,6 +55,7 @@ class AssignedWorkoutsViewModel @Inject constructor(
             )
 
             teamRepository.refreshMyTeams(teamType = ViewTeamAs.COACH.name)
+            teamRepository.teams.value.add(0, getDefaultTeamFilter())
         }
     }
 
@@ -94,6 +95,27 @@ class AssignedWorkoutsViewModel @Inject constructor(
                 onFail = {
                     _assignedWorkouts.value.clear()
                     _startDate.value = newDate
+                }
+            )
+        }
+    }
+
+    /**
+     * Update the selected team filter
+     * @param teamId the team id to filter by
+     */
+    fun updateTeamFilter(teamId: String) {
+        _teamFilter.value = teamRepository.teams.value.firstOrNull { it.id.toString() == teamId } ?: getDefaultTeamFilter()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            teamRepository.getAssignedWorkouts(
+                startDate = Utils.formatDateToISO8601(_startDate.value),
+                teamId = _teamFilter.value.id,
+                onSuccess = {
+                    _assignedWorkouts.value = it.toMutableList()
+                },
+                onFail = {
+                    _assignedWorkouts.value.clear()
                 }
             )
         }

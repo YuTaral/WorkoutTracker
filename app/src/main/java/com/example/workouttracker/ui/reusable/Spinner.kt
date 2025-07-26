@@ -39,15 +39,15 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
  * Custom implementation of spinner
  * @param modifier the modifier to apply padding to the most outer element of the spinner
  * @param items the items in the spinner
- * @param selectedItem the selected item
+ * @param selectedItemKey the selected item key
  * @param onItemSelected the callback to execute on item selection
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Spinner(
     modifier: Modifier = Modifier,
-    items: List<String>,
-    selectedItem: String,
+    items: Map<String, String>,
+    selectedItemKey: String,
     onItemSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -68,17 +68,11 @@ fun Spinner(
         )
     }
 
-    Box(
-        modifier = modifier
-    ) {
+    Box(modifier = modifier) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = ColorAccent,
-                    shape = borderShape
-                )
+                .border(1.dp, ColorAccent, borderShape)
                 .clickable { expanded = !expanded },
             color = Color.Black
         ) {
@@ -88,7 +82,7 @@ fun Spinner(
             ) {
                 Label(
                     modifier = Modifier.weight(1f),
-                    text = selectedItem,
+                    text = items[selectedItemKey] ?: "",
                     style = labelMediumBold,
                     textAlign = TextAlign.Start
                 )
@@ -111,24 +105,17 @@ fun Spinner(
                 .padding(horizontal = PaddingSmall)
                 .background(Color.Black)
                 .border(
-                    width = 1.dp,
-                    color = ColorAccent,
-                    shape = RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 0.dp,
-                        bottomStart = 12.dp,
-                        bottomEnd = 12.dp
-                    )
+                    1.dp,
+                    ColorAccent,
+                    RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
                 ),
             containerColor = Color.Transparent
         ) {
-            items.forEach { item ->
+            items.forEach { (key, value) ->
                 DropdownMenuItem(
-                    text = {
-                        Label(text = item)
-                    },
+                    text = { Label(text = value) },
                     onClick = {
-                        onItemSelected(item)
+                        onItemSelected(key)
                         expanded = false
                     },
                 )
@@ -137,18 +124,21 @@ fun Spinner(
     }
 }
 
-
 @Preview
 @Composable
 fun SpinnerPreview() {
-    var selectedItem by remember { mutableStateOf("Select option") }
-    val items = listOf("Option 1", "Option 2", "Option 3")
+    var selectedItemKey by remember { mutableStateOf("1") }
+    val items = mapOf(
+        "1" to "Option 1",
+        "2" to "Option 2",
+        "3" to "Option 3"
+    )
 
     WorkoutTrackerTheme {
         Spinner(
             items = items,
-            selectedItem = selectedItem,
-            onItemSelected = { selectedItem = it }
+            selectedItemKey = selectedItemKey,
+            onItemSelected = { selectedItemKey = it }
         )
     }
 }

@@ -89,7 +89,7 @@ class ManageTemplatesViewModel @Inject constructor(
     /** Update the selected spinner action with the provided value */
     fun updateSelectedSpinnerAction(actionText: String) {
         _selectedSpinnerAction.value = spinnerActions.first {
-            resourceProvider.getString(it.getStringId()) == actionText
+            it.name == actionText
         }
     }
 

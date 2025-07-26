@@ -118,7 +118,7 @@ class SelectExerciseViewModel @Inject constructor(
         _manageExercises.value = value
 
         if (_manageExercises.value) {
-            updateSelectedSpinnerAction(resourceProvider.getString(SpinnerActions.UPDATE_EXERCISE.getStringId()))
+            updateSelectedSpinnerAction(SpinnerActions.UPDATE_EXERCISE.name)
         }
 
         populateMuscleGroups()
@@ -127,7 +127,7 @@ class SelectExerciseViewModel @Inject constructor(
     /** Update the selected spinner action with the provided value */
     fun updateSelectedSpinnerAction(actionText: String) {
         _selectedSpinnerAction.value = spinnerActions.first {
-            resourceProvider.getString(it.getStringId()) == actionText
+            it.name == actionText
         }
         if (selectedMuscleGroupId > 0L) {
             populateMGExercises()

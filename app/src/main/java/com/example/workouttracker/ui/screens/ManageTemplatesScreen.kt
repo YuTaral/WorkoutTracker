@@ -47,8 +47,8 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
         ) {
             Spinner(
                 modifier = Modifier.padding(horizontal = PaddingVerySmall),
-                items = vm.spinnerActions.map { stringResource(id = it.getStringId()) },
-                selectedItem = stringResource(id = selectedAction.getStringId()),
+                items = vm.spinnerActions.associate { it.name to stringResource(id = it.getStringId()) },
+                selectedItemKey = selectedAction.name,
                 onItemSelected = {
                     vm.updateSelectedSpinnerAction(it)
                 }
