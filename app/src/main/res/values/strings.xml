@@ -169,6 +169,8 @@
     <string name="view_permissions_btn">View permissions</string>
     <string name="maybe_later_btn">Maybe later</string>
     <string name="assign_workout_action">Assign workout</string>
+    <string name="assigned_workouts_action">Assigned</string>
+    <string name="view_assigned_workouts_action">View assigned workouts</string>
     <string name="select_team_lbl">Select team</string>
     <string name="select_members_lbl">Select members</string>
     <string name="select_workout_lbl">Select workout</string>
@@ -179,5 +181,10 @@
     <string name="assign_btn">Assign</string>
     <string name="no_templates">You don\'t have any workout templates. Start a workout and save it to create your first workout template</string>
     <string name="no_teams">You don\'t have any teams. Go to manage teams to create your first team</string>
+    <string name="workout_assignments">Workout Assignments</string>
+    <string name="no_workouts_with_filters">You don\'t have any assigned workouts matching the selected filters</string>
+    <string name="not_started_lbl">Not started</string>
+    <string name="all_teams_lbl">All teams</string>
+    <string name="all_members_lbl">All members</string>
 
 </resources>

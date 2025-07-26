@@ -156,6 +156,9 @@ interface IAPIService {
     @POST(Constants.RequestEndPoints.ASSIGN_WORKOUT)
     fun assignWorkout(@Body params: Map<String, String>): Call<CustomResponse>
 
+    @GET(Constants.RequestEndPoints.ASSIGNED_WORKOUTS)
+    fun getAssignedWorkouts(@Query("startDate") startDate: String, @Query("teamId") teamId: Long): Call<CustomResponse>
+
     /** NOTIFICATION REQUESTS
      * -------------------------------------------------------------------------------- */
     @PATCH(Constants.RequestEndPoints.NOTIFICATIONS)

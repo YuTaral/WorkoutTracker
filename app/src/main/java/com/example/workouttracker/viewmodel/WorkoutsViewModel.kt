@@ -102,7 +102,7 @@ class WorkoutsViewModel @Inject constructor(
     /** Return the default workouts start date - 1 month backwards */
     private fun getDefaultStartDate(): Date {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MONTH, -6)
+        calendar.add(Calendar.MONTH, -1)
         return calendar.time
     }
 }

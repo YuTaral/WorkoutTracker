@@ -6,6 +6,7 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.screens.AssignWorkoutScreen
+import com.example.workouttracker.ui.screens.AssignedWorkoutsScreen
 import com.example.workouttracker.ui.screens.SelectedTeamScreen
 import com.example.workouttracker.ui.screens.ManageTeamsScreen
 import com.example.workouttracker.ui.screens.ManageTemplatesScreen
@@ -62,6 +63,14 @@ sealed class Page(val title: Int, val icon: Int, val index: Int, val content: @C
 
     data class EditTeam(private val team: TeamModel): Page(R.string.edit_team_lbl, R.drawable.icon_tab_edit_team,
         PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTeamScreen(team = team) })
+
+    data class AssignedWorkout(private val teamId: Long):
+        Page(
+            R.string.assigned_workouts_action,
+            R.drawable.icon_screen_workouts,
+            PageIndices.FIRST_TEMPORARY.ordinal,
+            content = { AssignedWorkoutsScreen(teamId = teamId) }
+        )
 }
 
 /** PagerViewModel to manage the state of the pages of the main screen */

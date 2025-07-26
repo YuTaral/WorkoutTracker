@@ -2,6 +2,7 @@ package com.example.workouttracker.data.network.repositories
 
 import com.example.workouttracker.data.models.TeamMemberModel
 import com.example.workouttracker.data.managers.NetworkManager
+import com.example.workouttracker.data.models.AssignedWorkoutModel
 import com.example.workouttracker.data.models.NotificationModel
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.network.APIService
@@ -290,5 +291,26 @@ class TeamRepository @Inject constructor(
         }
 
         _teamMembers.value = updatedList
+    }
+
+    /**
+     * Get the assigned workouts by the user
+     * @param startDate the start date
+     * @param teamId the team id (0 if not used)
+     * @param onSuccess callback to execute on success
+     */
+    suspend fun getAssignedWorkouts(
+        startDate: String,
+        teamId: Long,
+        onSuccess: (List<AssignedWorkoutModel>) -> Unit,
+        onFail: () -> Unit
+    ) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().getAssignedWorkouts(startDate, teamId) },
+            onSuccessCallback = { response ->
+                onSuccess(response.data.map { AssignedWorkoutModel(it) })
+            },
+            onErrorCallback = { onFail() }
+        )
     }
 }

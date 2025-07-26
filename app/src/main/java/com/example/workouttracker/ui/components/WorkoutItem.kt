@@ -33,9 +33,15 @@ import java.util.Date
  * @param workout the workout model
  * @param weightUnit the selected weight unit
  * @param onClick callback to execute on workout click
+ * @param notFinishedStr value to display if the workout is not yet finished (optional)
  */
 @Composable
-fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutModel) -> Unit) {
+fun WorkoutItem(
+    workout: WorkoutModel,
+    weightUnit: String,
+    onClick: (WorkoutModel) -> Unit,
+    notFinishedStr: String = stringResource(R.string.in_progress_lbl)
+) {
     var exercisesText = ""
     var totalWeight = 0.0
     var totalReps = 0
@@ -65,10 +71,12 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
 
             if (!workout.template) {
                 Column {
-                    Label(
-                        text = Utils.defaultFormatDateTime(workout.startDateTime!!),
-                        style = MaterialTheme.typography.labelSmall
-                    )
+                    if (workout.startDateTime != null) {
+                        Label(
+                            text = Utils.defaultFormatDateTime(workout.startDateTime),
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
 
                     if (workout.finishDateTime != null) {
                         Label(
@@ -103,7 +111,7 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
 
                     if (workout.finishDateTime == null) {
                         Label(
-                            text = stringResource(R.string.in_progress_lbl),
+                            text = notFinishedStr,
                             style = labelMediumOrange
                         )
                     } else {
@@ -154,8 +162,6 @@ fun WorkoutItem(workout: WorkoutModel, weightUnit: String, onClick: (WorkoutMode
         HorizontalDivider(color = ColorBorder, thickness = 1.dp)
     }
 }
-
-
 
 @Preview
 @Composable
