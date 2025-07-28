@@ -22,7 +22,6 @@ import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorDialogBackground
 import com.example.workouttracker.ui.theme.ColorWhite
 import com.example.workouttracker.ui.theme.PaddingLarge
-import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 
 /** Custom loading spinner used when request is being processed */
@@ -41,7 +40,7 @@ fun RequestInProgressSpinner() {
             )
             .clip(RoundedCornerShape(16.dp))
             .background(ColorDialogBackground)
-            .padding(PaddingMedium * 2),
+            .padding(PaddingLarge),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -52,7 +51,8 @@ fun RequestInProgressSpinner() {
             )
             Label(
                 text = stringResource(R.string.request_loading),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 2
             )
         }
     }
