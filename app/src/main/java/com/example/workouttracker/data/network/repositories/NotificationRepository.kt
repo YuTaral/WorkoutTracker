@@ -22,11 +22,16 @@ class NotificationRepository @Inject constructor(
     private var _notifications = MutableStateFlow<List<NotificationModel>>(listOf())
     var notifications = _notifications.asStateFlow()
 
-    /** Refresh the notifications for the logged in user */
-    suspend fun refreshNotifications() {
+    /**
+     * Refresh the notifications for the logged in user
+     * @param showReviewed whether to show reviewed notifications or not
+     */
+    suspend fun refreshNotifications(showReviewed: Boolean) {
         networkManager.sendRequest(
-            request = { apiService.getInstance().getNotifications() },
-            onSuccessCallback = { response -> _notifications.value = response.data.map { NotificationModel(it) }},
+            request = { apiService.getInstance().getNotifications(showReviewed) },
+            onSuccessCallback = { response ->
+                _notifications.value = response.data.map { NotificationModel(it) }
+            },
         )
     }
 
@@ -55,10 +60,11 @@ class NotificationRepository @Inject constructor(
 
     /** Delete the notification and refresh the data on success
      * @param notificationId the notification id to remove
+     * @param showReviewed whether to show reviewed notifications or not
      */
-    suspend fun deleteNotification(notificationId: Long) {
+    suspend fun deleteNotification(notificationId: Long, showReviewed: Boolean) {
         networkManager.sendRequest(
-            request = { apiService.getInstance().deleteNotification(notificationId) },
+            request = { apiService.getInstance().deleteNotification(notificationId, showReviewed) },
             onSuccessCallback = { response -> _notifications.value = response.data.map { NotificationModel(it) }},
         )
     }

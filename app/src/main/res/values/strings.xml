@@ -187,5 +187,6 @@
     <string name="all_teams_lbl">All teams</string>
     <string name="all_members_lbl">All members</string>
     <string name="view_assigned_workout_action">Assigned</string>
+    <string name="show_reviewed_lbl">Show reviewed</string>
 
 </resources>

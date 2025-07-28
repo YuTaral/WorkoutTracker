@@ -165,10 +165,10 @@ interface IAPIService {
     fun notificationReviewed(@Body params: Map<String, String>): Call<CustomResponse>
 
     @DELETE(Constants.RequestEndPoints.NOTIFICATIONS)
-    fun deleteNotification(@Query("notificationId") notificationId: Long): Call<CustomResponse>
+    fun deleteNotification(@Query("notificationId") notificationId: Long, @Query("showReviewed") showReviewed: Boolean): Call<CustomResponse>
 
     @GET(Constants.RequestEndPoints.NOTIFICATIONS)
-    fun getNotifications(): Call<CustomResponse>
+    fun getNotifications(@Query("showReviewed") showReviewed: Boolean): Call<CustomResponse>
 
     @GET(Constants.RequestEndPoints.JOIN_TEAM_NOTIFICATION_DETAILS)
     fun getJoinTeamNotificationDetails(@Query("notificationId") notificationId: Long): Call<CustomResponse>

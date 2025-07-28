@@ -105,10 +105,11 @@ class TeamRepository @Inject constructor(
     /** Accept invite
      * @param userId the user id who accepted the invite
      * @param teamId the team id
+     * @param showReviewed whether to show reviewed notifications or not
      * @param onSuccess callback to execute if request is successful
      */
-    suspend fun acceptInvite(userId: String, teamId: Long, onSuccess: () -> Unit) {
-        val params = mapOf("userId" to userId, "teamId" to teamId.toString())
+    suspend fun acceptInvite(userId: String, teamId: Long, showReviewed: String, onSuccess: () -> Unit) {
+        val params = mapOf("userId" to userId, "teamId" to teamId.toString(), "showReviewed" to showReviewed)
 
         networkManager.sendRequest(
             request = { apiService.getInstance().acceptInvite(params) },
@@ -119,10 +120,11 @@ class TeamRepository @Inject constructor(
     /** Decline invite
      * @param userId the user id who accepted the invite
      * @param teamId the team id
+     * @param showReviewed whether to show reviewed notifications or not
      * @param onSuccess callback to execute if request is successful
      */
-    suspend fun declineInvite(userId: String, teamId: Long, onSuccess: (List<NotificationModel>) -> Unit) {
-        val params = mapOf("userId" to userId, "teamId" to teamId.toString())
+    suspend fun declineInvite(userId: String, teamId: Long, showReviewed: String, onSuccess: (List<NotificationModel>) -> Unit) {
+        val params = mapOf("userId" to userId, "teamId" to teamId.toString(), showReviewed to showReviewed)
 
         networkManager.sendRequest(
             request = { apiService.getInstance().declineInvite(params) },

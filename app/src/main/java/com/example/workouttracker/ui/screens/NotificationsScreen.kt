@@ -1,6 +1,8 @@
 package com.example.workouttracker.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,25 +22,39 @@ import com.example.workouttracker.ui.components.NotificationItem
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
-import com.example.workouttracker.viewmodel.NotificationsScreenViewModel
+import com.example.workouttracker.viewmodel.NotificationsViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.style.TextAlign
+import com.example.workouttracker.ui.reusable.CustomCheckbox
 import com.example.workouttracker.ui.theme.labelMediumGrey
 
 /** Screen to display notifications to the user */
 @Composable
-fun NotificationsScreen(vm: NotificationsScreenViewModel = hiltViewModel()) {
+fun NotificationsScreen(vm: NotificationsViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
         vm.initializeData()
     }
 
     val notifications by vm.notificationRepository.notifications.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
+    val showReviewed by vm.showReviewed.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(PaddingSmall)
     ) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = PaddingSmall),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            CustomCheckbox(
+                checked = showReviewed,
+                onValueChange = { vm.updateShowReviewed(it) },
+                text = stringResource(id = R.string.show_reviewed_lbl),
+            )
+        }
+
         if (notifications.isEmpty()) {
             Label(
                 modifier = Modifier.fillMaxWidth(),

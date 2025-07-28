@@ -20,13 +20,15 @@ import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /** View model to control the state of notifications screen */
 @HiltViewModel
-class NotificationsScreenViewModel @Inject constructor(
+class NotificationsViewModel @Inject constructor(
     var notificationRepository: NotificationRepository,
     private var teamRepository: TeamRepository,
     private var userRepository: UserRepository,
@@ -37,10 +39,23 @@ class NotificationsScreenViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider
 ): ViewModel() {
 
+    /** Flow to control the visibility of reviewed notifications */
+    private var _showReviewed = MutableStateFlow<Boolean>(false)
+    var showReviewed = _showReviewed.asStateFlow()
+
     /** Initialize the data when the screen is displayed */
     fun initializeData() {
         viewModelScope.launch(Dispatchers.IO) {
-            notificationRepository.refreshNotifications()
+            notificationRepository.refreshNotifications(_showReviewed.value)
+        }
+    }
+
+    /** Update the visibility of reviewed notifications */
+    fun updateShowReviewed(value: Boolean) {
+        _showReviewed.value = value
+
+        viewModelScope.launch(Dispatchers.IO) {
+            notificationRepository.refreshNotifications(_showReviewed.value)
         }
     }
 
@@ -70,7 +85,7 @@ class NotificationsScreenViewModel @Inject constructor(
             NotificationType.WORKOUT_ASSIGNMENT_DECLINED.toString() -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     notificationRepository.reviewNotification(id = notification.id)
-                    notificationRepository.refreshNotifications()
+                    notificationRepository.refreshNotifications(_showReviewed.value)
                 }
             }
         }
@@ -98,7 +113,7 @@ class NotificationsScreenViewModel @Inject constructor(
      */
     fun removeNotification(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            notificationRepository.deleteNotification(notificationId = id)
+            notificationRepository.deleteNotification(notificationId = id, _showReviewed.value)
         }
     }
 
@@ -164,7 +179,7 @@ class NotificationsScreenViewModel @Inject constructor(
 
                         withContext(Dispatchers.IO) {
                             notificationRepository.reviewNotification(id = notification.id)
-                            notificationRepository.refreshNotifications()
+                            notificationRepository.refreshNotifications(_showReviewed.value)
                         }
                     }
                 }
@@ -181,9 +196,10 @@ class NotificationsScreenViewModel @Inject constructor(
             teamRepository.declineInvite(
                 userId = userRepository.user.value!!.id,
                 teamId = teamId,
+                showReviewed = if (_showReviewed.value) "Y" else "N",
                 onSuccess = {
                     viewModelScope.launch(Dispatchers.IO) {
-                        notificationRepository.refreshNotifications()
+                        notificationRepository.refreshNotifications(_showReviewed.value)
                     }
                 }
             )
@@ -199,6 +215,7 @@ class NotificationsScreenViewModel @Inject constructor(
             teamRepository.acceptInvite(
                 userId = userRepository.user.value!!.id,
                 teamId = teamId,
+                showReviewed = if (_showReviewed.value) "Y" else "N",
                 onSuccess = {
                     viewModelScope.launch {
                         redirectToTeam(
