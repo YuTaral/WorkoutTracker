@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -33,7 +32,6 @@ import com.example.workouttracker.ui.reusable.Spinner
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
-import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AssignedWorkoutsViewModel
@@ -41,11 +39,16 @@ import com.example.workouttracker.viewmodel.AssignedWorkoutsViewModel
 /**
  * Screen to allow coaches to view assigned workouts
  * @param team the team to filter by, null if not used
+ * @param autoSelectedAssignedWorkoutId auto select the assigned workout with this ID, 0 if not used
  */
 @Composable
-fun AssignedWorkoutsScreen(team: TeamModel? = null, vm: AssignedWorkoutsViewModel = hiltViewModel()) {
+fun AssignedWorkoutsScreen(
+    team: TeamModel? = null,
+    autoSelectedAssignedWorkoutId: Long = 0L,
+    vm: AssignedWorkoutsViewModel = hiltViewModel(),
+) {
     LaunchedEffect(Unit) {
-        vm.initializeData(team = team)
+        vm.initializeData(team = team, autoSelectedAssignedWorkoutId = autoSelectedAssignedWorkoutId)
     }
 
     val workouts by vm.assignedWorkouts.collectAsStateWithLifecycle()
@@ -124,10 +127,11 @@ fun AssignedWorkoutsScreen(team: TeamModel? = null, vm: AssignedWorkoutsViewMode
     }
 }
 
-@Preview(widthDp = 360, heightDp = 640)
+/**
+ * Reset the AssignedWorkoutsViewModel to its initial state
+ * This is needed because vm.initialized property is set to true after the first call of initializeData
+ */
 @Composable
-private fun DrawerContentPreview() {
-    WorkoutTrackerTheme {
-        AssignedWorkoutsScreen()
-    }
+fun AssignedWorkoutsScreenReset(vm: AssignedWorkoutsViewModel = hiltViewModel()) {
+    vm.resetViewModel()
 }

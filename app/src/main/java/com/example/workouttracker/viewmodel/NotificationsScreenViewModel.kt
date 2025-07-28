@@ -49,16 +49,46 @@ class NotificationsScreenViewModel @Inject constructor(
      * @param notification the notification
      */
     fun onClick(notification: NotificationModel) {
-        if (notification.type == NotificationType.INVITED_TO_TEAM.toString()) {
-            askJoinTeam(notification = notification)
+        when (notification.type) {
+            NotificationType.INVITED_TO_TEAM.toString() -> {
+                askJoinTeam(notification)
+            }
 
-        } else if (notification.type == NotificationType.JOINED_TEAM.toString() ||
-            notification.type == NotificationType.DECLINED_TEAM_INVITATION.toString()) {
+            NotificationType.JOINED_TEAM.toString(),
+            NotificationType.DECLINED_TEAM_INVITATION.toString() -> {
+                reviewAndRedirectToTeam(notification)
+            }
 
-            reviewAndRedirectToTeam(notification)
+            NotificationType.WORKOUT_ASSIGNED.toString() -> {
+                startWorkoutAssignment(notification)
+            }
 
-        } else if (notification.type == NotificationType.WORKOUT_ASSIGNED.toString()) {
-           startWorkoutAssignment(notification)
+            NotificationType.WORKOUT_ASSIGNMENT_COMPLETED.toString() -> {
+                reviewAndRedirectToAssignment(notification)
+            }
+
+            NotificationType.WORKOUT_ASSIGNMENT_DECLINED.toString() -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    notificationRepository.reviewNotification(id = notification.id)
+                    notificationRepository.refreshNotifications()
+                }
+            }
+        }
+    }
+
+    /**
+     * Mark the notification as reviewed and redirect to the assigned workout screen
+     * @param notification the notification data
+     */
+    private fun reviewAndRedirectToAssignment(notification: NotificationModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            notificationRepository.reviewNotification(id = notification.id)
+
+            withContext(Dispatchers.Default) {
+                pagerManager.changePageSelection(
+                    Page.AssignedWorkouts(autoSelectedAssignedWorkoutId = notification.assignedWorkoutId!!)
+                )
+            }
         }
     }
 
@@ -164,7 +194,7 @@ class NotificationsScreenViewModel @Inject constructor(
      * Accept team invitation
      * @param teamId the team id
      */
-    fun acceptInvite(teamId: Long) {
+    private fun acceptInvite(teamId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             teamRepository.acceptInvite(
                 userId = userRepository.user.value!!.id,

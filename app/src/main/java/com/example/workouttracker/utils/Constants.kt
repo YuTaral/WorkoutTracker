@@ -22,7 +22,8 @@ object Constants {
         JOINED_TEAM,
         DECLINED_TEAM_INVITATION,
         WORKOUT_ASSIGNED,
-        WORKOUT_ASSIGNMENT_COMPLETED
+        WORKOUT_ASSIGNMENT_COMPLETED,
+        WORKOUT_ASSIGNMENT_DECLINED
     }
 
     /** Object containing request end point values */

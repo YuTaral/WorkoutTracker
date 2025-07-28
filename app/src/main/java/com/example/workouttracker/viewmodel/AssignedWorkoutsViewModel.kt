@@ -10,7 +10,6 @@ import com.example.workouttracker.ui.managers.DatePickerDialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +19,7 @@ import java.util.Date
 import javax.inject.Inject
 import com.example.workouttracker.R
 import com.example.workouttracker.ui.managers.PagerManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 /** View model to control the state of assigned workouts */
 @HiltViewModel
@@ -43,11 +43,21 @@ class AssignedWorkoutsViewModel @Inject constructor(
     private var _teamFilter = MutableStateFlow(getDefaultTeamFilter())
     var teamFilter = _teamFilter.asStateFlow()
 
+    /** Track whether the view model has been initialized with the correct team and workout id */
+    private var initialized = false
+
     /**
      * Initialize the data when the screen is displayed
      * @param team the initially selected team, null if not used
+     * @param autoSelectedAssignedWorkoutId auto select the assigned workout with this ID, 0 if not used
      */
-    fun initializeData(team: TeamModel?) {
+    fun initializeData(team: TeamModel?, autoSelectedAssignedWorkoutId: Long) {
+        if (initialized) {
+            // Return if already initialized to avoid auto re-selecting the assigned workout
+            // when user navigates back the screen
+            return
+        }
+
         if (team == null && _teamFilter.value.id == 0L) {
             _teamFilter.value = getDefaultTeamFilter()
         } else if (team != null) {
@@ -58,13 +68,30 @@ class AssignedWorkoutsViewModel @Inject constructor(
             teamRepository.getAssignedWorkouts(
                 startDate = Utils.formatDateToISO8601(_startDate.value),
                 teamId = _teamFilter.value.id,
-                onSuccess = { _assignedWorkouts.value = it.toMutableList() },
+                onSuccess = {
+                    _assignedWorkouts.value = it.toMutableList()
+
+                    if (autoSelectedAssignedWorkoutId > 0) {
+                        var assignedWorkout = _assignedWorkouts.value.firstOrNull { it.id == autoSelectedAssignedWorkoutId }
+
+                        if (assignedWorkout != null) {
+                            onClick(assignedWorkout)
+                        }
+                    }
+                },
                 onFail = { _assignedWorkouts.value.clear() }
             )
 
             teamRepository.refreshMyTeams(teamType = ViewTeamAs.COACH.name)
             teamRepository.teams.value.add(0, getDefaultTeamFilter())
         }
+
+        initialized = true
+    }
+
+    /** Reset the view model to allow re-initialization with the correct team and autoSelectedAssignedWorkoutId */
+    fun resetViewModel() {
+        initialized = false
     }
 
     /** Display the date picker dialog */
