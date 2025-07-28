@@ -5,7 +5,6 @@ import com.example.workouttracker.R
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -75,13 +73,6 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
                 onItemSelected = {
                     vm.updateSelectedSpinnerAction(it)
                 }
-            )
-        } else {
-            Label(
-                modifier = Modifier.fillMaxWidth(),
-                text = if (mode == Mode.SELECT_MUSCLE_GROUP) stringResource(id = R.string.select_muscle_group_lbl)
-                else stringResource(id = R.string.select_exercise_lbl),
-                style = MaterialTheme.typography.titleMedium,
             )
         }
 

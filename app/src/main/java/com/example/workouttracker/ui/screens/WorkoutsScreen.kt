@@ -32,8 +32,6 @@ import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
-import com.example.workouttracker.ui.theme.PaddingVerySmall
-import com.example.workouttracker.ui.theme.labelLargeBold
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.WorkoutsViewModel
 
@@ -49,16 +47,6 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Label(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = PaddingVerySmall),
-                    text = stringResource(id = R.string.latest_workouts_lbl),
-                    style = labelLargeBold
-                )
-            }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
