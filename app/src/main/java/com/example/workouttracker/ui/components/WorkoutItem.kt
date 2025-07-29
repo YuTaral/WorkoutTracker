@@ -31,14 +31,12 @@ import java.util.Date
 /**
  * Single workout/template displayed in the workouts screen
  * @param workout the workout model
- * @param weightUnit the selected weight unit
  * @param onClick callback to execute on workout click
  * @param notFinishedStr value to display if the workout is not yet finished (optional)
  */
 @Composable
 fun WorkoutItem(
     workout: WorkoutModel,
-    weightUnit: String,
     onClick: (WorkoutModel) -> Unit,
     notFinishedStr: String = stringResource(R.string.in_progress_lbl)
 ) {
@@ -154,7 +152,7 @@ fun WorkoutItem(
                 Label(text = String.format(
                     stringResource(id = R.string.workout_summary_lbl),
                     Utils.formatDouble(completedWeight), Utils.formatDouble(totalWeight),
-                    weightUnit, completedReps, totalReps
+                    workout.weightUnit, completedReps, totalReps
                 ))
             }
         }
@@ -176,7 +174,6 @@ fun WorkoutItemPreview() {
             notesVal = "This is the best back day",
             durationVal = null,
         ),
-            "kgs",
             onClick = {})
     }
 }

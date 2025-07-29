@@ -38,7 +38,6 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
     val selectedAction by vm.selectedSpinnerAction.collectAsStateWithLifecycle()
     val searchTerm by vm.searchHelper.search.collectAsStateWithLifecycle()
     val templates by vm.filteredTemplates.collectAsStateWithLifecycle()
-    val user by vm.userRepository.user.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier
@@ -85,7 +84,6 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
                     items(templates) { item ->
                         WorkoutItem(
                             workout = item,
-                            weightUnit = user!!.defaultValues.weightUnit.text,
                             onClick = { vm.selectTemplate(it) }
                         )
                     }

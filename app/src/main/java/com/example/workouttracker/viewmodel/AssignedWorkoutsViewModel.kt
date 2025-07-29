@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.models.AssignedWorkoutModel
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.network.repositories.TeamRepository
-import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
@@ -25,7 +24,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 @HiltViewModel
 class AssignedWorkoutsViewModel @Inject constructor(
     var teamRepository: TeamRepository,
-    var userRepository: UserRepository,
     private var datePickerDialog: DatePickerDialogManager,
     private var resourceProvider: ResourceProvider,
     private var pagerManager: PagerManager
@@ -120,10 +118,7 @@ class AssignedWorkoutsViewModel @Inject constructor(
      */
     fun onClick(assignedWorkout: AssignedWorkoutModel) {
         viewModelScope.launch {
-            pagerManager.changePageSelection(Page.ViewAssignedWorkout(
-                assignedWorkout = assignedWorkout,
-                weightUnit = userRepository.user.value!!.defaultValues.weightUnit.text)
-            )
+            pagerManager.changePageSelection(Page.ViewAssignedWorkout(assignedWorkout = assignedWorkout))
         }
     }
 

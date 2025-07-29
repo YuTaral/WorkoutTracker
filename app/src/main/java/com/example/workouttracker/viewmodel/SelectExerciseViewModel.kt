@@ -6,7 +6,6 @@ import com.example.workouttracker.data.models.MGExerciseModel
 import com.example.workouttracker.data.models.MuscleGroupModel
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.MuscleGroupRepository
-import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.ui.dialogs.AddExerciseToWorkoutDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +32,6 @@ import com.example.workouttracker.utils.SearchHelper
 class SelectExerciseViewModel @Inject constructor(
     var muscleGroupsRepository: MuscleGroupRepository,
     var exerciseRepository: ExerciseRepository,
-    private var userRepository: UserRepository,
     private var workoutRepository: WorkoutRepository,
     private var userProfileRepository: UserProfileRepository,
     private var resourceProvider: ResourceProvider,
@@ -313,7 +311,7 @@ class SelectExerciseViewModel @Inject constructor(
      */
     private fun showAddExerciseToWorkout(mGExercise: MGExerciseModel) {
         viewModelScope.launch {
-            val weightUnit =  userRepository.user.value!!.defaultValues.weightUnit.text
+            val weightUnit = workoutRepository.selectedWorkout.value!!.weightUnit
 
             dialogManager.showDialog(
                 title = mGExercise.name,

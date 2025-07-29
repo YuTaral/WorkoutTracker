@@ -71,7 +71,6 @@ fun SelectedWorkoutScreen(
     vm: SelectedWorkoutViewModel = hiltViewModel()
 ) {
     val selectedWorkout by vm.workoutRepository.selectedWorkout.collectAsStateWithLifecycle()
-    val user by vm.userRepository.user.collectAsStateWithLifecycle()
 
     if (selectedWorkout != null) {
         vm.triggerTimer(start = selectedWorkout!!.finishDateTime == null)
@@ -79,7 +78,7 @@ fun SelectedWorkoutScreen(
             workout = selectedWorkout!!,
             onEditClick =  { vm.showEditWorkoutDialog() },
             secondsStateFlow = vm.secondsElapsed,
-            weightUnit = user!!.defaultValues.weightUnit.text,
+            weightUnit = selectedWorkout!!.weightUnit,
             onRestClick = { seconds, id -> vm.startTimer(seconds, id) },
             showEditExercise = { exercise, weightUnit -> vm.showEditExercise(exercise, weightUnit) },
             changePage = { vm.displaySelectExercise() }

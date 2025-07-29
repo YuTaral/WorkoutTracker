@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import com.example.workouttracker.data.models.UserDefaultValuesModel
-import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.managers.DialogManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +20,6 @@ import kotlinx.coroutines.launch
 class ExerciseDefaultValuesViewModel @Inject constructor(
     var userRepository: UserRepository,
     private var userProfileRepository: UserProfileRepository,
-    private var workoutRepository: WorkoutRepository,
     private val dialogManager: DialogManager
 ): ViewModel() {
 
@@ -57,7 +55,7 @@ class ExerciseDefaultValuesViewModel @Inject constructor(
         updateReps(if (reps != "0") reps else "")
         updateRest(if (rest != "0") rest else "")
         updateWeight(if (weight != "0") weight else "")
-        updateWeightUnit(defaultValues.weightUnit.text)
+        updateWeightUnit(defaultValues.weightUnit)
         updateCompleted(defaultValues.completed)
         mgExerciseId = defaultValues.mGExerciseId
         updateDisableWeightUnit(mgExerciseId != 0L)
@@ -105,11 +103,10 @@ class ExerciseDefaultValuesViewModel @Inject constructor(
         var setReps = if (state.reps.isNotEmpty()) state.reps.toInt() else 0
         var exerciseWeight =  if (state.weight.isNotEmpty()) state.weight.toDouble() else 0.0
         var setRest = if (state.rest.isNotEmpty()) state.rest.toInt() else 0
-        var weightUnit = workoutRepository.weighUnits.value.find { it.text == state.weightUnit}
 
         val values = UserDefaultValuesModel(idVal = userRepository.user.value!!.defaultValues.id,
             setsVal = exerciseSets, repsVal = setReps, weightVal = exerciseWeight,
-            restVal = setRest, completedVal = state.completed, weightUnitVal = weightUnit!!, mGExerciseIdVal = mgExerciseId)
+            restVal = setRest, completedVal = state.completed, weightUnitVal = state.weightUnit, mGExerciseIdVal = mgExerciseId)
 
         viewModelScope.launch(Dispatchers.IO) {
             userProfileRepository.updateUserDefaultValues(

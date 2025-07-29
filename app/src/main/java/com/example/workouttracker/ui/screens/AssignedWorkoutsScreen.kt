@@ -52,7 +52,6 @@ fun AssignedWorkoutsScreen(
     }
 
     val workouts by vm.assignedWorkouts.collectAsStateWithLifecycle()
-    val user by vm.userRepository.user.collectAsStateWithLifecycle()
     val myTeams by vm.teamRepository.teams.collectAsStateWithLifecycle()
     val startDateFilter by vm.startDate.collectAsStateWithLifecycle()
     val teamFilter by vm.teamFilter.collectAsStateWithLifecycle()
@@ -117,7 +116,6 @@ fun AssignedWorkoutsScreen(
                     items(workouts) { item ->
                         AssignedWorkoutItem(
                             assignedWorkout = item,
-                            weightUnit = user!!.defaultValues.weightUnit.text,
                             onClick = { vm.onClick(it) },
                         )
                     }

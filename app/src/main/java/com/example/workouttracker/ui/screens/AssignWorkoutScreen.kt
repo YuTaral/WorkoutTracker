@@ -289,7 +289,6 @@ private fun SelectWorkoutScreen(
                         items(templates) { item ->
                             WorkoutItem(
                                 workout = item,
-                                weightUnit = "",
                                 onClick = { onClick(it) }
                             )
                         }

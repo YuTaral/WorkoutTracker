@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -29,6 +30,7 @@ import com.example.workouttracker.ui.reusable.DialogButton
 import com.example.workouttracker.ui.reusable.ErrorLabel
 import com.example.workouttracker.ui.reusable.InputField
 import com.example.workouttracker.ui.reusable.Label
+import com.example.workouttracker.ui.reusable.TwoTextsSwitch
 import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
@@ -135,6 +137,21 @@ fun AddEditWorkoutDialog(
                     )
                 }
             }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TwoTextsSwitch(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = PaddingSmall),
+                selectedValue = uiState.weightUnit,
+                leftText = stringResource(id = R.string.weight_unit_kg_lbl),
+                rightText = stringResource(id = R.string.weight_unit_lb_lbl),
+                onSelectionChanged = { vm.updateWeightUnit(it) }
+            )
         }
 
         Row(modifier = Modifier

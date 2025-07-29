@@ -41,7 +41,6 @@ import com.example.workouttracker.viewmodel.WorkoutsViewModel
  */
 fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
     val workouts by vm.workoutRepository.workouts.collectAsStateWithLifecycle()
-    val user by vm.userRepository.user.collectAsStateWithLifecycle()
     val startDate by vm.startDate.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
 
@@ -90,7 +89,6 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
                     items(workouts) { item ->
                         WorkoutItem(
                             workout = item,
-                            weightUnit = user!!.defaultValues.weightUnit.text,
                             onClick = { vm.selectWorkout(item) }
                         )
                     }

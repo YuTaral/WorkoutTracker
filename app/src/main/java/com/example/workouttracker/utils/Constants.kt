@@ -44,8 +44,6 @@ object Constants {
         const val CHANGE_PASSWORD = "$USERS/change-password"
         const val VALIDATE_TOKEN = "$USERS/validate-token"
 
-        const val WEIGHT_UNITS  = "$WORKOUTS/weight-units"
-
         const val TO_WORKOUT = "$EXERCISES/to-workout"
         const val EXERCISE_FROM_WORKOUT = "$EXERCISES/exercise-from-workout"
         const val COMPLETE_SET = "$EXERCISES/complete-set"

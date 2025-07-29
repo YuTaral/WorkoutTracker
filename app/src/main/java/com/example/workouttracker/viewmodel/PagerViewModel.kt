@@ -84,12 +84,12 @@ sealed class Page(
             onPageRemovedCallback = { AssignedWorkoutsScreenReset() }
         )
 
-    data class ViewAssignedWorkout(private val assignedWorkout: AssignedWorkoutModel, private val weightUnit: String):
+    data class ViewAssignedWorkout(private val assignedWorkout: AssignedWorkoutModel):
         Page(
             R.string.view_assigned_workout_action,
             R.drawable.icon_screen_selected_workout,
             PageIndices.SECOND_TEMPORARY.ordinal,
-            content = { ViewAssignedWorkoutScreen(assignedWorkout, weightUnit) }
+            content = { ViewAssignedWorkoutScreen(assignedWorkout) }
         )
 }
 

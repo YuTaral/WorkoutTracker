@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
+import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
@@ -27,6 +28,7 @@ import kotlinx.coroutines.withContext
 class AddEditWorkoutViewModel @Inject constructor(
     private var workoutsRepository: WorkoutRepository,
     private var workoutTemplatesRepository: WorkoutTemplatesRepository,
+    private var userRepository: UserRepository,
     private var resourceProvider: ResourceProvider,
     private val vibrationManager: VibrationManager,
     private var askQuestionManager: AskQuestionDialogManager,
@@ -38,6 +40,7 @@ class AddEditWorkoutViewModel @Inject constructor(
     data class UIState(
         val name: String = "",
         val notes: String = "",
+        val weightUnit: String = "",
         val nameError: String? = null
     )
 
@@ -70,9 +73,11 @@ class AddEditWorkoutViewModel @Inject constructor(
         if (workout == null) {
             updateName("")
             updateNotes("")
+            updateWeightUnit(userRepository.user.value!!.defaultValues.weightUnit)
         } else {
             updateName(workout.name)
             updateNotes(workout.notes)
+            updateWeightUnit(workout.weightUnit)
         }
     }
 
@@ -91,6 +96,11 @@ class AddEditWorkoutViewModel @Inject constructor(
         _uiState.update { it.copy(nameError = value) }
     }
 
+    /** Update the elected weight unit in the UI with the provided value */
+    fun updateWeightUnit(value: String) {
+        _uiState.update { it.copy(weightUnit = value) }
+    }
+
     /**
      * Add/edit the workout if it's valid
      * @param assignedWorkoutId larger than 0 if the workout is not started from assignment
@@ -103,10 +113,10 @@ class AddEditWorkoutViewModel @Inject constructor(
         if (mode == Mode.ADD) {
             val newWorkout: WorkoutModel = if (selectedWorkout == null) {
                 // Create new workout
-                WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0)
+                WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0, _uiState.value.weightUnit)
             } else {
                 // Create new workout from the template
-                WorkoutModel(0, _uiState.value.name, true, selectedWorkout!!.exercises, _uiState.value.notes, null, 0)
+                WorkoutModel(0, _uiState.value.name, true, selectedWorkout!!.exercises, _uiState.value.notes, null, 0, _uiState.value.weightUnit)
             }
 
             viewModelScope.launch(Dispatchers.IO) {
@@ -122,10 +132,11 @@ class AddEditWorkoutViewModel @Inject constructor(
             val workout = selectedWorkout!!
             workout.name = _uiState.value.name
             workout.notes = _uiState.value.notes
+            workout.weightUnit = _uiState.value.weightUnit
 
             if (workout.template) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    workoutTemplatesRepository.updateWorkoutTemplate (
+                    workoutTemplatesRepository.updateWorkoutTemplate(
                         template = workout,
                         onSuccess = {
                             viewModelScope.launch {

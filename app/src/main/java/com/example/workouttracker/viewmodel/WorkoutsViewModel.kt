@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
-import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
@@ -24,7 +23,6 @@ import javax.inject.Inject
 /** WorkoutsViewModel to manage the state of WorkoutScreen */
 @HiltViewModel
 class WorkoutsViewModel @Inject constructor(
-    var userRepository: UserRepository,
     var workoutRepository: WorkoutRepository,
     private var resourceProvider: ResourceProvider,
     private var datePickerDialog: DatePickerDialogManager,
@@ -38,7 +36,6 @@ class WorkoutsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            workoutRepository.updateWeightUnits()
             workoutRepository.updateWorkouts(_startDate.value)
         }
         workoutRepository.updateSelectedWorkout(null)

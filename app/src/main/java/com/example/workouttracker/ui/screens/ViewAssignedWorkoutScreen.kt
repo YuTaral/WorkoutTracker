@@ -59,10 +59,9 @@ import java.util.Date
 /**
  * Screen to view details of an assigned workout
  * @param assignedWorkout the assigned workout model to display
- * @param weightUnit the selected weight unit for the workout
  */
 @Composable
-fun ViewAssignedWorkoutScreen(assignedWorkout: AssignedWorkoutModel, weightUnit: String) {
+fun ViewAssignedWorkoutScreen(assignedWorkout: AssignedWorkoutModel) {
     var showNotes by rememberSaveable { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
     val teamImagePainter = if (!assignedWorkout.teamImage.isEmpty()) {
@@ -233,7 +232,7 @@ fun ViewAssignedWorkoutScreen(assignedWorkout: AssignedWorkoutModel, weightUnit:
             items(assignedWorkout.workoutModel.exercises) {  item ->
                 ExerciseItem(
                     exercise = item,
-                    weightUnit = weightUnit,
+                    weightUnit = assignedWorkout.workoutModel.weightUnit,
                     hideEdit = true
                 )
             }
@@ -256,7 +255,7 @@ private fun AssignedWorkoutScreenPreview() {
                     notesVal = "This is the best back day",
                     durationVal = null,
                 )
-            ), "Kg"
+            )
         )
     }
 }

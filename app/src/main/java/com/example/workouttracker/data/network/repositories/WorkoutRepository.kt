@@ -1,7 +1,6 @@
 package com.example.workouttracker.data.network.repositories
 
 import com.example.workouttracker.data.managers.NetworkManager
-import com.example.workouttracker.data.models.WeightUnitModel
 import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.utils.Utils
@@ -22,10 +21,6 @@ class WorkoutRepository @Inject constructor(
     /** The currently selected workout */
     private var _selectedWorkout = MutableStateFlow<WorkoutModel?>(null)
     var selectedWorkout = _selectedWorkout.asStateFlow()
-
-    /** The weigh units */
-    private var _weighUnits = MutableStateFlow<MutableList<WeightUnitModel>>(mutableListOf())
-    var weighUnits = _weighUnits.asStateFlow()
 
     /** The workout start date. Optionally updated when update workouts is called */
     private lateinit var startDate: Date
@@ -94,16 +89,6 @@ class WorkoutRepository @Inject constructor(
             request = { apiService.getInstance().getWorkouts(Utils.formatDateToISO8601(startDate)) },
             onSuccessCallback = { response ->
                 _workouts.value = response.data.map { WorkoutModel(it) }.toMutableList()
-            }
-        )
-    }
-
-    /** Send a request to fetch the weight units */
-    suspend fun updateWeightUnits() {
-        networkManager.sendRequest(
-            request = { apiService.getInstance().getWeightUnits() },
-            onSuccessCallback = { response ->
-                _weighUnits.value = response.data.map{ WeightUnitModel(it) }.toMutableList()
             }
         )
     }

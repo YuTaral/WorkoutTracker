@@ -21,11 +21,10 @@ import java.util.Date
 /**
  * Single assigned workout displayed in the assigned workouts screen
  * @param assignedWorkout the assigned workout model
- * @param weightUnit the selected weight unit
  * @param onClick callback to execute on assigned workout click
  */
 @Composable
-fun AssignedWorkoutItem(assignedWorkout: AssignedWorkoutModel, weightUnit: String, onClick: (AssignedWorkoutModel) -> Unit) {
+fun AssignedWorkoutItem(assignedWorkout: AssignedWorkoutModel, onClick: (AssignedWorkoutModel) -> Unit) {
     var notFinishedStr = stringResource(id = R.string.in_progress_lbl)
     if (assignedWorkout.workoutModel.startDateTime == null) {
         notFinishedStr = stringResource(id = R.string.not_started_lbl)
@@ -58,7 +57,6 @@ fun AssignedWorkoutItem(assignedWorkout: AssignedWorkoutModel, weightUnit: Strin
 
         WorkoutItem(
             workout = assignedWorkout.workoutModel,
-            weightUnit = weightUnit,
             onClick = { onClick(assignedWorkout) },
             notFinishedStr = notFinishedStr
         )
@@ -81,7 +79,6 @@ fun AssignedWorkoutItemPreview() {
                     durationVal = null,
                 )
             ),
-        "kgs",
         onClick = {})
     }
 }

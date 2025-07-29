@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.ExerciseModel
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
-import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.dialogs.EditExerciseFromWorkoutDialog
@@ -31,7 +30,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectedWorkoutViewModel @Inject constructor(
     var workoutRepository: WorkoutRepository,
-    var userRepository: UserRepository,
     var pagerManager: PagerManager,
     private var exerciseRepository: ExerciseRepository,
     private var resourceProvider: ResourceProvider,

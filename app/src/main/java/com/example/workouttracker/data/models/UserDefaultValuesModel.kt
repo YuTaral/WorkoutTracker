@@ -23,7 +23,7 @@ class UserDefaultValuesModel: BaseModel {
     val completed: Boolean
 
     @SerializedName("WeightUnit")
-    val weightUnit: WeightUnitModel
+    val weightUnit: String
 
     @SerializedName("MGExerciseId")
     val mGExerciseId: Long
@@ -45,7 +45,7 @@ class UserDefaultValuesModel: BaseModel {
     }
 
     /** Constructor to create new object */
-    constructor(idVal: Long, setsVal: Int, repsVal: Int, weightVal: Double, restVal: Int, completedVal: Boolean, weightUnitVal: WeightUnitModel, mGExerciseIdVal: Long): super(idVal) {
+    constructor(idVal: Long, setsVal: Int, repsVal: Int, weightVal: Double, restVal: Int, completedVal: Boolean, weightUnitVal: String, mGExerciseIdVal: Long): super(idVal) {
         sets = setsVal
         reps = repsVal
         weight = weightVal

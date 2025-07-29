@@ -58,9 +58,6 @@ interface IAPIService {
     @GET(Constants.RequestEndPoints.WORKOUTS)
     fun getWorkouts(@Query("startDate") startDate: String): Call<CustomResponse>
 
-    @GET(Constants.RequestEndPoints.WEIGHT_UNITS)
-    fun getWeightUnits(): Call<CustomResponse>
-
     /** EXERCISE REQUESTS
      * -------------------------------------------------------------------------------- */
     @POST(Constants.RequestEndPoints.TO_WORKOUT)
