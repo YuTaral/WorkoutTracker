@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.WorkoutModel
-import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
 import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
@@ -23,7 +22,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManageTemplatesViewModel @Inject constructor(
-    var userRepository: UserRepository,
     private var templatesRepository: WorkoutTemplatesRepository,
     private var resourceProvider: ResourceProvider,
     private var askQuestionManager: AskQuestionDialogManager,

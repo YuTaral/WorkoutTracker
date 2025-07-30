@@ -8,7 +8,6 @@ import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.screens.AssignWorkoutScreen
 import com.example.workouttracker.ui.screens.AssignedWorkoutsScreen
-import com.example.workouttracker.ui.screens.AssignedWorkoutsScreenReset
 import com.example.workouttracker.ui.screens.SelectedTeamScreen
 import com.example.workouttracker.ui.screens.ManageTeamsScreen
 import com.example.workouttracker.ui.screens.ManageTemplatesScreen
@@ -37,9 +36,7 @@ sealed class Page(
     val title: Int,
     val icon: Int,
     val index: Int,
-    val content: @Composable () -> Unit,
-    val executeOnPageRemoved: Boolean = false,
-    val onPageRemovedCallback: @Composable () -> Unit = {}
+    val content: @Composable () -> Unit
 ) {
     data object Workouts : Page(R.string.workouts_screen_title, R.drawable.icon_screen_workouts,
                            PageIndices.WORKOUTS.ordinal, content = { WorkoutsScreen() })
@@ -63,26 +60,19 @@ sealed class Page(
         PageIndices.FIRST_TEMPORARY.ordinal, content = { NotificationsScreen() })
 
     data object AddTeam: Page(R.string.add_team_lbl, R.drawable.icon_tab_add_team,
-                         PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTeamScreen(team = null) })
+        PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTeamScreen(team = null) })
 
     data object AssignWorkout: Page(R.string.assign_workout_action, R.drawable.icon_tab_assign_workout,
         PageIndices.FIRST_TEMPORARY.ordinal, content = { AssignWorkoutScreen() })
+
+    data object AssignedWorkouts: Page(R.string.assigned_workouts_action, R.drawable.icon_screen_workouts,
+       PageIndices.FIRST_TEMPORARY.ordinal, content = { AssignedWorkoutsScreen() },)
 
     data class ManageTeams(private val teamType: ViewTeamAs): Page(R.string.teams_lbl, R.drawable.icon_screen_manage_teams,
         PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTeamsScreen(teamType = teamType) })
 
     data class EditTeam(private val team: TeamModel): Page(R.string.edit_team_lbl, R.drawable.icon_tab_edit_team,
         PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTeamScreen(team = team) })
-
-    data class AssignedWorkouts(private val autoSelectedAssignedWorkoutId: Long = 0L):
-        Page(
-            R.string.assigned_workouts_action,
-            R.drawable.icon_screen_workouts,
-            PageIndices.FIRST_TEMPORARY.ordinal,
-            content = { AssignedWorkoutsScreen(autoSelectedAssignedWorkoutId = autoSelectedAssignedWorkoutId) },
-            executeOnPageRemoved = true,
-            onPageRemovedCallback = { AssignedWorkoutsScreenReset() }
-        )
 
     data class ViewAssignedWorkout(private val assignedWorkout: AssignedWorkoutModel):
         Page(
@@ -105,10 +95,6 @@ class PagerViewModel @Inject constructor(
     /** The currently selected page */
     private var _selectedPage = MutableStateFlow<Page>(Page.Workouts)
     var selectedPage = _selectedPage.asStateFlow()
-
-    /** The previously selected temporary page */
-    private var _oldTemporaryPage = MutableStateFlow<Page>(Page.Workouts)
-    var oldTemporaryPage = _oldTemporaryPage.asStateFlow()
 
     /** Initialize the initial pages of the pager - Main and Selected Workout */
     private fun initializePages(): List<Page> {
@@ -145,7 +131,6 @@ class PagerViewModel @Inject constructor(
 
     /** Remove the temporary page */
     private fun removeTemporaryPage() {
-        _oldTemporaryPage.value = _selectedPage.value
         _pages.value = _pages.value.filter { it.index < PageIndices.FIRST_TEMPORARY.ordinal }
     }
 }

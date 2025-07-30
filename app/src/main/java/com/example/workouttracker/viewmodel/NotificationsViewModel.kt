@@ -45,8 +45,10 @@ class NotificationsViewModel @Inject constructor(
 
     /** Initialize the data when the screen is displayed */
     fun initializeData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            notificationRepository.refreshNotifications(_showReviewed.value)
+        if (notificationRepository.notifications.value.isEmpty()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                notificationRepository.refreshNotifications(_showReviewed.value)
+            }
         }
     }
 
@@ -84,7 +86,9 @@ class NotificationsViewModel @Inject constructor(
 
             NotificationType.WORKOUT_ASSIGNMENT_DECLINED.toString() -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    notificationRepository.reviewNotification(id = notification.id)
+                    if (notification.isActive) {
+                        notificationRepository.reviewNotification(id = notification.id)
+                    }
                     notificationRepository.refreshNotifications(_showReviewed.value)
                 }
             }
@@ -97,13 +101,20 @@ class NotificationsViewModel @Inject constructor(
      */
     private fun reviewAndRedirectToAssignment(notification: NotificationModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            notificationRepository.reviewNotification(id = notification.id)
-
-            withContext(Dispatchers.Default) {
-                pagerManager.changePageSelection(
-                    Page.AssignedWorkouts(autoSelectedAssignedWorkoutId = notification.assignedWorkoutId!!)
-                )
+            if (notification.isActive) {
+                notificationRepository.reviewNotification(id = notification.id)
             }
+
+            teamRepository.getAssignedWorkout(
+                assignedWorkoutId = notification.assignedWorkoutId!!,
+                onSuccess = {
+                    viewModelScope.launch {
+                        pagerManager.changePageSelection(
+                            Page.ViewAssignedWorkout(assignedWorkout = it)
+                        )
+                    }
+                }
+            )
         }
     }
 
@@ -178,7 +189,9 @@ class NotificationsViewModel @Inject constructor(
                         )
 
                         withContext(Dispatchers.IO) {
-                            notificationRepository.reviewNotification(id = notification.id)
+                            if (notification.isActive) {
+                                notificationRepository.reviewNotification(id = notification.id)
+                            }
                             notificationRepository.refreshNotifications(_showReviewed.value)
                         }
                     }

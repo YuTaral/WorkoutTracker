@@ -318,4 +318,18 @@ class TeamRepository @Inject constructor(
             onErrorCallback = { onFail() }
         )
     }
+
+    /**
+     * Get the assigned workout by the provided id
+     * @param assignedWorkoutId the assigned workout id
+     * @param onSuccess callback to execute on success
+     */
+    suspend fun getAssignedWorkout(assignedWorkoutId: Long, onSuccess: (AssignedWorkoutModel) -> Unit) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().getAssignedWorkout(assignedWorkoutId) },
+            onSuccessCallback = { response ->
+                onSuccess(AssignedWorkoutModel(response.data[0]))
+            },
+        )
+    }
 }

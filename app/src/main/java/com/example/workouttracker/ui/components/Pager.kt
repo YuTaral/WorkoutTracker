@@ -45,13 +45,8 @@ import com.example.workouttracker.viewmodel.Page
 @Composable
 fun Pager(vm: PagerViewModel = hiltViewModel()) {
     val selectedPage by vm.selectedPage.collectAsStateWithLifecycle()
-    val oldPage by vm.oldTemporaryPage.collectAsStateWithLifecycle()
     val pages by vm.pages.collectAsStateWithLifecycle()
     val selectedTabIndex = pages.indexOf(selectedPage).takeIf { it >= 0 } ?: 0
-
-    if (oldPage.executeOnPageRemoved) {
-        oldPage.onPageRemovedCallback()
-    }
 
     LaunchedEffect(Unit) {
         vm.pagerManager.events.collect { page ->

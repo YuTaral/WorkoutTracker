@@ -64,6 +64,7 @@ object Constants {
         const val JOINED_TEAM_MEMBERS  = "$TEAMS/joined-team-members"
         const val ASSIGN_WORKOUT  = "$TEAMS/assign-workout"
         const val ASSIGNED_WORKOUTS  = "$TEAMS/assigned-workouts"
+        const val ASSIGNED_WORKOUT  = "$TEAMS/assigned-workout"
 
         const val JOIN_TEAM_NOTIFICATION_DETAILS  = "$NOTIFICATIONS/join-team-notification-details"
         const val REFRESH_NOTIFICATIONS = "$NOTIFICATIONS/refresh-notifications"

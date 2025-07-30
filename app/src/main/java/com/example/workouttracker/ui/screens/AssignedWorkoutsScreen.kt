@@ -39,16 +39,14 @@ import com.example.workouttracker.viewmodel.AssignedWorkoutsViewModel
 /**
  * Screen to allow coaches to view assigned workouts
  * @param team the team to filter by, null if not used
- * @param autoSelectedAssignedWorkoutId auto select the assigned workout with this ID, 0 if not used
  */
 @Composable
 fun AssignedWorkoutsScreen(
     team: TeamModel? = null,
-    autoSelectedAssignedWorkoutId: Long = 0L,
     vm: AssignedWorkoutsViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(Unit) {
-        vm.initializeData(team = team, autoSelectedAssignedWorkoutId = autoSelectedAssignedWorkoutId)
+        vm.initializeData(team = team)
     }
 
     val workouts by vm.assignedWorkouts.collectAsStateWithLifecycle()
@@ -123,13 +121,4 @@ fun AssignedWorkoutsScreen(
             }
         }
     }
-}
-
-/**
- * Reset the AssignedWorkoutsViewModel to its initial state
- * This is needed because vm.initialized property is set to true after the first call of initializeData
- */
-@Composable
-fun AssignedWorkoutsScreenReset(vm: AssignedWorkoutsViewModel = hiltViewModel()) {
-    vm.resetViewModel()
 }
