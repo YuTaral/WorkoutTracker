@@ -136,7 +136,7 @@ class AssignedWorkoutsViewModel @Inject constructor(
                     _startDate.value = newDate
                 },
                 onFail = {
-                    _assignedWorkouts.value.clear()
+                    _assignedWorkouts.value = mutableListOf()
                     _startDate.value = newDate
                 }
             )
@@ -158,7 +158,7 @@ class AssignedWorkoutsViewModel @Inject constructor(
                     _assignedWorkouts.value = it.toMutableList()
                 },
                 onFail = {
-                    _assignedWorkouts.value.clear()
+                    _assignedWorkouts.value = mutableListOf()
                 }
             )
         }

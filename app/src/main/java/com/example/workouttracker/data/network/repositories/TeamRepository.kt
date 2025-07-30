@@ -169,6 +169,9 @@ class TeamRepository @Inject constructor(
 
                     callback()
                 },
+                onErrorCallback = {
+                    _teams.value = mutableListOf()
+                }
             )
         }
     }

@@ -125,7 +125,7 @@ class AssignWorkoutViewModel @Inject constructor(
                 memberIds = selectedMembers,
                 onSuccess = {
                     viewModelScope.launch {
-                        pagerManager.changePageSelection(Page.Workouts)
+                        pagerManager.changePageSelection(Page.AssignedWorkouts)
                     }
                 }
             )
