@@ -10,7 +10,10 @@ import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.dialogs.MGExerciseDescDialog
+import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
+import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
+import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +29,8 @@ class EditExerciseFromWorkoutViewModel @Inject constructor(
     private var exerciseRepository: ExerciseRepository,
     private var userRepository: UserRepository,
     private var workoutRepository: WorkoutRepository,
-    private val dialogManager: DialogManager
+    private val dialogManager: DialogManager,
+    private val askQuestionManager: AskQuestionDialogManager,
 ): ViewModel() {
 
     /** The state of each set row */
@@ -188,11 +192,19 @@ class EditExerciseFromWorkoutViewModel @Inject constructor(
 
     /** Delete the exercise from workout */
     fun delete() {
-        viewModelScope.launch(Dispatchers.IO) {
-            exerciseRepository.deleteExerciseFromWorkout(
-                exerciseId = editExercise.id,
-                onSuccess = { onChangeSuccess(it) }
-            )
+        viewModelScope.launch {
+            askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
+                question = Question.DELETE_EXERCISE,
+                onConfirm = {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        exerciseRepository.deleteExerciseFromWorkout(
+                            exerciseId = editExercise.id,
+                            onSuccess = { onChangeSuccess(it) }
+                        )
+                    }
+                },
+                formatQValues = listOf(editExercise.name)
+            ))
         }
     }
 

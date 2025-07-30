@@ -113,6 +113,7 @@
     <string name="no_mg_ex_description_lbl">There is no description for this exercise</string>
     <string name="question_delete_exercise_title">Delete exercise</string>
     <string name="question_delete_exercise_text">Are you sure you want to delete exercise \"%s\" ?</string>
+    <string name="question_delete_exercise_from_workout_text">Are you sure you want to delete exercise \"%s\" from your workout?</string>
     <string name="manage_templates_lbl">Manage Templates</string>
     <string name="templates_lbl">Templates</string>
     <string name="action_edit_template">Edit template</string>
