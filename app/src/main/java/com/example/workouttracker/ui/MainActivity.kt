@@ -21,13 +21,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
-import com.example.workouttracker.ui.managers.AskQuestionDialogManager
-import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
 import com.example.workouttracker.ui.managers.ImagePickerEventBus
 import com.example.workouttracker.ui.managers.PermissionHandler
 import com.example.workouttracker.ui.managers.ImagePickerManager
-import com.example.workouttracker.ui.managers.Question
+import com.example.workouttracker.viewmodel.AuthViewModel
 import com.example.workouttracker.viewmodel.MainViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,8 +33,9 @@ import javax.inject.Inject
 
 /** The main activity of the application */
 @AndroidEntryPoint
-class MainActivity: ComponentActivity(), PermissionHost {
+class MainActivity: ComponentActivity(), IPermissionHost {
     private val vm by viewModels<MainViewModel>()
+    private val authVm by viewModels<AuthViewModel>()
     private lateinit var permissionHandler: PermissionHandler
     private lateinit var imagePickerManager: ImagePickerManager
 
@@ -99,7 +97,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
         }
 
         // Collect events
-        askForAllPermissions(askQuestionManager = vm.askQuestionManager)
+        askForAllPermissions()
         showImagePicker()
     }
 
@@ -107,7 +105,7 @@ class MainActivity: ComponentActivity(), PermissionHost {
     private fun splashScreen() {
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                !vm.tokenValidated.value
+                !authVm.tokenValidated.value
             }
             setOnExitAnimationListener { screen ->
                 val iconView = try {
@@ -144,19 +142,12 @@ class MainActivity: ComponentActivity(), PermissionHost {
     }
 
     /** Ask user to grant all permissions */
-    private fun askForAllPermissions(askQuestionManager: AskQuestionDialogManager) {
-        lifecycleScope.launch {
-            vm.userRepository.requestPermissions.collect {
-                vm.viewModelScope.launch {
-                    askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
-                        question = Question.GRANT_PERMISSIONS,
-                        onConfirm = {
-                            permissionHandler.cameraPermLauncher.launch(android.Manifest.permission.CAMERA)
-                        }
-                    ))
-                }
+    private fun askForAllPermissions() {
+        vm.showAskForAllPermissions(
+            onConfirm = {
+                permissionHandler.cameraPermLauncher.launch(android.Manifest.permission.CAMERA)
             }
-        }
+        )
     }
 
     /** Collect events to show image picker */

@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
  * Interface to be implement by the Main Activity and provide only the necessary
  * methods to the PermissionResultHandler
  */
-interface PermissionHost {
+interface IPermissionHost {
     /**
      * Returns the lifecycle-aware coroutine scope tied to the activity.
      * @return The LifecycleCoroutineScope associated with the activity.

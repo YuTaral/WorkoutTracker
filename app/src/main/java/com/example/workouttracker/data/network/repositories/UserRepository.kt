@@ -87,6 +87,22 @@ class UserRepository @Inject constructor(
             onSuccessCallback = { onSuccess() })
     }
 
+    /**
+     * Sign in the user with the given google id token
+     * @param idToken the token id
+     * @param onSuccess callback to execute on successful login
+     */
+    suspend fun googleSignIn(idToken: String, onSuccess: () -> Unit) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().googleSignIn(mapOf("idToken" to idToken)) },
+            onSuccessCallback = { response ->
+                updateToken(response.data[1])
+                updateUser(UserModel(response.data[0]))
+                onSuccess()
+            }
+        )
+    }
+
     /** Logout the user */
     suspend fun logout() {
         networkManager.sendRequest(

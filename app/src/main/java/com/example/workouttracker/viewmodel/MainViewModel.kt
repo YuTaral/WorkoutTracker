@@ -18,8 +18,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,39 +37,8 @@ class MainViewModel @Inject constructor(
     var pagerManager: PagerManager
 ): ViewModel() {
 
-    /** Track when the token has been validated */
-    private val _tokenValidated = MutableStateFlow(false)
-    val tokenValidated = _tokenValidated.asStateFlow()
-
     /** Job to refresh the notification on every N seconds */
     private var refreshJob: Job? = null
-
-    init {
-        checkAutoLogin()
-    }
-
-    /** Performs a check whether there is stored user and valid token and if so auto login the user */
-    private fun checkAutoLogin() {
-        val token = sharedPrefsManager.getStoredToken()
-        val userModel = sharedPrefsManager.getStoredUser()
-
-        if (userModel != null && token.isNotEmpty()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                userRepository.validateToken(
-                    token = token,
-                    onSuccess = {
-                        userRepository.updateUser(userModel)
-                        _tokenValidated.value = true
-                    },
-                    onFailure = {
-                        _tokenValidated.value = true
-                    }
-                )
-            }
-        } else {
-            _tokenValidated.value = true
-        }
-    }
 
     /** Schedule background job to refresh the notification on every 30 seconds */
     fun scheduleRefreshNotification() {
@@ -103,6 +70,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Show the dialog to ask user to grant all permissions, starting with camera
+     * @param onConfirm callback to execute on confirm
+     */
+    fun showAskForAllPermissions(onConfirm: () -> Unit) {
+        viewModelScope.launch {
+            userRepository.requestPermissions.collect {
+                viewModelScope.launch {
+                    askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
+                        question = Question.GRANT_PERMISSIONS,
+                        onConfirm = { onConfirm() }
+                    ))
+                }
+            }
+        }
+    }
 
     /**
      * Change displayed page

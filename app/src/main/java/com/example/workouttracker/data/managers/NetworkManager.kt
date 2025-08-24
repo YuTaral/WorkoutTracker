@@ -3,6 +3,7 @@ package com.example.workouttracker.data.managers
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import com.example.workouttracker.R
 import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.network.CustomResponse
@@ -151,8 +152,8 @@ class NetworkManager @Inject constructor(
                  getEmptyResponse()
             }
 
+            Log.e("SendRequest", "SendRequest failed", e)
             onError(errorResponse, onErrorCallback)
-            e.printStackTrace()
 
         } finally {
              // Try to update the notification indication

@@ -32,8 +32,11 @@ android {
 
     buildTypes {
         debug {
-            val devUrl = properties.getProperty("DEV_BASE_URL")
+            val devUrl = properties["DEV_BASE_URL"]
             buildConfigField("String", "BASE_URL", "\"$devUrl\"")
+
+            val googleWebClient = properties["GOOGLE_WEB_CLIENT_ID"]
+            buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClient\"")
         }
         release {
             isMinifyEnabled = false
@@ -93,6 +96,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.google.play.services.auth)
 
     // Debug dependencies
     debugImplementation(libs.androidx.ui.tooling)

@@ -5,6 +5,7 @@ import com.example.workouttracker.BuildConfig
 /** Object to with all constants */
 object Constants {
     const val URL: String = BuildConfig.BASE_URL
+    const val GOOGLE_WEB_CLIENT_ID: String = BuildConfig.GOOGLE_WEB_CLIENT_ID
     const val SECURE_PREFS_FILE_NAME = "secure_prefs"
     const val AUTH_TOKEN_KEY = "auth_token"
     const val SERIALIZED_USER_KEY = "serialized_user"
@@ -43,6 +44,7 @@ object Constants {
         const val LOGOUT = "$USERS/logout"
         const val CHANGE_PASSWORD = "$USERS/change-password"
         const val VALIDATE_TOKEN = "$USERS/validate-token"
+        const val GOOGLE_SIGN_IN = "$USERS/google-sign-in"
 
         const val TO_WORKOUT = "$EXERCISES/to-workout"
         const val EXERCISE_FROM_WORKOUT = "$EXERCISES/exercise-from-workout"

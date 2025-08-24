@@ -12,14 +12,14 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import com.example.workouttracker.R
-import com.example.workouttracker.ui.PermissionHost
+import com.example.workouttracker.ui.IPermissionHost
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.utils.interfaces.IImagePicker
 import kotlinx.coroutines.launch
 
 /** Class to handle the logic when requesting permissions / launching specific result launcher */
 class PermissionHandler(
-    permHost: PermissionHost,
+    permHost: IPermissionHost,
     askForAll: Boolean,
     showQuestion: () -> Unit,
     showSnackbar: (Int) -> Unit

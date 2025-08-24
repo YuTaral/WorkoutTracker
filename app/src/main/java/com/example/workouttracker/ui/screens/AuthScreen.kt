@@ -1,9 +1,12 @@
 package com.example.workouttracker.ui.screens
 
+import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -85,7 +89,12 @@ fun AuthScreen(vm: AuthViewModel = hiltViewModel()) {
                             pagerState.animateScrollToPage(Page.REGISTER.ordinal)
                         }
                     },
-                    onLoginClick = { vm.login() }
+                    onLoginClick = { vm.login() },
+                    onGoogleSignInClick = {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            vm.startGoogleLogIn(it)
+                        }
+                    }
                 )
 
                 Page.REGISTER.ordinal -> RegisterPage(
@@ -98,7 +107,12 @@ fun AuthScreen(vm: AuthViewModel = hiltViewModel()) {
                             pagerState.animateScrollToPage(Page.LOGIN.ordinal)
                         }
                     },
-                    onRegisterClick = { vm.register() }
+                    onRegisterClick = { vm.register() },
+                    onGoogleSignInClick = {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            vm.startGoogleSignIn(it)
+                        }
+                    }
                 )
             }
         }
@@ -112,7 +126,8 @@ private fun LoginPage(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onSwitchClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    onGoogleSignInClick: (Context) -> Unit
 ) {
     val uiState by state.collectAsStateWithLifecycle()
 
@@ -130,7 +145,8 @@ private fun LoginPage(
         switchText = stringResource(id = R.string.click_for_register_lbl),
         onSwitchClick = onSwitchClick,
         buttonText = stringResource(id = R.string.login_btn),
-        onButtonClick = onLoginClick
+        onButtonClick = onLoginClick,
+        googleSignIn = onGoogleSignInClick
     )
 }
 
@@ -142,7 +158,8 @@ private fun RegisterPage(
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
     onSwitchClick: () -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    onGoogleSignInClick: (Context) -> Unit
 ) {
     val uiState by state.collectAsStateWithLifecycle()
 
@@ -160,7 +177,8 @@ private fun RegisterPage(
         switchText = stringResource(id = R.string.click_for_login_lbl),
         onSwitchClick = onSwitchClick,
         buttonText = stringResource(id = R.string.register_lbl),
-        onButtonClick = onRegisterClick
+        onButtonClick = onRegisterClick,
+        googleSignIn = onGoogleSignInClick
     )
 }
 
@@ -180,7 +198,8 @@ private fun AuthForm(
     switchText: String,
     onSwitchClick: () -> Unit,
     buttonText: String,
-    onButtonClick: () -> Unit
+    onButtonClick: () -> Unit,
+    googleSignIn: (Context) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val passwordFocusRequester = remember { FocusRequester() }
@@ -206,7 +225,7 @@ private fun AuthForm(
             isError = emailError != null
         )
 
-        emailError?.let {
+        if (emailError != null) {
             ErrorLabel(text = emailError)
         }
 
@@ -227,7 +246,7 @@ private fun AuthForm(
             isError = passwordError != null
         )
 
-        passwordError?.let {
+        if (passwordError != null) {
             ErrorLabel(text = passwordError)
         }
 
@@ -243,16 +262,49 @@ private fun AuthForm(
                 isError = confirmPasswordError != null
             )
 
-            confirmPasswordError?.let {
+            if (confirmPasswordError != null) {
                 ErrorLabel(text = confirmPasswordError)
             }
         }
 
         SwitchModeLabel(text = switchText, onClick = onSwitchClick)
 
+        FragmentButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = buttonText,
+            onClick = onButtonClick
+        )
+
         Spacer(modifier = Modifier.weight(1f))
 
-        FragmentButton(text = buttonText, onClick = onButtonClick)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            var ctx = LocalContext.current
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, ColorAccent, CircleShape)
+                    .padding(10.dp)
+                    .clickable { googleSignIn(ctx) },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.icon_google_sign_in),
+                    contentDescription = "Google Sign In",
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Label(
+                    modifier = Modifier.padding(start = PaddingMedium),
+                    text = if (confirmPassword == null) {
+                        stringResource(id = R.string.login_google_lbl)
+                    } else {
+                        stringResource(id = R.string.sign_in_google_lbl)
+                    },
+                )
+            }
+        }
     }
 }
 
@@ -279,8 +331,7 @@ fun SwitchModeLabel(text: String, onClick: () -> Unit) {
     ) {
         Label(
             modifier = Modifier.fillMaxWidth(),
-            text = text,
-            style = labelMediumGrey
+            text = text
         )
     }
 }

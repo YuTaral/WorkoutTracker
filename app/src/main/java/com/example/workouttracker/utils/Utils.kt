@@ -9,6 +9,7 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.util.Base64
+import android.util.Log
 import android.util.Patterns
 import com.example.workouttracker.utils.Constants.IMAGE_HEIGHT
 import com.example.workouttracker.utils.Constants.IMAGE_WIDTH
@@ -122,7 +123,7 @@ object Utils {
             }
 
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ScaleBitmap", "Scale Bitmap failed", e)
             return null
         }
     }
@@ -167,7 +168,7 @@ object Utils {
             return bitmap
 
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ScaleBitmap", "Scale Bitmap failed", e)
             return null
         }
     }

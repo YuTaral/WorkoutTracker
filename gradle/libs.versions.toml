@@ -20,7 +20,9 @@ securityCrypto = "1.1.0-alpha06"
 coreSplashscreen = "1.0.1"
 compose-calendar = "2.7.0"
 compose = "1.8.3"
-
+androidx_credentials = "1.5.0"
+androidx_credentials_play_services_auth = "1.5.0"
+googleid = "1.1.1"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
@@ -53,6 +55,10 @@ androidx-security-crypto = { group = "androidx.security", name = "security-crypt
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 compose-calendar = { group = "com.kizitonwose.calendar", name = "compose", version.ref = "compose-calendar" }
 compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose" }
+androidx_credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidx_credentials" }
+androidx_credentials_play_services_auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidx_credentials_play_services_auth" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+google-play-services-auth = "com.google.android.gms:play-services-auth:21.4.0"
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

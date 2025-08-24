@@ -1,14 +1,16 @@
 <resources>
     <string name="app_name">Workout Tracker</string>
     <string name="login_lbl">Login</string>
-    <string name="register_lbl">Register</string>
+    <string name="register_lbl">Sign In</string>
+    <string name="sign_in_google_lbl">Sign in with Google</string>
+    <string name="login_google_lbl">Log in with Google</string>
     <string name="email_lbl">Email</string>
     <string name="password_lbl">Password</string>
     <string name="confirm_pass_lbl">Confirm password</string>
-    <string name="click_for_register_lbl">Swipe right to register</string>
+    <string name="click_for_register_lbl">Swipe right to sign in</string>
     <string name="click_for_login_lbl">Swipe left to login</string>
     <string name="login_btn">Login</string>
-    <string name="register_btn">Register</string>
+    <string name="register_btn">Sign In</string>
     <string name="invalid_email_format">Invalid email format</string>
     <string name="blank_password">Password cannot be blank</string>
     <string name="passwords_do_not_match">Passwords do not match</string>
@@ -187,5 +189,6 @@
     <string name="all_members_lbl">All members</string>
     <string name="view_assigned_workout_action">Assigned</string>
     <string name="show_reviewed_lbl">Show reviewed</string>
+    <string name="google_sign_in_error">Error occurred while signing in with Google</string>
 
 </resources>

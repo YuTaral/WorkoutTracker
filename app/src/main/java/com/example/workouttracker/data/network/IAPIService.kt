@@ -30,6 +30,9 @@ interface IAPIService {
     @POST(Constants.RequestEndPoints.VALIDATE_TOKEN)
     fun validateToken(@Body params: Map<String, String>): Call<CustomResponse>
 
+    @POST(Constants.RequestEndPoints.GOOGLE_SIGN_IN)
+    fun googleSignIn(@Body params: Map<String, String>): Call<CustomResponse>
+
     /** USER PROFILE REQUESTS
      * -------------------------------------------------------------------------------- */
     @PATCH(Constants.RequestEndPoints.DEFAULT_VALUES)

@@ -31,7 +31,7 @@ fun FragmentButton(
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(containerColor = ColorAccent),
         border = null,
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.extraLarge
     )
     {
         Text(text = text, color = ColorWhite)
