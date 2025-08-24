@@ -14,13 +14,13 @@ val properties = Properties().apply {
 
 android {
     namespace = "com.example.workouttracker"
-    compileSdk = 35
+    compileSdk = 36
     android.buildFeatures.buildConfig = true
 
     defaultConfig {
         applicationId = "com.example.workouttracker"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -56,14 +56,12 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.1"
 }
 
 dependencies {
