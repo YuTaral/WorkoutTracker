@@ -178,4 +178,9 @@ interface IAPIService {
 
     @GET(Constants.RequestEndPoints.REFRESH_NOTIFICATIONS)
     fun refreshNotifications(): Call<CustomResponse>
+
+    /** SYSTEM LOGS  REQUESTS
+     * -------------------------------------------------------------------------------- */
+    @POST(Constants.RequestEndPoints.SYSTEM_LOGS)
+    fun addSystemLog(@Body params: Map<String, String>): Call<CustomResponse>
 }

@@ -16,6 +16,7 @@ import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.ui.managers.VibrationManager
 import androidx.credentials.CredentialManager
+import com.example.workouttracker.data.network.repositories.SystemLogRepository
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.utils.Constants
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -35,6 +36,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     var userRepository: UserRepository,
+    private var systemLogRepository: SystemLogRepository,
     private var resourceProvider: ResourceProvider,
     private var sharedPrefsManager: SharedPrefsManager,
     private val vibrationManager: VibrationManager,
@@ -264,6 +266,12 @@ class AuthViewModel @Inject constructor(
             } catch (e: GetCredentialException) {
                 // Handle failure
                 Log.e("GoogleSignIn", "Google Sign-In failed", e)
+                viewModelScope.launch(Dispatchers.IO) {
+                    systemLogRepository.addSystemLog(
+                        message = "Google Sign-In failed: ${e.errorMessage}",
+                        stackTrace = Log.getStackTraceString(e)
+                    )
+                }
                 snackbarManager.showSnackbar(resourceProvider.getString(R.string.google_sign_in_error))
                 vibrationManager.makeVibration()
             }

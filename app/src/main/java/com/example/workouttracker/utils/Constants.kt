@@ -38,6 +38,7 @@ object Constants {
         const val WORKOUT_TEMPLATES = "workout-templates"
         const val TEAMS = "teams"
         const val NOTIFICATIONS = "notifications"
+        const val SYSTEM_LOGS = "system-logs"
 
         const val REGISTER = "$USERS/register"
         const val LOGIN = "$USERS/login"

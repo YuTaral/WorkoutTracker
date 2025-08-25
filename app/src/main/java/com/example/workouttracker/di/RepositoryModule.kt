@@ -6,6 +6,7 @@ import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.data.network.repositories.ExerciseRepository
 import com.example.workouttracker.data.network.repositories.MuscleGroupRepository
 import com.example.workouttracker.data.network.repositories.NotificationRepository
+import com.example.workouttracker.data.network.repositories.SystemLogRepository
 import com.example.workouttracker.data.network.repositories.TeamRepository
 import com.example.workouttracker.data.network.repositories.UserProfileRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
@@ -88,5 +89,14 @@ object RepositoryModule {
         networkManager: NetworkManager
     ): NotificationRepository {
         return NotificationRepository(apiService, networkManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSystemLogRepository(
+        apiService: APIService,
+        networkManager: NetworkManager
+    ): SystemLogRepository {
+        return SystemLogRepository(apiService, networkManager)
     }
 }
