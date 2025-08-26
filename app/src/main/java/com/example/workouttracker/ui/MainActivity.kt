@@ -88,7 +88,8 @@ class MainActivity: ComponentActivity(), IPermissionHost {
                 lifecycleScope.launch {
                     vm.snackbarManager.showSnackbar(it)
                 }
-            }
+            },
+            logManager = vm.systemLogManager
         )
         imagePickerManager = ImagePickerManager(permissionHandler, vm.askQuestionManager)
 

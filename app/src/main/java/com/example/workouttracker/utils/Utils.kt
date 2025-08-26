@@ -102,8 +102,9 @@ object Utils {
      * Scales a bitmap to fit within the specified width and height while maintaining aspect ratio.
      * Return the bitmap is success, null otherwise
      * @param bitmap the image bitmap
+     * @param onException callback to execute in case of exception
      */
-    fun scaleBitmap(bitmap: Bitmap): Bitmap? {
+    fun scaleBitmap(bitmap: Bitmap, onException: (Exception) -> Unit): Bitmap? {
         try {
             val width = bitmap.width
             val height = bitmap.height
@@ -124,6 +125,7 @@ object Utils {
 
         } catch (e: Exception) {
             Log.e("ScaleBitmap", "Scale Bitmap failed", e)
+            onException(e)
             return null
         }
     }
@@ -133,8 +135,9 @@ object Utils {
      * while maintaining aspect ratio. Return the bitmap is success, null otherwise
      * @param uri the image uri
      * @param contentResolver ContentResolver instance, provided by the activity
+     * @param onException callback to execute in case of exception
      */
-    fun scaleBitmap(uri: Uri, contentResolver: ContentResolver): Bitmap? {
+    fun scaleBitmap(uri: Uri, contentResolver: ContentResolver, onException: (Exception) -> Unit): Bitmap? {
         try {
             val bitmap: Bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 // For API 28+ (Pie and above), use ImageDecoder with scaling
@@ -169,6 +172,7 @@ object Utils {
 
         } catch (e: Exception) {
             Log.e("ScaleBitmap", "Scale Bitmap failed", e)
+            onException(e)
             return null
         }
     }

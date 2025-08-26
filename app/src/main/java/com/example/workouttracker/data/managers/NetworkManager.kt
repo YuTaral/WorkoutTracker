@@ -10,6 +10,7 @@ import com.example.workouttracker.data.network.CustomResponse
 import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.SnackbarManager
+import com.example.workouttracker.ui.managers.SystemLogManager
 import com.example.workouttracker.ui.managers.VibrationEvent
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.utils.Constants
@@ -32,7 +33,8 @@ class NetworkManager @Inject constructor(
     private val customNotificationManager: Lazy<CustomNotificationManager>,
     private val vibrationManager: VibrationManager,
     private val loadingManager: LoadingManager,
-    private val snackbarManager: SnackbarManager
+    private val snackbarManager: SnackbarManager,
+    private val systemLogManager: SystemLogManager
 ) {
     /** Use Factory pattern to create the call object. This is needed, because when
      * we need to refresh the token, the new token is returned as response from the server.
@@ -152,6 +154,7 @@ class NetworkManager @Inject constructor(
                  getEmptyResponse()
             }
 
+            systemLogManager.emitLogExceptionEvent(e)
             Log.e("SendRequest", "SendRequest failed", e)
             onError(errorResponse, onErrorCallback)
 

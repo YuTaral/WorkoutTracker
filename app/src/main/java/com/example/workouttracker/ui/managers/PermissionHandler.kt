@@ -22,13 +22,15 @@ class PermissionHandler(
     permHost: IPermissionHost,
     askForAll: Boolean,
     showQuestion: () -> Unit,
-    showSnackbar: (Int) -> Unit
+    showSnackbar: (Int) -> Unit,
+    logManager: SystemLogManager
 ) {
     private var host = permHost
     private var askForAllPermissions = askForAll
     private var showGoToSettingsQuestion = showQuestion
     private var showSnackbarMsg = showSnackbar
     private var imagePicker: IImagePicker? = null
+    private var systemLogManager = logManager
     var notificationPermLauncher: ActivityResultLauncher<String>
     var cameraPermLauncher: ActivityResultLauncher<String>
     var readMediaImagesPermLauncher: ActivityResultLauncher<String>
@@ -156,7 +158,14 @@ class PermissionHandler(
      * @param bitmap the bitmap after image successful image capture
      */
     private fun onLauncherResultOk(bitmap: Bitmap) {
-        val scaledBitmap = Utils.scaleBitmap(bitmap)
+        val scaledBitmap = Utils.scaleBitmap(
+            bitmap = bitmap,
+            onException = {
+                host.getLifecycleScope().launch {
+                    systemLogManager.emitLogExceptionEvent(it)
+                }
+            }
+        )
 
         if (imagePicker == null) {
             return
@@ -175,7 +184,15 @@ class PermissionHandler(
      * @param uri the image uri
      */
     private fun onLauncherResultOk(uri: Uri) {
-        val bitmap =  Utils.scaleBitmap(uri, host.getContentResolver())
+        val bitmap =  Utils.scaleBitmap(
+            uri = uri,
+            contentResolver = host.getContentResolver(),
+            onException = {
+                host.getLifecycleScope().launch {
+                    systemLogManager.emitLogExceptionEvent(it)
+                }
+            }
+        )
 
         if (imagePicker == null) {
             return

@@ -269,7 +269,7 @@ class AuthViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     systemLogRepository.addSystemLog(
                         message = "Google Sign-In failed: ${e.errorMessage}",
-                        stackTrace = Log.getStackTraceString(e)
+                        stackTrace = e.stackTraceToString()
                     )
                 }
                 snackbarManager.showSnackbar(resourceProvider.getString(R.string.google_sign_in_error))

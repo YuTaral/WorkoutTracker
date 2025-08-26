@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.data.network.repositories.NotificationRepository
+import com.example.workouttracker.data.network.repositories.SystemLogRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DatePickerDialogManager
@@ -13,6 +14,7 @@ import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.SnackbarManager
+import com.example.workouttracker.ui.managers.SystemLogManager
 import com.example.workouttracker.ui.managers.VibrationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,7 @@ import javax.inject.Inject
 /** MainViewModel to manage the state of the main screen */
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private var systemLogRepository: SystemLogRepository,
     var userRepository: UserRepository,
     var notificationRepository: NotificationRepository,
     var sharedPrefsManager: SharedPrefsManager,
@@ -34,7 +37,8 @@ class MainViewModel @Inject constructor(
     var dialogManager: DialogManager,
     var loadingManager: LoadingManager,
     var snackbarManager: SnackbarManager,
-    var pagerManager: PagerManager
+    var pagerManager: PagerManager,
+    var systemLogManager: SystemLogManager
 ): ViewModel() {
 
     /** Job to refresh the notification on every N seconds */
@@ -94,6 +98,19 @@ class MainViewModel @Inject constructor(
     fun changePage(page: Page) {
         viewModelScope.launch {
             pagerManager.changePageSelection(page)
+        }
+    }
+
+    /**
+     * Add system log to the database
+     * @param exception the exception to log
+     */
+    fun addSystemLog(exception: Exception) {
+        viewModelScope.launch(Dispatchers.IO) {
+            systemLogRepository.addSystemLog(
+                message = exception.message.toString(),
+                stackTrace = exception.stackTraceToString()
+            )
         }
     }
 }

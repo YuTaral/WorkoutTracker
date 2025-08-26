@@ -60,6 +60,7 @@ fun Screen(vm: MainViewModel) {
                 AskQuestion(askQuestionDialogManager = vm.askQuestionManager)
                 ShowDatePicker(datePickerDialog = vm.datePickerManager)
                 ShowDialog(dialogManager = vm.dialogManager)
+                StoreSystemLog(vm = vm)
 
                 Navigation(modifier = Modifier.padding(innerPadding), vm = vm)
             }
@@ -210,6 +211,16 @@ private fun ShowDialog(dialogManager: DialogManager) {
                 }
             }
         )
+    }
+}
+
+/** Composable to store system log when exception occurs */
+@Composable
+private fun StoreSystemLog(vm: MainViewModel) {
+    LaunchedEffect(Unit) {
+        vm.systemLogManager.events.collect { event ->
+            vm.addSystemLog(event)
+        }
     }
 }
 
