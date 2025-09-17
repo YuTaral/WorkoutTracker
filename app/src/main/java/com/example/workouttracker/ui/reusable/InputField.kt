@@ -4,16 +4,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.workouttracker.R
+import com.example.workouttracker.ui.theme.ColorAccent
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.ColorSecondary
 import com.example.workouttracker.ui.theme.ColorWhite
@@ -34,25 +40,33 @@ import com.example.workouttracker.ui.theme.ColorWhite
  */
 @Composable
 fun InputField(
-        modifier: Modifier = Modifier,
-        label: String,
-        value: String = "",
-        onValueChange: (String) -> Unit = {},
-        isError: Boolean = false,
-        keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-        visualTransformation: VisualTransformation = VisualTransformation.None,
-        keyboardActions: KeyboardActions = KeyboardActions.Default,
-        singleLine: Boolean = true,
-        minLines: Int = 1,
-        maxLines: Int = 1,
-        style: TextStyle = LocalTextStyle.current
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String = "",
+    onValueChange: (String) -> Unit = {},
+    isError: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    singleLine: Boolean = true,
+    minLines: Int = 1,
+    maxLines: Int = 1,
+    style: TextStyle = LocalTextStyle.current
 ) {
+    // Detect if this is a password field by checking if the visualTransformation is PasswordVisualTransformation
+    val isPasswordField = visualTransformation is PasswordVisualTransformation
+
+    var passwordVisible by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier.then(Modifier.fillMaxWidth()),
         label = { Text(text = label) },
-        visualTransformation = visualTransformation,
+        visualTransformation = when {
+            isPasswordField && !passwordVisible -> PasswordVisualTransformation()
+            else -> VisualTransformation.None
+        },
         keyboardOptions = keyboardOptions,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedLabelColor = ColorSecondary,
@@ -62,7 +76,7 @@ fun InputField(
             focusedTextColor = ColorWhite,
             unfocusedTextColor = ColorWhite,
             cursorColor = ColorBorder,
-            selectionColors = TextSelectionColors(ColorBorder,ColorBorder),
+            selectionColors = TextSelectionColors(ColorBorder, ColorBorder),
             errorTextColor = ColorWhite
         ),
         singleLine = singleLine,
@@ -70,13 +84,26 @@ fun InputField(
         isError = isError,
         minLines = minLines,
         maxLines = maxLines,
-        textStyle = style
+        textStyle = style,
+        trailingIcon = {
+            if (isPasswordField) {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        painter = if (passwordVisible) painterResource(id = R.drawable.icon_password_visible)
+                                  else painterResource(id = R.drawable.icon_password_not_visible),
+                        contentDescription = null,
+                        tint = ColorAccent
+                    )
+                }
+            }
+        }
     )
 }
-
 
 @Preview
 @Composable
 fun InputFieldPreview() {
-    InputField(label = "Field Label")
+    InputField(
+        label = "Password",
+    )
 }
