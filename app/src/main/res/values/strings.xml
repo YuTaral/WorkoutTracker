@@ -196,7 +196,7 @@
     <string name="send_code_btn">Send Code</string>
     <string name="resend_code_btn">Send Code (%s)</string>
     <string name="verify_code_btn">Validate Code</string>
-    <string name="code_sent_message">Six digit code has been sent to your email.\n Enter it in the field below</string>
+    <string name="code_sent_message">Six digit code has been sent to your email.\n Check your Spam/Bin folder if you cannot see the message</string>
     <string name="invalid_code_lbl">The code must be six digits</string>
 
 </resources>
