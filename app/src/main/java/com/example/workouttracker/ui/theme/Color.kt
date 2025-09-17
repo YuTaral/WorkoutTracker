@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 val BackgroundStart = Color(0xFF000000)
 val BackgroundEnd = Color(0xFF1C1F25)
 val ColorAccent = Color(0xFF0288D1)
+val ColorAccentDisabled = Color(0x660288D1)
 val ColorAccentDarker = Color(0xFF1976D2)
 val ColorBackground = Color(0xFF131313)
 val ColorDialogBackground = Color(0xFF2F343A)

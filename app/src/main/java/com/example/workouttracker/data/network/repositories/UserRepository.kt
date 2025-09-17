@@ -135,4 +135,40 @@ class UserRepository @Inject constructor(
             onErrorCallback =  { onFailure() }
         )
     }
+
+    /**
+     * Send reset password code to the given email
+     * @param email the email
+     * @param onSuccess callback to execute on successful code sent
+     */
+    suspend fun sendCode(email: String, onSuccess: () -> Unit) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().sendCode(mapOf("email" to email ))},
+            onSuccessCallback = { onSuccess() }
+        )
+    }
+
+    /**
+     * Send request to verify the code and update the password
+     * @param code the code
+     * @param email the email
+     * @param onSuccess callback to execute on successful code sent
+     */
+    suspend fun verifyCode(code:String, email: String, onSuccess: () -> Unit) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().verifyCode(mapOf("code" to code, "email" to email))},
+            onSuccessCallback = { onSuccess() }
+        )
+    }
+
+    /** Reset user password
+     * @param email the email
+     * @param password the new password
+     * @param onSuccess callback to execute if request is successful
+     */
+    suspend fun resetPassword(email: String, password: String, onSuccess: () -> Unit) {
+        networkManager.sendRequest(
+            request = { apiService.getInstance().resetPassword(mapOf("email" to email, "password" to password)) },
+            onSuccessCallback = { onSuccess() })
+    }
 }

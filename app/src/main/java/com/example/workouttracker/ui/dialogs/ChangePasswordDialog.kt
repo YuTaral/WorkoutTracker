@@ -32,11 +32,21 @@ import com.example.workouttracker.viewmodel.ChangePasswordViewModel
 import androidx.compose.runtime.getValue
 import com.example.workouttracker.ui.reusable.ErrorLabel
 
-/** Dialog to allow the user to change password */
+/**
+ * Dialog to allow the user to change / reset password
+ * @param email email value, if not empty the dialog is opened for password reset
+ */
 @Composable
-fun ChangePasswordDialog(vm: ChangePasswordViewModel = hiltViewModel()) {
+fun ChangePasswordDialog(
+    email: String = "",
+    onReset: () -> Unit = {},
+    vm: ChangePasswordViewModel = hiltViewModel()
+) {
     LaunchedEffect(Unit) {
-        vm.resetState()
+        vm.resetState(
+            emailVal = email,
+            onReset = onReset
+        )
     }
 
     val state by vm.uiState.collectAsStateWithLifecycle()
@@ -48,22 +58,25 @@ fun ChangePasswordDialog(vm: ChangePasswordViewModel = hiltViewModel()) {
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(PaddingSmall)
     ) {
-        InputField(
-            modifier = Modifier.padding(horizontal = PaddingSmall),
-            label = stringResource(id = R.string.old_password_lbl),
-            value = state.oldPassword,
-            onValueChange = { vm.updateOldPassword(it) },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { newPassFocusReq.requestFocus()} ),
-            isError = state.oldPasswordError != null
-        )
 
-        state.oldPasswordError?.let {
-            ErrorLabel(
-                modifier = Modifier.padding(end = PaddingSmall),
-                text = state.oldPasswordError!!
+        if (state.email.isEmpty()) {
+            InputField(
+                modifier = Modifier.padding(horizontal = PaddingSmall),
+                label = stringResource(id = R.string.old_password_lbl),
+                value = state.oldPassword,
+                onValueChange = { vm.updateOldPassword(it) },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = { newPassFocusReq.requestFocus()} ),
+                isError = state.oldPasswordError != null
             )
+
+            state.oldPasswordError?.let {
+                ErrorLabel(
+                    modifier = Modifier.padding(end = PaddingSmall),
+                    text = state.oldPasswordError!!
+                )
+            }
         }
 
         InputField(

@@ -46,6 +46,9 @@ object Constants {
         const val CHANGE_PASSWORD = "$USERS/change-password"
         const val VALIDATE_TOKEN = "$USERS/validate-token"
         const val GOOGLE_SIGN_IN = "$USERS/google-sign-in"
+        const val SEND_CODE = "$USERS/send-code"
+        const val VERIFY_CODE = "$USERS/verify-code"
+        const val RESET_PASSWORD = "$USERS/reset-password"
 
         const val TO_WORKOUT = "$EXERCISES/to-workout"
         const val EXERCISE_FROM_WORKOUT = "$EXERCISES/exercise-from-workout"

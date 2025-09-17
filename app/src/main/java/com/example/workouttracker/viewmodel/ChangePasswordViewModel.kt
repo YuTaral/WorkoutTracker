@@ -35,19 +35,29 @@ class ChangePasswordViewModel @Inject constructor(
         val oldPasswordError: String? = null,
         val newPasswordError: String? = null,
         val confirmPasswordError: String? = null,
+
+        val email: String = ""
     )
 
     /** The UI state of the dialog */
     private val _uiState = MutableStateFlow(UIState())
     val uiState = _uiState.asStateFlow()
 
+    /** Callback to execute when reset password has been successful */
+    private lateinit var onResetCallback: () -> Unit
+
     init {
         resetState()
     }
 
-    /** Default the fields to empty */
-    fun resetState() {
+    /**
+     * Default the fields to empty
+     * @param emailVal email value, if not empty the dialog is opened for password reset
+     */
+    fun resetState(emailVal: String = "", onReset: () -> Unit = {}) {
         _uiState.value = UIState()
+        _uiState.update { it.copy(email = emailVal) }
+        onResetCallback = onReset
     }
 
     /** Update the old password field in the login UI state */
@@ -86,16 +96,31 @@ class ChangePasswordViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.changePassword(
-                oldPassword = uiState.value.oldPassword,
-                password = uiState.value.newPassword,
-                onSuccess = {
-                    viewModelScope.launch {
-                        dialogManager.hideDialog("ChangePasswordDialog")
+        if (uiState.value.email.isEmpty()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                userRepository.changePassword(
+                    oldPassword = uiState.value.oldPassword,
+                    password = uiState.value.newPassword,
+                    onSuccess = {
+                        viewModelScope.launch {
+                            dialogManager.hideDialog("ChangePasswordDialog")
+                        }
                     }
-                }
-            )
+                )
+            }
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
+                userRepository.resetPassword(
+                    email = uiState.value.email,
+                    password = uiState.value.newPassword,
+                    onSuccess = {
+                        viewModelScope.launch {
+                            dialogManager.hideDialog("ChangePasswordDialog")
+                            onResetCallback()
+                        }
+                    }
+                )
+            }
         }
     }
 
@@ -104,13 +129,15 @@ class ChangePasswordViewModel @Inject constructor(
         val state = uiState.value
         var success = true
 
-        if (state.oldPassword.isEmpty()) {
-            updateOldPasswordError(resourceProvider.getString(R.string.error_msg_blank_pass))
-            viewModelScope.launch { vibrationManager.makeVibration() }
-            success = false
+        if (state.email.isEmpty()) {
+            if (state.oldPassword.isEmpty()) {
+                updateOldPasswordError(resourceProvider.getString(R.string.error_msg_blank_pass))
+                viewModelScope.launch { vibrationManager.makeVibration() }
+                success = false
 
-        } else {
-            updateOldPasswordError(null)
+            } else {
+                updateOldPasswordError(null)
+            }
         }
 
         if (state.newPassword.isEmpty()) {

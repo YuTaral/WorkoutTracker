@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import com.example.workouttracker.ui.reusable.InputField
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.*
 import com.example.workouttracker.viewmodel.AuthViewModel
+import com.example.workouttracker.viewmodel.AuthViewModel.ForgotPasswordUiState
 import com.example.workouttracker.viewmodel.AuthViewModel.LoginUiState
 import com.example.workouttracker.viewmodel.AuthViewModel.RegisterUiState
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -45,9 +47,11 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/** Different pages in the authentication screen */
 enum class Page {
     LOGIN,
-    REGISTER
+    REGISTER,
+    FORGOT_PASSWORD,
 }
 
 /** The authentication screen which contains login / register pages */
@@ -58,7 +62,7 @@ fun AuthScreen(vm: AuthViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        vm.registerSuccessEvent.collect {
+        vm.showLoginPageEvent.collect {
             coroutineScope.launch {
                 pagerState.animateScrollToPage(Page.LOGIN.ordinal)
             }
@@ -72,48 +76,69 @@ fun AuthScreen(vm: AuthViewModel = hiltViewModel()) {
             .padding(top = PaddingSmall),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppLogo()
-
         HorizontalPager(
             state = pagerState,
-            count = 2,
+            count = 3,
             modifier = Modifier.weight(1f)
         ) { page ->
             when (page) {
-                Page.LOGIN.ordinal -> LoginPage(
-                    state = vm.loginUiState,
-                    onEmailChange = { vm.updateLoginEmail(it) },
-                    onPasswordChange = { vm.updateLoginPassword(it) },
-                    onSwitchClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(Page.REGISTER.ordinal)
-                        }
-                    },
-                    onLoginClick = { vm.login() },
-                    onGoogleSignInClick = {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                            vm.startGoogleLogIn(it)
-                        }
-                    }
-                )
+                Page.LOGIN.ordinal -> {
+                    vm.updateCodeSent(false)
 
-                Page.REGISTER.ordinal -> RegisterPage(
-                    state = vm.registerUiState,
-                    onEmailChange = { vm.updateRegisterEmail(it) },
-                    onPasswordChange = { vm.updateRegisterPassword(it) },
-                    onConfirmPasswordChange = { vm.updateConfirmPassword(it) },
-                    onSwitchClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(Page.LOGIN.ordinal)
+                    LoginPage(
+                        state = vm.loginUiState,
+                        onEmailChange = { vm.updateLoginEmail(it) },
+                        onPasswordChange = { vm.updateLoginPassword(it) },
+                        onSwitchClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(Page.REGISTER.ordinal)
+                            }
+                        },
+                        onLoginClick = { vm.login() },
+                        onGoogleSignInClick = {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                vm.startGoogleLogIn(it)
+                            }
+                        },
+                        onForgotPasswordClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(Page.FORGOT_PASSWORD.ordinal)
+                            }
                         }
-                    },
-                    onRegisterClick = { vm.register() },
-                    onGoogleSignInClick = {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                            vm.startGoogleSignIn(it)
+                    )
+                }
+
+                Page.REGISTER.ordinal -> {
+                    vm.updateCodeSent(false)
+
+                    RegisterPage(
+                        state = vm.registerUiState,
+                        onEmailChange = { vm.updateRegisterEmail(it) },
+                        onPasswordChange = { vm.updateRegisterPassword(it) },
+                        onConfirmPasswordChange = { vm.updateConfirmPassword(it) },
+                        onSwitchClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(Page.LOGIN.ordinal)
+                            }
+                        },
+                        onRegisterClick = { vm.register() },
+                        onGoogleSignInClick = {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                vm.startGoogleSignIn(it)
+                            }
                         }
-                    }
-                )
+                    )
+                }
+
+                Page.FORGOT_PASSWORD.ordinal -> {
+                    ForgotPasswordPage(
+                        state = vm.forgotPasswordUiState,
+                        onEmailChange = { vm.updateForgotPasswordEmail(it) },
+                        onSendCodeClick = { vm.sendCode() },
+                        onCodeChange = { vm.updateCode(it) },
+                        onValidateCodeClick = { vm.validateCode() }
+                    )
+                }
             }
         }
     }
@@ -127,7 +152,8 @@ private fun LoginPage(
     onPasswordChange: (String) -> Unit,
     onSwitchClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onGoogleSignInClick: (Context) -> Unit
+    onGoogleSignInClick: (Context) -> Unit,
+    onForgotPasswordClick: () -> Unit
 ) {
     val uiState by state.collectAsStateWithLifecycle()
 
@@ -146,7 +172,8 @@ private fun LoginPage(
         onSwitchClick = onSwitchClick,
         buttonText = stringResource(id = R.string.login_btn),
         onButtonClick = onLoginClick,
-        googleSignIn = onGoogleSignInClick
+        googleSignIn = onGoogleSignInClick,
+        onForgotPasswordClick = onForgotPasswordClick
     )
 }
 
@@ -199,7 +226,8 @@ private fun AuthForm(
     onSwitchClick: () -> Unit,
     buttonText: String,
     onButtonClick: () -> Unit,
-    googleSignIn: (Context) -> Unit
+    googleSignIn: (Context) -> Unit,
+    onForgotPasswordClick: () -> Unit = {}
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val passwordFocusRequester = remember { FocusRequester() }
@@ -225,7 +253,7 @@ private fun AuthForm(
             isError = emailError != null
         )
 
-        if (emailError != null) {
+        emailError?.let {
             ErrorLabel(text = emailError)
         }
 
@@ -246,7 +274,7 @@ private fun AuthForm(
             isError = passwordError != null
         )
 
-        if (passwordError != null) {
+        passwordError?.let {
             ErrorLabel(text = passwordError)
         }
 
@@ -262,12 +290,19 @@ private fun AuthForm(
                 isError = confirmPasswordError != null
             )
 
-            if (confirmPasswordError != null) {
-                ErrorLabel(text = confirmPasswordError)
+            confirmPasswordError?.let {
+                ErrorLabel(text = it)
             }
         }
 
         SwitchModeLabel(text = switchText, onClick = onSwitchClick)
+
+        if (confirmPassword == null) {
+            SwitchModeLabel(text = stringResource(
+                id = R.string.forgot_password_lbl),
+                onClick = { onForgotPasswordClick() }
+            )
+        }
 
         FragmentButton(
             modifier = Modifier.fillMaxWidth(),
@@ -308,9 +343,99 @@ private fun AuthForm(
     }
 }
 
+/** Forgot Password Page */
+@Composable
+private fun ForgotPasswordPage(
+    state: StateFlow<ForgotPasswordUiState>,
+    onEmailChange: (String) -> Unit,
+    onCodeChange: (String) -> Unit,
+    onSendCodeClick: () -> Unit,
+    onValidateCodeClick: () -> Unit,
+) {
+    val uiState by state.collectAsStateWithLifecycle()
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = PaddingMedium),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(PaddingSmall)
+    ) {
+        Label(text = stringResource(R.string.forgot_password_lbl), style = MaterialTheme.typography.titleLarge)
+
+        InputField(
+            label = stringResource(id = R.string.email_lbl),
+            value = uiState.email,
+            onValueChange = onEmailChange,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+            isError = uiState.emailError != null
+        )
+
+        if (uiState.emailError != null) {
+            ErrorLabel(text = uiState.emailError!!)
+        }
+
+        if (uiState.codeSent) {
+
+            if (uiState.resendTimer > 0) {
+                FragmentButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = String.format(stringResource(id = R.string.resend_code_btn), uiState.resendTimer),
+                    onClick = onSendCodeClick,
+                    enabled = false
+                )
+            } else {
+                FragmentButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.send_code_btn),
+                    onClick = onSendCodeClick
+                )
+            }
+
+            Label(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = PaddingSmall),
+                text = stringResource(id = R.string.code_sent_message),
+                maxLines = 3
+            )
+
+            InputField(
+                label = stringResource(id = R.string.code_lbl),
+                value = uiState.code,
+                onValueChange = onCodeChange,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                ),
+                keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+                isError = uiState.codeError != null
+            )
+
+            uiState.codeError?.let {
+               ErrorLabel(text = uiState.codeError!!)
+            }
+
+            FragmentButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.verify_code_btn),
+                onClick = onValidateCodeClick
+            )
+        } else {
+            FragmentButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.send_code_btn),
+                onClick = onSendCodeClick
+            )
+        }
+    }
+}
+
 /** App Logo */
 @Composable
-fun AppLogo() {
+private fun AppLogo() {
     Image(
         painter = painterResource(id = R.drawable.icon_app_logo),
         contentDescription = "App logo",

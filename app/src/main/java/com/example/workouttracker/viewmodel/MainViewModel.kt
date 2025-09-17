@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
         refreshJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
                 notificationRepository.refreshNotification()
-                delay(5000L)
+                delay(30000L)
             }
         }
     }

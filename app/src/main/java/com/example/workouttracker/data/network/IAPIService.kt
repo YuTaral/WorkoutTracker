@@ -33,6 +33,15 @@ interface IAPIService {
     @POST(Constants.RequestEndPoints.GOOGLE_SIGN_IN)
     fun googleSignIn(@Body params: Map<String, String>): Call<CustomResponse>
 
+    @POST(Constants.RequestEndPoints.SEND_CODE)
+    fun sendCode(@Body params: Map<String, String>): Call<CustomResponse>
+
+    @POST(Constants.RequestEndPoints.VERIFY_CODE)
+    fun verifyCode(@Body params: Map<String, String>): Call<CustomResponse>
+
+    @PUT(Constants.RequestEndPoints.RESET_PASSWORD)
+    fun resetPassword(@Body params: Map<String, String>): Call<CustomResponse>
+
     /** USER PROFILE REQUESTS
      * -------------------------------------------------------------------------------- */
     @PATCH(Constants.RequestEndPoints.DEFAULT_VALUES)

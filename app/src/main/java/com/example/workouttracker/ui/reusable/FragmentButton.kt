@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.workouttracker.ui.theme.ColorAccent
+import com.example.workouttracker.ui.theme.ColorAccentDisabled
+import com.example.workouttracker.ui.theme.ColorLightGrey
 import com.example.workouttracker.ui.theme.ColorWhite
 
 /**
@@ -29,12 +31,19 @@ fun FragmentButton(
     OutlinedButton(onClick = onClick,
         modifier = modifier.then(Modifier.fillMaxWidth(widthPercent)),
         enabled = enabled,
-        colors = ButtonDefaults.buttonColors(containerColor = ColorAccent),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = ColorAccent,
+            disabledContainerColor = ColorAccentDisabled,
+        ),
         border = null,
         shape = MaterialTheme.shapes.extraLarge
     )
     {
-        Text(text = text, color = ColorWhite)
+        if (enabled) {
+            Text(text = text, color = ColorWhite)
+        } else {
+            Text(text = text, color = ColorLightGrey)
+        }
     }
 }
 
