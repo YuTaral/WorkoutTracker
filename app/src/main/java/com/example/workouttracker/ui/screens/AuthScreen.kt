@@ -295,7 +295,11 @@ private fun AuthForm(
             }
         }
 
-        SwitchModeLabel(text = switchText, onClick = onSwitchClick)
+        FragmentButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = buttonText,
+            onClick = onButtonClick
+        )
 
         if (confirmPassword == null) {
             SwitchModeLabel(text = stringResource(
@@ -303,12 +307,6 @@ private fun AuthForm(
                 onClick = { onForgotPasswordClick() }
             )
         }
-
-        FragmentButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = buttonText,
-            onClick = onButtonClick
-        )
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -340,6 +338,8 @@ private fun AuthForm(
                 )
             }
         }
+
+        SwitchModeLabel(text = switchText, onClick = onSwitchClick)
     }
 }
 
@@ -431,16 +431,6 @@ private fun ForgotPasswordPage(
             )
         }
     }
-}
-
-/** App Logo */
-@Composable
-private fun AppLogo() {
-    Image(
-        painter = painterResource(id = R.drawable.icon_app_logo),
-        contentDescription = "App logo",
-        modifier = Modifier.size(100.dp)
-    )
 }
 
 /** Switch Mode Label */
