@@ -97,7 +97,7 @@ fun AuthScreen(vm: AuthViewModel = hiltViewModel()) {
                         onLoginClick = { vm.login() },
                         onGoogleSignInClick = {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                                vm.startGoogleLogIn(it)
+                                vm.startGoogleSignIn(it)
                             }
                         },
                         onForgotPasswordClick = {

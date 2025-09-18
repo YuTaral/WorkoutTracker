@@ -372,18 +372,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    /** Start the Google Log in prompt */
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    fun startGoogleLogIn(context: Context) {
-
-    }
-
     /** Start the Google Sign-In prompt */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun startGoogleSignIn(context: Context) {
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(true)
-            .setAutoSelectEnabled(true)
+            .setFilterByAuthorizedAccounts(false)
+            .setAutoSelectEnabled(false)
             .setServerClientId(Constants.GOOGLE_WEB_CLIENT_ID)
             .setNonce(generateNonce())
             .build()
@@ -424,7 +418,6 @@ class AuthViewModel @Inject constructor(
         if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             try {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                val email = googleIdTokenCredential.id
 
                 viewModelScope.launch(Dispatchers.IO) {
                     userRepository.googleSignIn(
