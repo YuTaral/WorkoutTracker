@@ -98,6 +98,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.google.play.services.auth)
+    implementation(libs.hilt.lifecycle.viewmodel.compose)
 
     // Debug dependencies
     debugImplementation(libs.androidx.ui.tooling)
