@@ -114,7 +114,7 @@ class NetworkManager @Inject constructor(
                 if (responseContent == null || responseContent.code == 0) {
                     // Something went wrong, show unexpected error and try to execute
                     // on error callback
-                    onError(getEmptyResponse(), onErrorCallback)
+                    onError(getEmptyResponse(), onErrorCallback, blockUi)
                     return
                 }
 
@@ -134,16 +134,16 @@ class NetworkManager @Inject constructor(
                         sendRequest(requestFactory, onSuccessCallback, onErrorCallback)
 
                     } else {
-                         onError(responseContent, onErrorCallback)
+                         onError(responseContent, onErrorCallback, blockUi)
                     }
                 } else {
                     // Execute the on error callback if the request failed for some reason
                     // and show the error message
-                    onError(responseContent, onErrorCallback)
+                    onError(responseContent, onErrorCallback, blockUi)
                 }
 
             } else {
-                onError(getEmptyResponse(), onErrorCallback)
+                onError(getEmptyResponse(), onErrorCallback, blockUi)
                 return
             }
 
@@ -156,7 +156,7 @@ class NetworkManager @Inject constructor(
 
             systemLogManager.emitLogExceptionEvent(e)
             Log.e("SendRequest", "SendRequest failed", e)
-            onError(errorResponse, onErrorCallback)
+            onError(errorResponse, onErrorCallback, blockUi)
 
         } finally {
              // Try to update the notification indication
@@ -175,7 +175,7 @@ class NetworkManager @Inject constructor(
      * @param responseContent the response content
      * @param onErrorCallback the callback to execute
      */
-    private suspend fun onError(responseContent: CustomResponse?, onErrorCallback: (CustomResponse) -> Unit) {
+    private suspend fun onError(responseContent: CustomResponse?, onErrorCallback: (CustomResponse) -> Unit, blockUi: Boolean) {
         var message = ""
 
         if (responseContent != null) {
@@ -189,13 +189,15 @@ class NetworkManager @Inject constructor(
             onErrorCallback(getEmptyResponse())
         }
 
-        if (message.isEmpty()) {
-            snackbarManager.showSnackbar(R.string.error_msg_unexpected)
-        } else {
-            snackbarManager.showSnackbar(message)
-        }
+        if (blockUi) {
+            if (message.isEmpty()) {
+                snackbarManager.showSnackbar(R.string.error_msg_unexpected)
+            } else {
+                snackbarManager.showSnackbar(message)
+            }
 
-        vibrationManager.makeVibration(VibrationEvent(pattern = Constants.REQUEST_ERROR_VIBRATION))
+            vibrationManager.makeVibration(VibrationEvent(pattern = Constants.REQUEST_ERROR_VIBRATION))
+        }
     }
 
     /** Create CustomResponse object with fail code when CustomResponse is not available */
