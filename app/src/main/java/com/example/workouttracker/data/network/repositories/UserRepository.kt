@@ -5,6 +5,7 @@ import com.example.workouttracker.data.managers.SharedPrefsManager
 import com.example.workouttracker.data.models.UserDefaultValuesModel
 import com.example.workouttracker.data.models.UserModel
 import com.example.workouttracker.data.network.APIService
+import com.example.workouttracker.data.network.CustomResponse
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -64,15 +65,17 @@ class UserRepository @Inject constructor(
      * @param email the email
      * @param password the password
      * @param onSuccess callback to execute on successful login
+     * @param onFailure callback to execute if request failed with the response
      */
-    suspend fun login(email: String, password: String, onSuccess: () -> Unit) {
+    suspend fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (CustomResponse) -> Unit) {
         networkManager.sendRequest(
             request = { apiService.getInstance().login(mapOf("email" to email, "password" to password)) },
             onSuccessCallback = { response ->
                 updateToken(response.data[1])
                 updateUser(UserModel(response.data[0]))
                 onSuccess()
-            }
+            },
+            onErrorCallback = { response -> onFailure(response) }
         )
     }
 
@@ -80,11 +83,13 @@ class UserRepository @Inject constructor(
      * @param email the email
      * @param password the password
      * @param onSuccess callback to execute if request is successful
+     * @param onFailure callback to execute if request failed with the response
      */
-    suspend fun register(email: String, password: String, onSuccess: () -> Unit) {
+    suspend fun register(email: String, password: String, onSuccess: () -> Unit, onFailure: (CustomResponse) -> Unit) {
         networkManager.sendRequest(
             request = { apiService.getInstance().register(mapOf("email" to email, "password" to password)) },
-            onSuccessCallback = { onSuccess() })
+            onSuccessCallback = { onSuccess() },
+            onErrorCallback = { response -> onFailure(response) })
     }
 
     /**
@@ -149,14 +154,15 @@ class UserRepository @Inject constructor(
     }
 
     /**
-     * Send request to verify the code and update the password
+     * Send request to verify the password reset / email confirmation code
+     * @param codeType the code type
      * @param code the code
      * @param email the email
      * @param onSuccess callback to execute on successful code sent
      */
-    suspend fun verifyCode(code:String, email: String, onSuccess: () -> Unit) {
+    suspend fun verifyCode(codeType: String, code: String, email: String, onSuccess: () -> Unit) {
         networkManager.sendRequest(
-            request = { apiService.getInstance().verifyCode(mapOf("code" to code, "email" to email))},
+            request = { apiService.getInstance().verifyCode(mapOf("codeType" to codeType, "code" to code, "email" to email))},
             onSuccessCallback = { onSuccess() }
         )
     }

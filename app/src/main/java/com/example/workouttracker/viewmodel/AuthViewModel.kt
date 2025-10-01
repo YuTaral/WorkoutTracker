@@ -16,8 +16,9 @@ import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.ui.managers.VibrationManager
 import androidx.credentials.CredentialManager
+import com.example.workouttracker.data.models.UserModel
 import com.example.workouttracker.data.network.repositories.SystemLogRepository
-import com.example.workouttracker.ui.dialogs.ChangePasswordDialog
+import com.example.workouttracker.ui.dialogs.ValidateCodeDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.utils.Constants
@@ -26,15 +27,12 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /** AuthViewModel to manage the state of AuthScreen Login or Register */
@@ -69,24 +67,11 @@ class AuthViewModel @Inject constructor(
         val confirmPasswordError: String? = null
     )
 
-    /** Register UI State representing the state of the Forgot password page */
-    data class ForgotPasswordUiState(
-        val email: String = "",
-        val code: String = "",
-        val emailError: String? = null,
-        val codeError: String? = null,
-
-        val codeSent: Boolean = false,
-        val codeValidated: Boolean = false,
-        val resendTimer: Int = 0
-    )
-
     /** Track when the token has been validated */
     private val _tokenValidated = MutableStateFlow(false)
     val tokenValidated = _tokenValidated.asStateFlow()
 
-    /** Job to refresh count 60 seconds after code sent */
-    private var resendCodeTimerJob: Job? = null
+
 
     init {
         checkAutoLogin()
@@ -99,10 +84,6 @@ class AuthViewModel @Inject constructor(
     /** UI state for the register screen */
     private val _registerUiState = MutableStateFlow(RegisterUiState())
     val registerUiState = _registerUiState.asStateFlow()
-
-    /** UI state for the forgot password screen */
-    private val _forgotPasswordUiState = MutableStateFlow(ForgotPasswordUiState())
-    val forgotPasswordUiState = _forgotPasswordUiState.asStateFlow()
 
     /** Event to notify that the registration was successful */
     private val _showLoginPageEvent = MutableSharedFlow<Unit>()
@@ -158,52 +139,6 @@ class AuthViewModel @Inject constructor(
         _registerUiState.update { it.copy(confirmPassword = value) }
     }
 
-    /** Update the forgot password email field in the forgot password UI state */
-    fun updateForgotPasswordEmail(value: String) {
-        _forgotPasswordUiState.update { it.copy(email = value) }
-    }
-
-    /** Update the forgot password email error in the forgot password UI state */
-    fun updateForgotPasswordEmailError(value: String?) {
-        _forgotPasswordUiState.update { it.copy(emailError = value) }
-    }
-
-    /** Update the code in forgot password UI state */
-    fun updateCode(value: String) {
-        _forgotPasswordUiState.update { it.copy(code = value) }
-    }
-
-    /** Update the code error in the forgot password UI state */
-    fun updateCodeError(value: String?) {
-        _forgotPasswordUiState.update { it.copy(codeError = value) }
-    }
-
-    /** Update the code sent boolean in forgot password UI state */
-    fun updateCodeSent(value: Boolean) {
-        _forgotPasswordUiState.update { it.copy(codeSent = value) }
-
-        if (value) {
-            _forgotPasswordUiState.update { it.copy(resendTimer = 60) }
-
-            resendCodeTimerJob = viewModelScope.launch {
-                while (isActive) {
-                    val newVal = _forgotPasswordUiState.value.resendTimer - 1
-
-                    if (newVal == 0) {
-                        _forgotPasswordUiState.update { it.copy(resendTimer = 0) }
-                        resendCodeTimerJob?.cancel()
-                    } else {
-                        _forgotPasswordUiState.update { it.copy(resendTimer = newVal) }
-                        delay(1000L)
-                    }
-                }
-            }
-        } else {
-            _forgotPasswordUiState.update { it.copy(resendTimer = 0) }
-            resendCodeTimerJob?.cancel()
-        }
-    }
-
     /** Try to login user */
     fun login() {
         val state = _loginUiState.value
@@ -235,6 +170,10 @@ class AuthViewModel @Inject constructor(
                             userRepository.requestAllPerm()
                         }
                         sharedPrefsManager.setFirstStartApp()
+                    }
+                }, onFailure = { response ->
+                    if (response.code == Constants.CustomHttpStatusCode.ACCOUNT_NOT_VERIFIED && response.data.size == 1) {
+                        openVerifyEmailDialog(UserModel(response.data[0]).email)
                     }
                 }
             )
@@ -280,95 +219,11 @@ class AuthViewModel @Inject constructor(
                     updateLoginPassword("")
                     _showLoginPageEvent.emit(Unit)
                 }
+            }, onFailure = { response ->
+                if (response.code == Constants.CustomHttpStatusCode.ACCOUNT_NOT_VERIFIED && response.data.size == 1) {
+                    openVerifyEmailDialog(response.data[0])
+                }
             })
-        }
-    }
-
-    /** Send code to the enter emails */
-    fun sendCode() {
-        val state = _forgotPasswordUiState.value
-
-        if (state.codeSent && state.resendTimer > 0) {
-            return
-        }
-
-        if (!Utils.isValidEmail(state.email)) {
-            updateForgotPasswordEmailError(resourceProvider.getString(R.string.invalid_email_format))
-            viewModelScope.launch { vibrationManager.makeVibration() }
-            return
-        } else {
-            updateForgotPasswordEmailError(null)
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.sendCode(
-                email = state.email,
-                onSuccess = {
-                    updateCodeSent(true)
-                }
-            )
-        }
-    }
-
-    /** Validate the entered code and sent it to the server */
-    fun validateCode() {
-        val state = _forgotPasswordUiState.value
-
-        if (state.code.length != 6) {
-            updateCodeError(resourceProvider.getString(R.string.invalid_code_lbl))
-            viewModelScope.launch { vibrationManager.makeVibration() }
-            return
-        } else {
-            updateCodeError(null)
-        }
-
-        viewModelScope.launch {
-            userRepository.verifyCode(
-                email = state.email,
-                code = state.code,
-                onSuccess = {
-                    // Open dialog to enter new password
-                    viewModelScope.launch {
-                        dialogManager.showDialog(
-                            title = resourceProvider.getString(R.string.reset_password),
-                            dialogName = "ChangePasswordDialog",
-                            content = {
-                                ChangePasswordDialog(
-                                    email = state.email,
-                                    onReset = {
-                                        viewModelScope.launch {
-                                            _showLoginPageEvent.emit(Unit)
-                                        }
-                                    }
-                                )
-                            }
-                        )
-                    }
-                }
-            )
-        }
-    }
-
-    /** Performs a check whether there is stored user and valid token and if so auto login the user */
-    private fun checkAutoLogin() {
-        val token = sharedPrefsManager.getStoredToken()
-        val userModel = sharedPrefsManager.getStoredUser()
-
-        if (userModel != null && token.isNotEmpty()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                userRepository.validateToken(
-                    token = token,
-                    onSuccess = {
-                        userRepository.updateUser(userModel)
-                        _tokenValidated.value = true
-                    },
-                    onFailure = {
-                        _tokenValidated.value = true
-                    }
-                )
-            }
-        } else {
-            _tokenValidated.value = true
         }
     }
 
@@ -405,6 +260,27 @@ class AuthViewModel @Inject constructor(
                 snackbarManager.showSnackbar(resourceProvider.getString(R.string.google_sign_in_error))
                 vibrationManager.makeVibration()
             }
+        }
+    }
+
+    /**
+     * Open the forgot password dialog
+     */
+    fun openForgotPasswordDialog() {
+        val email = _loginUiState.value.email
+
+        viewModelScope.launch {
+            dialogManager.showDialog(
+                title = resourceProvider.getString(id = R.string.forgot_password_lbl),
+                dialogName = "ValidateCodeDialog",
+                content = {
+                    ValidateCodeDialog(
+                        email = email,
+                        codeSent = false,
+                        validateFor = ValidateCodeViewModel.ValidateFor.RESET_PASSWORD
+                    )
+                }
+            )
         }
     }
 
@@ -450,5 +326,48 @@ class AuthViewModel @Inject constructor(
         return (1..length)
             .map { charset.random() }
             .joinToString("")
+    }
+
+    /** Performs a check whether there is stored user and valid token and if so auto login the user */
+    private fun checkAutoLogin() {
+        val token = sharedPrefsManager.getStoredToken()
+        val userModel = sharedPrefsManager.getStoredUser()
+
+        if (userModel != null && token.isNotEmpty()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                userRepository.validateToken(
+                    token = token,
+                    onSuccess = {
+                        userRepository.updateUser(userModel)
+                        _tokenValidated.value = true
+                    },
+                    onFailure = {
+                        _tokenValidated.value = true
+                    }
+                )
+            }
+        } else {
+            _tokenValidated.value = true
+        }
+    }
+
+    /**
+     * Open dialog to verify email
+     * @param email the email to verify
+     */
+    private fun openVerifyEmailDialog(email: String) {
+        viewModelScope.launch {
+            dialogManager.showDialog(
+                title = resourceProvider.getString(id = R.string.verify_email),
+                dialogName = "ValidateCodeDialog",
+                content = {
+                    ValidateCodeDialog(
+                        email = email.replace("\"", ""),
+                        codeSent = true,
+                        validateFor = ValidateCodeViewModel.ValidateFor.CONFIRM_EMAIL
+                    )
+                }
+            )
+        }
     }
 }

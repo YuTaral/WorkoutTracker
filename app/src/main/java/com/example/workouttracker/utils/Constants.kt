@@ -4,6 +4,13 @@ import com.example.workouttracker.BuildConfig
 
 /** Object to with all constants */
 object Constants {
+
+    object CustomHttpStatusCode
+    {
+        const val ACCOUNT_NOT_VERIFIED = 498
+        const val EXERCISE_ALREADY_EXISTS = 499
+    }
+
     const val URL: String = BuildConfig.BASE_URL
     const val GOOGLE_WEB_CLIENT_ID: String = BuildConfig.GOOGLE_WEB_CLIENT_ID
     const val SECURE_PREFS_FILE_NAME = "secure_prefs"

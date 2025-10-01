@@ -198,5 +198,6 @@
     <string name="verify_code_btn">Validate Code</string>
     <string name="code_sent_message">Six digit code has been sent to your email.\n Check your Spam/Bin folder if you cannot see the message</string>
     <string name="invalid_code_lbl">The code must be six digits</string>
+    <string name="verify_email">Verify Email</string>
 
 </resources>
