@@ -49,7 +49,7 @@ fun ManageTeamsScreen(teamType: ViewTeamAs, vm: ManageTeamsViewModel = hiltViewM
 
     Column(modifier = Modifier
         .fillMaxWidth()
-        .padding(PaddingSmall)
+        .padding(top = PaddingSmall)
     ) {
         TwoTextsSwitch(
             modifier = Modifier.padding(horizontal = PaddingMedium),
@@ -61,7 +61,7 @@ fun ManageTeamsScreen(teamType: ViewTeamAs, vm: ManageTeamsViewModel = hiltViewM
 
         Box(modifier = Modifier
             .fillMaxSize()
-            .padding(top = PaddingMedium)
+            .padding(top = PaddingMedium, start = PaddingSmall, end = PaddingSmall)
         ) {
             if (teams.isEmpty()) {
                 Column(

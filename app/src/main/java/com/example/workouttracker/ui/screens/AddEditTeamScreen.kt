@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +19,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -50,16 +52,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import com.example.workouttracker.ui.reusable.DialogButton
 import com.example.workouttracker.ui.reusable.ErrorLabel
-import com.example.workouttracker.ui.reusable.FragmentButton
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.InputField
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.components.MemberItem
 import com.example.workouttracker.ui.theme.BottomSheetsDialogFooterSize
 import com.example.workouttracker.ui.theme.ColorAccent
-import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingSmall
+import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelMediumBold
 import com.example.workouttracker.ui.theme.labelMediumGrey
@@ -108,131 +109,124 @@ fun AddEditTeamScreen(team: TeamModel?, vm: AddEditTeamViewModel) {
     val descriptionFocusReq = remember { FocusRequester() }
     val lazyListState = rememberLazyListState()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(PaddingSmall)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = PaddingSmall)
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = PaddingSmall, end = PaddingSmall, bottom = PaddingLarge * 2),
+            state = lazyListState,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(PaddingSmall)
         ) {
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(150.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, ColorBorder, CircleShape)
-                        .clickable(
-                            enabled = true,
-                            onClick = { vm.onImageClick() }
-                        ),
-                    painter = teamImagePainter,
-                    contentDescription = "Team image"
-                )
-                ImageButton(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(start = PaddingLarge * 10),
-                    onClick = { vm.updateImage("") },
-                    image = Icons.Default.Close,
-                    buttonColor = Color.Transparent,
-                    imageColor = ColorAccent
-                )
-            }
-
-            InputField(
-                label = stringResource(id = R.string.team_name_lbl),
-                value = uiState.name,
-                onValueChange = {
-                    if (it.length < 50) {
-                        vm.updateName(it)
-                    }
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(onNext = { descriptionFocusReq.requestFocus() }),
-                isError = uiState.nameError != null
-            )
-
-            uiState.nameError?.let {
-                ErrorLabel(
-                    modifier = Modifier.padding(horizontal = PaddingSmall),
-                    text = uiState.nameError!!
-                )
-            }
-
-            InputField(
-                modifier = Modifier.focusRequester(descriptionFocusReq),
-                label = stringResource(id = R.string.team_description_lbl),
-                value = uiState.description,
-                onValueChange = {
-                    if (it.length < 4000) {
-                        vm.updateDescription(it)
-                    }
-                },
-                isError = false,
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                singleLine = false,
-                minLines = 3,
-                maxLines = 3
-            )
-
-            if (team != null) {
-                Row(modifier = Modifier.height(BottomSheetsDialogFooterSize)) {
-                    DialogButton(
-                        text = stringResource(id = R.string.manage_members_btn),
-                        onClick = { vm.showManageMembers() }
+            item {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Image(
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(150.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, ColorBorder, CircleShape)
+                            .clickable { vm.onImageClick() },
+                        painter = teamImagePainter,
+                        contentDescription = "Team image"
+                    )
+                    ImageButton(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(start = PaddingLarge * 10),
+                        onClick = { vm.updateImage("") },
+                        image = Icons.Default.Close,
+                        buttonColor = Color.Transparent,
+                        imageColor = ColorAccent
                     )
                 }
+            }
 
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = lazyListState,
-                    contentPadding = PaddingValues(bottom = LazyListBottomPadding)
-                ) {
-                    items(members) {
-                        MemberItem(
-                            member = it,
-                            showButton = false,
-                            onAction = {}
+            item {
+                InputField(
+                    label = stringResource(id = R.string.team_name_lbl),
+                    value = uiState.name,
+                    onValueChange = { if (it.length < 50) vm.updateName(it) },
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { descriptionFocusReq.requestFocus() }),
+                    isError = uiState.nameError != null
+                )
+            }
+
+            if (uiState.nameError != null) {
+                item {
+                    ErrorLabel(
+                        modifier = Modifier.padding(horizontal = PaddingSmall),
+                        text = uiState.nameError!!
+                    )
+                }
+            }
+
+            item {
+                InputField(
+                    modifier = Modifier.focusRequester(descriptionFocusReq),
+                    label = stringResource(id = R.string.team_description_lbl),
+                    value = uiState.description,
+                    onValueChange = { if (it.length < 4000) vm.updateDescription(it) },
+                    isError = false,
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    singleLine = false,
+                    minLines = 3,
+                    maxLines = 3
+                )
+            }
+
+            if (team != null) {
+                item {
+                    Row(modifier = Modifier.height(BottomSheetsDialogFooterSize)) {
+                        DialogButton(
+                            text = stringResource(id = R.string.manage_members_btn),
+                            onClick = { vm.showManageMembers() }
                         )
                     }
+                }
+
+                items(members) { member ->
+                    MemberItem(
+                        member = member,
+                        showButton = false,
+                        onAction = {}
+                    )
                 }
             }
         }
 
-        Row(modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = PaddingVerySmall),
+            horizontalArrangement = if (team == null) Arrangement.End else Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             if (team == null) {
-                FragmentButton(
-                    text = stringResource(id = R.string.save_btn),
-                    onClick = { vm.saveTeam() }
+                ImageButton(
+                    onClick = { vm.saveTeam() },
+                    image = Icons.Default.Done
                 )
             } else {
-                FragmentButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = PaddingSmall),
-                    text = stringResource(id = R.string.delete_btn),
-                    onClick = { vm.askDeleteTeam() }
+                ImageButton(
+                    onClick = { vm.askDeleteTeam() },
+                    image = Icons.Default.Delete
                 )
-
-                FragmentButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = PaddingSmall),
-                    text = stringResource(id = R.string.save_btn),
-                    onClick = { vm.saveTeam() }
+                ImageButton(
+                    onClick = { vm.saveTeam() },
+                    image = Icons.Default.Done
                 )
             }
         }
     }
+
 }
 
 /**
@@ -348,12 +342,12 @@ fun ViewTeamAsMemberScreen(team: TeamModel, vm: AddEditTeamViewModel) {
             }
         }
 
-        FragmentButton(
+        ImageButton(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(start = PaddingSmall),
-            text = stringResource(id = R.string.leave_team_btn),
-            onClick = { vm.askLeaveTeam() }
+                .padding(end = PaddingSmall)
+                .align(Alignment.BottomEnd),
+            onClick = { vm.askLeaveTeam() },
+            image = Icons.AutoMirrored.Filled.ExitToApp
         )
     }
 }
