@@ -45,10 +45,8 @@ class NotificationsViewModel @Inject constructor(
 
     /** Initialize the data when the screen is displayed */
     fun initializeData() {
-        if (notificationRepository.notifications.value.isEmpty()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                notificationRepository.refreshNotifications(_showReviewed.value)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            notificationRepository.refreshNotifications(_showReviewed.value)
         }
     }
 
