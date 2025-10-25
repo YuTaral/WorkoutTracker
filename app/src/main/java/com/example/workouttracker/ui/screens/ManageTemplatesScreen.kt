@@ -21,12 +21,14 @@ import com.example.workouttracker.ui.reusable.InputField
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.reusable.Spinner
 import com.example.workouttracker.ui.components.WorkoutItem
+import com.example.workouttracker.ui.reusable.SpinnerItem
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.ManageTemplatesViewModel
+import com.example.workouttracker.viewmodel.ManageTemplatesViewModel.SpinnerActions
 
 @Composable
 fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
@@ -38,6 +40,14 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
     val selectedAction by vm.selectedSpinnerAction.collectAsStateWithLifecycle()
     val searchTerm by vm.searchHelper.search.collectAsStateWithLifecycle()
     val templates by vm.filteredTemplates.collectAsStateWithLifecycle()
+    val spinnerItems: List<SpinnerItem> = SpinnerActions.entries.map { action ->
+        SpinnerItem(
+            key = action.name,
+            text = stringResource(id = action.getStringId()),
+            imagePainter = null
+        )
+    }
+    val selectedSpinnerItem = spinnerItems.find { it.key == selectedAction.name }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier
@@ -46,8 +56,8 @@ fun ManageTemplatesScreen(vm: ManageTemplatesViewModel = hiltViewModel()) {
         ) {
             Spinner(
                 modifier = Modifier.padding(horizontal = PaddingVerySmall),
-                items = vm.spinnerActions.associate { it.name to stringResource(id = it.getStringId()) },
-                selectedItemKey = selectedAction.name,
+                items = spinnerItems,
+                selectedItem = selectedSpinnerItem,
                 onItemSelected = {
                     vm.updateSelectedSpinnerAction(it)
                 }

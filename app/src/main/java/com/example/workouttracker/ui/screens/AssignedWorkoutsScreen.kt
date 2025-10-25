@@ -19,6 +19,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -29,6 +32,7 @@ import com.example.workouttracker.ui.components.AssignedWorkoutItem
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.reusable.Spinner
+import com.example.workouttracker.ui.reusable.SpinnerItem
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
@@ -54,6 +58,21 @@ fun AssignedWorkoutsScreen(
     val startDateFilter by vm.startDate.collectAsStateWithLifecycle()
     val teamFilter by vm.teamFilter.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
+    val spinnerItems: List<SpinnerItem> = myTeams.map { team ->
+        val teamImagePainter = if (!team.image.isEmpty()) {
+            val bitmap = Utils.convertStringToBitmap(team.image)
+            BitmapPainter(bitmap.asImageBitmap())
+        } else {
+            painterResource(id = R.drawable.icon_team_default_picture)
+        }
+
+        SpinnerItem(
+            key = team.id.toString(),
+            text = team.name,
+            imagePainter = teamImagePainter
+        )
+    }
+    val selectedSpinnerItem = spinnerItems.find { it.key == teamFilter.id.toString() }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -81,8 +100,8 @@ fun AssignedWorkoutsScreen(
 
             Spinner(
                 modifier = Modifier.padding(horizontal = PaddingSmall),
-                items = myTeams.associate { it.id.toString() to it.name },
-                selectedItemKey = teamFilter.id.toString(),
+                items = spinnerItems,
+                selectedItem = selectedSpinnerItem,
                 onItemSelected = {
                     vm.updateTeamFilter(it)
                 }

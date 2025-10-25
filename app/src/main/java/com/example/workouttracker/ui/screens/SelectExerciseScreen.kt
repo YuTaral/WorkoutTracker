@@ -31,9 +31,11 @@ import com.example.workouttracker.ui.reusable.Spinner
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.components.MGExerciseItem
 import com.example.workouttracker.ui.components.MuscleGroupItem
+import com.example.workouttracker.ui.reusable.SpinnerItem
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingSmall
+import com.example.workouttracker.viewmodel.SelectExerciseViewModel.SpinnerActions
 import com.example.workouttracker.viewmodel.SelectExerciseViewModel.Mode
 import kotlinx.coroutines.flow.StateFlow
 
@@ -58,6 +60,16 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
     val searchTerm by vm.searchHelper.search.collectAsStateWithLifecycle()
     val manageExercises by vm.manageExercises.collectAsStateWithLifecycle()
     val selectedAction by vm.selectedSpinnerAction.collectAsStateWithLifecycle()
+    val spinnerItems: List<SpinnerItem> = SpinnerActions.entries.map { action ->
+        SpinnerItem(
+            key = action.name,
+            text = stringResource(id = action.getStringId()),
+            imagePainter = null
+        )
+    }
+    val selectedSpinnerItem = selectedAction?.let { action ->
+        spinnerItems.find { it.key == action.name }
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -68,8 +80,8 @@ fun SelectExerciseScreen(manageExercises: Boolean, vm: SelectExerciseViewModel =
 
             Spinner(
                 modifier = Modifier.padding(horizontal = PaddingVerySmall),
-                items = vm.spinnerActions.associate { it.name to stringResource(id = it.getStringId()) },
-                selectedItemKey = selectedAction!!.name,
+                items = spinnerItems,
+                selectedItem = selectedSpinnerItem,
                 onItemSelected = {
                     vm.updateSelectedSpinnerAction(it)
                 }
