@@ -53,19 +53,15 @@ class AssignedWorkoutsViewModel @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            if (_assignedWorkouts.value.isEmpty()) {
-                teamRepository.getAssignedWorkouts(
-                    startDate = Utils.formatDateToISO8601(_startDate.value),
-                    teamId = _teamFilter.value.id,
-                    onSuccess = { _assignedWorkouts.value = it.toMutableList() },
-                    onFail = { _assignedWorkouts.value = mutableListOf() }
-                )
-            }
+            teamRepository.getAssignedWorkouts(
+                startDate = Utils.formatDateToISO8601(_startDate.value),
+                teamId = _teamFilter.value.id,
+                onSuccess = { _assignedWorkouts.value = it.toMutableList() },
+                onFail = { _assignedWorkouts.value = mutableListOf() }
+            )
 
-            if (teamRepository.teams.value.isEmpty()) {
-                teamRepository.refreshMyTeams(teamType = ViewTeamAs.COACH.name)
-                teamRepository.teams.value.add(0, getDefaultTeamFilter())
-            }
+            teamRepository.refreshMyTeams(teamType = ViewTeamAs.COACH.name)
+            teamRepository.teams.value.add(0, getDefaultTeamFilter())
         }
     }
 
