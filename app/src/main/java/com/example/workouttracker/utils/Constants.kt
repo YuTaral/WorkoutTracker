@@ -46,6 +46,7 @@ object Constants {
         const val TEAMS = "teams"
         const val NOTIFICATIONS = "notifications"
         const val SYSTEM_LOGS = "system-logs"
+        const val TRAINING_PROGRAMS = "training-programs"
 
         const val REGISTER = "$USERS/register"
         const val LOGIN = "$USERS/login"
@@ -85,5 +86,7 @@ object Constants {
         const val GET_WORKOUT_TEMPLATE = "$WORKOUT_TEMPLATES/get-template-by-assigned-workout"
 
         const val FINISH_WORKOUT = "$WORKOUTS/finish"
+
+        const val TRAINING_DAYS = "$TRAINING_PROGRAMS/days"
     }
 }

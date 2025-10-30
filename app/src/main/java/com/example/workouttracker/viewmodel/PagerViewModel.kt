@@ -15,6 +15,8 @@ import com.example.workouttracker.ui.screens.NotificationsScreen
 import com.example.workouttracker.ui.screens.SelectActionScreen
 import com.example.workouttracker.ui.screens.SelectExerciseScreen
 import com.example.workouttracker.ui.screens.SelectedWorkoutScreen
+import com.example.workouttracker.ui.screens.ManageTrainingPlanScreen
+import com.example.workouttracker.ui.screens.SelectedTrainingPlanScreen
 import com.example.workouttracker.ui.screens.ViewAssignedWorkoutScreen
 import com.example.workouttracker.ui.screens.WorkoutsScreen
 import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
@@ -66,7 +68,13 @@ sealed class Page(
         PageIndices.FIRST_TEMPORARY.ordinal, content = { AssignWorkoutScreen() })
 
     data object AssignedWorkouts: Page(R.string.assigned_workouts_action, R.drawable.icon_screen_workouts,
-       PageIndices.FIRST_TEMPORARY.ordinal, content = { AssignedWorkoutsScreen() },)
+       PageIndices.FIRST_TEMPORARY.ordinal, content = { AssignedWorkoutsScreen() } )
+
+    data object ManageTrainingPlans: Page(R.string.training_plan_action, R.drawable.icon_screen_training_plan,
+        PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTrainingPlanScreen() } )
+
+    data object SelectedTrainingPlan: Page(R.string.edit_training_plan_action, R.drawable.icon_tab_edit_training_plan,
+        PageIndices.SECOND_TEMPORARY.ordinal, content = { SelectedTrainingPlanScreen() } )
 
     data class ManageTeams(private val teamType: ViewTeamAs): Page(R.string.teams_lbl, R.drawable.icon_screen_manage_teams,
         PageIndices.FIRST_TEMPORARY.ordinal, content = { ManageTeamsScreen(teamType = teamType) })

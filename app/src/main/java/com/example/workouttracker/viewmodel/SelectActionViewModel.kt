@@ -53,6 +53,10 @@ sealed class Action(val imageId: Int, val titleId: Int, val onClick: suspend () 
         Action(R.drawable.icon_assign_workout, R.string.assign_workout_action, { onActionClick() }
     )
 
+    data class TrainingPlan(private val onActionClick: () -> Unit):
+        Action(R.drawable.icon_screen_training_plan, R.string.manage_training_plan_action, { onActionClick() }
+    )
+
     data class AssignedWorkouts(private val onActionClick: () -> Unit):
         Action(R.drawable.icon_screen_workouts, R.string.view_assigned_workouts_action, { onActionClick() }
     )
@@ -92,6 +96,7 @@ class SelectActionViewModel @Inject constructor(
         _actions.value.add(createManageTemplates())
         _actions.value.add(createManageTeamsAction())
         _actions.value.add(createAssignAction())
+        _actions.value.add(createManageTrainingPlanAction())
         _actions.value.add(createViewAssignedWorkoutsAction())
 
         _isInitialized.value = true
@@ -217,6 +222,17 @@ class SelectActionViewModel @Inject constructor(
             onActionClick = {
                 viewModelScope.launch {
                     pagerManager.changePageSelection(Page.AssignWorkout)
+                }
+            }
+        )
+    }
+
+    /** Create training plan action */
+    private fun createManageTrainingPlanAction(): Action {
+        return Action.TrainingPlan(
+            onActionClick = {
+                viewModelScope.launch {
+                    pagerManager.changePageSelection(Page.ManageTrainingPlans)
                 }
             }
         )

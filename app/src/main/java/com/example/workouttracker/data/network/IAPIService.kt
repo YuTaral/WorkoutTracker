@@ -188,6 +188,29 @@ interface IAPIService {
     @GET(Constants.RequestEndPoints.REFRESH_NOTIFICATIONS)
     fun refreshNotifications(): Call<CustomResponse>
 
+    /** TRAINING PROGRAMS REQUESTS
+     * -------------------------------------------------------------------------------- */
+    @GET(Constants.RequestEndPoints.TRAINING_PROGRAMS)
+    fun refreshTrainingProgram(): Call<CustomResponse>
+
+    @POST(Constants.RequestEndPoints.TRAINING_PROGRAMS)
+    fun addTrainingProgram(@Body params: Map<String, String>): Call<CustomResponse>
+
+    @PATCH(Constants.RequestEndPoints.TRAINING_PROGRAMS)
+    fun updateTrainingProgram(@Body params: Map<String, String>): Call<CustomResponse>
+
+    @DELETE(Constants.RequestEndPoints.TRAINING_PROGRAMS)
+    fun deleteTrainingProgram(@Query("trainingProgramId") teamId: Long): Call<CustomResponse>
+
+    @POST(Constants.RequestEndPoints.TRAINING_DAYS)
+    fun addTrainingDayToProgram(@Body params: Map<String, String>): Call<CustomResponse>
+
+    @PATCH(Constants.RequestEndPoints.TRAINING_DAYS)
+    fun updateTrainingDayToProgram(@Body params: Map<String, String>): Call<CustomResponse>
+
+    @DELETE(Constants.RequestEndPoints.TRAINING_DAYS)
+    fun deleteTrainingDay(@Query("trainingDayId") teamId: Long): Call<CustomResponse>
+
     /** SYSTEM LOGS  REQUESTS
      * -------------------------------------------------------------------------------- */
     @POST(Constants.RequestEndPoints.SYSTEM_LOGS)

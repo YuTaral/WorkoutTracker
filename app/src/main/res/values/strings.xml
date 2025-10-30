@@ -176,7 +176,7 @@
     <string name="view_assigned_workouts_action">View assigned workouts</string>
     <string name="select_team_lbl">Select team</string>
     <string name="select_members_lbl">Select members</string>
-    <string name="select_workout_lbl">Select workout</string>
+    <string name="select_workout_lbl">Add workout</string>
     <string name="exercise_summary">%s x %d set(s)</string>
     <string name="no_members_selected">Select members first</string>
     <string name="question_assign_workout_title">Assign workout</string>
@@ -199,5 +199,25 @@
     <string name="code_sent_message">Six digit code has been sent to your email.\n Check your Spam/Bin folder if you cannot see the message</string>
     <string name="invalid_code_lbl">The code must be six digits</string>
     <string name="verify_email">Verify Email</string>
+    <string name="training_plan_action">Training Plans</string>
+    <string name="edit_training_plan_action">Edit Plan</string>
+    <string name="manage_training_plan_action">Manage Training Plans</string>
+    <string name="add_training_plan">Add Training Plan</string>
+    <string name="edit_training_plan_dialog_title">Edit Training Plan</string>
+    <string name="edit_training_plan">Edit Plan</string>
+    <string name="training_plan_name">Training plan name</string>
+    <string name="training_plan_description">Training plan description</string>
+    <string name="day_number">Day %d</string>
+    <string name="edit_day_number">Workouts for Day %d</string>
+    <string name="training_days">Training days</string>
+    <string name="rest">Rest</string>
+    <string name="no_workouts_for_today">No workouts for this today</string>
+    <string name="error_msg_enter_training_program_name">Please enter training program name</string>
+    <string name="question_delete_training_plan_title">Delete Training Plan</string>
+    <string name="question_delete_training_plan_text">Are you sure you want to delete training plan \"%s\" ?</string>
+    <string name="no_training_programs">You don\'t have any training programs. Click the add button in the bottom right to create your first training program</string>
+    <string name="training_program_len">Training days: %d</string>
+    <string name="question_delete_training_day_title">Delete Training Day</string>
+    <string name="question_delete_training_day_text">Are you sure you want to delete training this day ?</string>
 
 </resources>

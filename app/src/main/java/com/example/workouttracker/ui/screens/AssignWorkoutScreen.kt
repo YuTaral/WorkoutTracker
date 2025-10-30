@@ -38,8 +38,8 @@ import com.example.workouttracker.data.models.TeamMemberModel
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.components.MemberItem
+import com.example.workouttracker.ui.components.SelectWorkoutComponent
 import com.example.workouttracker.ui.components.TeamItem
-import com.example.workouttracker.ui.components.WorkoutItem
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorBorder
@@ -235,7 +235,6 @@ private fun SelectWorkoutScreen(
     onClick: (WorkoutModel) -> Unit,
     onBack: () -> Unit,
 ) {
-    val lazyListState = rememberLazyListState()
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -264,36 +263,10 @@ private fun SelectWorkoutScreen(
                     thickness = 1.dp
                 )
 
-                Label(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = PaddingSmall),
-                    text = stringResource(id = R.string.select_workout_lbl),
-                    style = MaterialTheme.typography.titleSmall
+                SelectWorkoutComponent(
+                    templates = templates,
+                    onClick = { onClick(it) }
                 )
-
-                if (templates.isEmpty()) {
-                    Label(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.no_templates),
-                        textAlign = TextAlign.Center,
-                        style = labelMediumGrey,
-                        maxLines = 5
-                    )
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = lazyListState,
-                        contentPadding = PaddingValues(bottom = LazyListBottomPadding)
-                    ) {
-                        items(templates) { item ->
-                            WorkoutItem(
-                                workout = item,
-                                onClick = { onClick(it) }
-                            )
-                        }
-                    }
-                }
             }
 
             ImageButton(
