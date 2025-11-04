@@ -304,18 +304,20 @@ class TeamRepository @Inject constructor(
 
     /**
      * Get the assigned workouts by the user
+     * @param teamType the selected team type - as coach or as member
      * @param startDate the start date
      * @param teamId the team id (0 if not used)
      * @param onSuccess callback to execute on success
      */
     suspend fun getAssignedWorkouts(
+        teamType: String,
         startDate: String,
         teamId: Long,
         onSuccess: (List<AssignedWorkoutModel>) -> Unit,
         onFail: () -> Unit
     ) {
         networkManager.sendRequest(
-            request = { apiService.getInstance().getAssignedWorkouts(startDate, teamId) },
+            request = { apiService.getInstance().getAssignedWorkouts(startDate, teamId, teamType) },
             onSuccessCallback = { response ->
                 onSuccess(response.data.map { AssignedWorkoutModel(it) })
             },

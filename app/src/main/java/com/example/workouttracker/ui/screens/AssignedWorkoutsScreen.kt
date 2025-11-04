@@ -33,10 +33,12 @@ import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.reusable.Spinner
 import com.example.workouttracker.ui.reusable.SpinnerItem
+import com.example.workouttracker.ui.reusable.TwoTextsSwitch
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.labelMediumGrey
+import com.example.workouttracker.utils.Constants.ViewTeamAs
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AssignedWorkoutsViewModel
 
@@ -73,9 +75,18 @@ fun AssignedWorkoutsScreen(
         )
     }
     val selectedSpinnerItem = spinnerItems.find { it.key == teamFilter.id.toString() }
+    val selectedTeamType by vm.selectedTeamType.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
+            TwoTextsSwitch(
+                modifier = Modifier.padding(start = PaddingMedium, end = PaddingMedium, top = PaddingSmall, bottom = PaddingSmall),
+                selectedValue = stringResource(id = selectedTeamType.getStringId()),
+                leftText = stringResource(id = ViewTeamAs.COACH.getStringId()),
+                rightText = stringResource(id = ViewTeamAs.MEMBER.getStringId()),
+                onSelectionChanged = { vm.updateSelectedTeamType(it) }
+            )
+
             Row(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier

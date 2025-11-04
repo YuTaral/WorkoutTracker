@@ -1,6 +1,7 @@
 package com.example.workouttracker.utils
 
 import com.example.workouttracker.BuildConfig
+import com.example.workouttracker.R
 
 /** Object to with all constants */
 object Constants {
@@ -32,6 +33,16 @@ object Constants {
         WORKOUT_ASSIGNED,
         WORKOUT_ASSIGNMENT_COMPLETED,
         WORKOUT_ASSIGNMENT_DECLINED
+    }
+
+    /** Enum with team types when fetching teams */
+    enum class ViewTeamAs(private val stringId: Int) {
+        COACH(R.string.as_coach_lbl),
+        MEMBER(R.string.as_member_lbl);
+
+        fun getStringId(): Int {
+            return stringId
+        }
     }
 
     /** Object containing request end point values */

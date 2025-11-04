@@ -19,7 +19,7 @@ import com.example.workouttracker.ui.screens.ManageTrainingPlanScreen
 import com.example.workouttracker.ui.screens.SelectedTrainingPlanScreen
 import com.example.workouttracker.ui.screens.ViewAssignedWorkoutScreen
 import com.example.workouttracker.ui.screens.WorkoutsScreen
-import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
+import com.example.workouttracker.utils.Constants.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -10,6 +10,7 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.network.repositories.TeamRepository
 import com.example.workouttracker.ui.managers.PagerManager
+import com.example.workouttracker.utils.Constants.ViewTeamAs
 import com.example.workouttracker.utils.ResourceProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,16 +21,6 @@ class ManageTeamsViewModel @Inject constructor(
     private val pagerManager: PagerManager,
     var teamRepository: TeamRepository,
 ): ViewModel() {
-
-    /** Enum with team types when fetching teams */
-    enum class ViewTeamAs(private val stringId: Int) {
-        COACH(R.string.as_coach_lbl),
-        MEMBER(R.string.as_member_lbl);
-
-        fun getStringId(): Int {
-            return stringId
-        }
-    }
 
     /** Track the selected team type */
     private var _selectedTeamType = MutableStateFlow<ViewTeamAs>(ViewTeamAs.COACH)

@@ -166,7 +166,7 @@ interface IAPIService {
     fun assignWorkout(@Body params: Map<String, String>): Call<CustomResponse>
 
     @GET(Constants.RequestEndPoints.ASSIGNED_WORKOUTS)
-    fun getAssignedWorkouts(@Query("startDate") startDate: String, @Query("teamId") teamId: Long): Call<CustomResponse>
+    fun getAssignedWorkouts(@Query("startDate") startDate: String, @Query("teamId") teamId: Long, @Query("teamType") teamType: String): Call<CustomResponse>
 
     @GET(Constants.RequestEndPoints.ASSIGNED_WORKOUT)
     fun getAssignedWorkout(@Query("assignedWorkoutId") assignedWorkoutId: Long): Call<CustomResponse>

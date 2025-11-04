@@ -17,10 +17,10 @@ import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.SnackbarManager
 import com.example.workouttracker.ui.managers.VibrationManager
+import com.example.workouttracker.utils.Constants.ViewTeamAs
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.utils.interfaces.IImagePicker
-import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

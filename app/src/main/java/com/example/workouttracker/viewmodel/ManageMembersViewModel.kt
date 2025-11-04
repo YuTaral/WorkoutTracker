@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.models.TeamMemberModel
 import com.example.workouttracker.data.network.repositories.TeamRepository
 import com.example.workouttracker.ui.components.MemberTeamState
-import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
+import com.example.workouttracker.utils.Constants.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

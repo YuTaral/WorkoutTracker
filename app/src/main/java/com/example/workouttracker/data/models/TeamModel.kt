@@ -1,6 +1,6 @@
 package com.example.workouttracker.data.models
 
-import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
+import com.example.workouttracker.utils.Constants.ViewTeamAs
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 

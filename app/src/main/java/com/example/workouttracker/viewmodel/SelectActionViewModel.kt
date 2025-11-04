@@ -11,10 +11,10 @@ import com.example.workouttracker.ui.managers.CustomNotificationManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.LoadingManager
 import com.example.workouttracker.ui.managers.PagerManager
+import com.example.workouttracker.utils.Constants.ViewTeamAs
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.viewmodel.Action.SaveWorkoutAsTemplate
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
-import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

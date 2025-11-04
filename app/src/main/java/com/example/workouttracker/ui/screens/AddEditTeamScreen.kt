@@ -64,9 +64,9 @@ import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelMediumBold
 import com.example.workouttracker.ui.theme.labelMediumGrey
+import com.example.workouttracker.utils.Constants.ViewTeamAs
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AddEditTeamViewModel
-import com.example.workouttracker.viewmodel.ManageTeamsViewModel.ViewTeamAs
 
 /**
  * Screen to allow the user to add / edit team or view the team as member
