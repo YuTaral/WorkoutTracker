@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.models.TrainingDayModel
 import com.example.workouttracker.data.models.WorkoutModel
-import com.example.workouttracker.data.network.repositories.TrainingProgramRepository
+import com.example.workouttracker.data.network.repositories.TrainingPlanRepository
 import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddEditTrainingDayViewModel @Inject constructor(
     var templatesRepository: WorkoutTemplatesRepository,
-    private var trainingProgramRepository: TrainingProgramRepository,
+    private var trainingProgramRepository: TrainingPlanRepository,
     private var dialogManager: DialogManager,
     private var askQuestionManager: AskQuestionDialogManager,
 ): ViewModel() {
@@ -109,7 +109,7 @@ class AddEditTrainingDayViewModel @Inject constructor(
                             trainingDayId = _uiState.value.trainingDay.id ,
                             onSuccess = {
                                 viewModelScope.launch {
-                                    trainingProgramRepository.updateSelectedTrainingProgram(it)
+                                    trainingProgramRepository.updateSelectedTrainingPlan(it)
                                     dialogManager.hideDialog("AddEditTrainingDayDialog")
                                 }
                             }
@@ -123,12 +123,12 @@ class AddEditTrainingDayViewModel @Inject constructor(
     /** Send request to add new training day to the program */
     private fun createTrainingDay() {
         viewModelScope.launch(Dispatchers.IO) {
-            trainingProgramRepository.addTrainingDayToProgram(
+            trainingProgramRepository.addTrainingDayToPlan(
                 trainingDay = _uiState.value.trainingDay,
                 onSuccess = {
                     viewModelScope.launch {
                         dialogManager.hideDialog("AddEditTrainingDayDialog")
-                        trainingProgramRepository.updateSelectedTrainingProgram(it)
+                        trainingProgramRepository.updateSelectedTrainingPlan(it)
                     }
                 }
             )
@@ -138,12 +138,12 @@ class AddEditTrainingDayViewModel @Inject constructor(
     /** Send request to update the training day */
     private fun updateTrainingDay() {
         viewModelScope.launch(Dispatchers.IO) {
-            trainingProgramRepository.updateTrainingDayToProgram(
+            trainingProgramRepository.updateTrainingDayToPlan(
                 trainingDay = _uiState.value.trainingDay,
                 onSuccess = {
                     viewModelScope.launch {
                         dialogManager.hideDialog("AddEditTrainingDayDialog")
-                        trainingProgramRepository.updateSelectedTrainingProgram(it)
+                        trainingProgramRepository.updateSelectedTrainingPlan(it)
                     }
                 }
             )

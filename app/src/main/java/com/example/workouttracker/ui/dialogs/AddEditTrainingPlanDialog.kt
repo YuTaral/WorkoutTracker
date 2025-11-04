@@ -39,7 +39,7 @@ fun AddEditTrainingPlanDialog(vm: AddEditTrainingPlanViewModel = hiltViewModel()
     }
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    val trainingProgram by vm.trainingProgramRepository.selectedTrainingProgram.collectAsStateWithLifecycle()
+    val trainingProgram by vm.trainingProgramRepository.selectedTrainingPlan.collectAsStateWithLifecycle()
     val descriptionFocusReq = remember { FocusRequester() }
 
     Column(

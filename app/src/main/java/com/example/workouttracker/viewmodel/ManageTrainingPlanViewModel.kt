@@ -3,8 +3,8 @@ package com.example.workouttracker.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
-import com.example.workouttracker.data.models.TrainingProgramModel
-import com.example.workouttracker.data.network.repositories.TrainingProgramRepository
+import com.example.workouttracker.data.models.TrainingPlanModel
+import com.example.workouttracker.data.network.repositories.TrainingPlanRepository
 import com.example.workouttracker.ui.dialogs.AddEditTrainingPlanDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
@@ -16,7 +16,7 @@ import javax.inject.Inject
 /** View model to control the UI state of Training Program screen */
 @HiltViewModel
 class ManageTrainingPlanViewModel @Inject constructor(
-    var trainingProgramRepository: TrainingProgramRepository,
+    var trainingProgramRepository: TrainingPlanRepository,
     private var dialogManager: DialogManager,
     private var resourceProvider: ResourceProvider,
     private var pagerManager: PagerManager
@@ -25,13 +25,13 @@ class ManageTrainingPlanViewModel @Inject constructor(
     /** Initialize data */
     fun initializeData() {
         viewModelScope.launch {
-            trainingProgramRepository.refreshTrainingPrograms()
+            trainingProgramRepository.refreshTrainingPlans()
         }
     }
 
     /** Show dialog to add training plan */
     fun showAddTrainingPlan() {
-        trainingProgramRepository.updateSelectedTrainingProgram(null)
+        trainingProgramRepository.updateSelectedTrainingPlan(null)
 
         viewModelScope.launch {
             dialogManager.showDialog(
@@ -46,8 +46,8 @@ class ManageTrainingPlanViewModel @Inject constructor(
      * Select the training program
      * @param trainingProgram the training program to select
      */
-    fun selectTrainingProgram(trainingProgram: TrainingProgramModel?) {
-        trainingProgramRepository.updateSelectedTrainingProgram(trainingProgram)
+    fun selectTrainingProgram(trainingProgram: TrainingPlanModel?) {
+        trainingProgramRepository.updateSelectedTrainingPlan(trainingProgram)
 
         if (trainingProgram != null) {
             viewModelScope.launch {

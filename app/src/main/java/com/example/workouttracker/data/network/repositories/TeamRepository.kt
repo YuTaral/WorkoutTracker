@@ -9,6 +9,7 @@ import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.utils.Utils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.Date
 import javax.inject.Inject
 
 /** TeamRepository class, used to execute all requests related to teams */
@@ -262,10 +263,13 @@ class TeamRepository @Inject constructor(
      * Assign the workout to the members
      * @param workoutId the workout id
      * @param memberIds the member ids
+     * @param startDate the workout start date
      * @param onSuccess callback to execute on success
      */
-    suspend fun assignWorkout(workoutId: Long, memberIds: List<Long>, onSuccess: () -> Unit) {
-        val params = mapOf("workoutId" to workoutId.toString(), "memberIds" to memberIds.toString())
+    suspend fun assignWorkout(workoutId: Long, memberIds: List<Long>, startDate: Date, onSuccess: () -> Unit) {
+        val params = mapOf("workoutId" to workoutId.toString(),
+            "memberIds" to memberIds.toString(), "startDate" to Utils.formatDateToISO8601(startDate)
+        )
 
         networkManager.sendRequest(
             request = { apiService.getInstance().assignWorkout(params) },

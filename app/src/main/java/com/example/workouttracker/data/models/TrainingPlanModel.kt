@@ -3,10 +3,10 @@ package com.example.workouttracker.data.models
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
-/** TrainingDayModel class representing a training day as port of training plan.
- * Must correspond with server-side TrainingDayModel
+/** TrainingPlanModel class representing a training day as port of training plan.
+ * Must correspond with server-side TrainingPlanModel
  */
-class TrainingProgramModel: BaseModel {
+class TrainingPlanModel: BaseModel {
     @SerializedName("Name")
     var name: String
 
@@ -21,7 +21,7 @@ class TrainingProgramModel: BaseModel {
      */
     constructor(data: String) : super(data) {
         val gson = Gson()
-        val model: TrainingProgramModel = gson.fromJson(data, TrainingProgramModel::class.java)
+        val model: TrainingPlanModel = gson.fromJson(data, TrainingPlanModel::class.java)
 
         name = model.name
         description = model.description

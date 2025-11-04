@@ -37,7 +37,7 @@ fun ManageTrainingPlanScreen(vm: ManageTrainingPlanViewModel = hiltViewModel()) 
         vm.initializeData()
     }
 
-    val trainingPrograms by vm.trainingProgramRepository.trainingPrograms.collectAsStateWithLifecycle()
+    val trainingPrograms by vm.trainingProgramRepository.trainingPlans.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
 
     Box(modifier = Modifier.fillMaxSize())
@@ -57,7 +57,7 @@ fun ManageTrainingPlanScreen(vm: ManageTrainingPlanViewModel = hiltViewModel()) 
             ) {
                 items(trainingPrograms) { item ->
                     TrainingPlanItem(
-                        trainingProgram = item,
+                        trainingPlan = item,
                         onClick = { vm.selectTrainingProgram(item) }
                     )
                 }

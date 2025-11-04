@@ -23,7 +23,8 @@ enum class Question(private val titleId: Int, private val questionId: Int,
     GRANT_PERMISSIONS(R.string.question_grant_permissions, R.string.question_grant_permissions_text, R.string.view_permissions_btn, R.string.maybe_later_btn),
     ASSIGN_WORKOUT(R.string.question_assign_workout_title, R.string.question_assign_workout_text, R.string.assign_btn, R.string.cancel_btn),
     DELETE_TRAINING_PLAN(R.string.question_delete_training_plan_title, R.string.question_delete_training_plan_text, R.string.yes_btn, R.string.no_btn),
-    DELETE_TRAINING_DAY(R.string.question_delete_training_day_title, R.string.question_delete_training_day_text, R.string.yes_btn, R.string.no_btn);
+    DELETE_TRAINING_DAY(R.string.question_delete_training_day_title, R.string.question_delete_training_day_text, R.string.yes_btn, R.string.no_btn),
+    SCHEDULED_WORKOUT_DATE_MISS_MATCH(R.string.question_scheduled_w_date_miss_match_title, R.string.question_scheduled_w_date_miss_match_text, R.string.yes_btn, R.string.no_btn);
 
     /** Returns the question title */
     fun getTitle(): Int {

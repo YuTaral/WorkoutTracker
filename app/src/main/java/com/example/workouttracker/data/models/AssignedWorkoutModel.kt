@@ -25,8 +25,8 @@ class AssignedWorkoutModel : BaseModel {
     @SerializedName("UserFullName")
     var userFullName: String
 
-    @SerializedName("DateTimeAssigned")
-    var dateTimeAssigned: Date
+    @SerializedName("ScheduledForDate")
+    var scheduledForDate: Date
 
     @SerializedName("DateTimeCompleted")
     var dateTimeCompleted: Date? = null
@@ -44,7 +44,7 @@ class AssignedWorkoutModel : BaseModel {
         this.teamImage = model.teamImage
         this.teamId = model.teamId
         this.userFullName = model.userFullName
-        this.dateTimeAssigned = model.dateTimeAssigned
+        this.scheduledForDate = model.scheduledForDate
         this.dateTimeCompleted = model.dateTimeCompleted
     }
 
@@ -55,7 +55,7 @@ class AssignedWorkoutModel : BaseModel {
         this.teamImage = ""
         this.teamId = 0L
         this.userFullName = "Test user full name"
-        this.dateTimeAssigned = Date()
+        this.scheduledForDate = Date()
         this.dateTimeCompleted = null
     }
 }

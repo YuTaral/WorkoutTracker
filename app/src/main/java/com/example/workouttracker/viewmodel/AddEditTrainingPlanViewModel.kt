@@ -3,8 +3,8 @@ package com.example.workouttracker.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
-import com.example.workouttracker.data.models.TrainingProgramModel
-import com.example.workouttracker.data.network.repositories.TrainingProgramRepository
+import com.example.workouttracker.data.models.TrainingPlanModel
+import com.example.workouttracker.data.network.repositories.TrainingPlanRepository
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
@@ -23,7 +23,7 @@ import javax.inject.Inject
 /** View model to control the UI state of Training Program screen */
 @HiltViewModel
 class AddEditTrainingPlanViewModel @Inject constructor(
-    var trainingProgramRepository: TrainingProgramRepository,
+    var trainingProgramRepository: TrainingPlanRepository,
     private var dialogManager: DialogManager,
     private var resourceProvider: ResourceProvider,
     private var vibrationManager: VibrationManager,
@@ -59,9 +59,9 @@ class AddEditTrainingPlanViewModel @Inject constructor(
 
     /** Initialize the data when the screen is shown */
     fun initializeData() {
-        if (trainingProgramRepository.selectedTrainingProgram.value != null) {
-            updateName(trainingProgramRepository.selectedTrainingProgram.value!!.name)
-            updateDescription(trainingProgramRepository.selectedTrainingProgram.value!!.description)
+        if (trainingProgramRepository.selectedTrainingPlan.value != null) {
+            updateName(trainingProgramRepository.selectedTrainingPlan.value!!.name)
+            updateDescription(trainingProgramRepository.selectedTrainingPlan.value!!.description)
         } else {
             updateName("")
             updateDescription("")
@@ -76,31 +76,31 @@ class AddEditTrainingPlanViewModel @Inject constructor(
             return
         }
 
-        val trainingProgram = TrainingProgramModel(0, _uiState.value.name, _uiState.value.description)
+        val trainingProgram = TrainingPlanModel(0, _uiState.value.name, _uiState.value.description)
 
         viewModelScope.launch(Dispatchers.IO) {
-            if (trainingProgramRepository.selectedTrainingProgram.value == null) {
+            if (trainingProgramRepository.selectedTrainingPlan.value == null) {
                 // Add new training program
-                trainingProgramRepository.addTrainingProgram(
+                trainingProgramRepository.addTrainingPlan(
                     trainingProgram = trainingProgram,
                     onSuccess = {
                         viewModelScope.launch {
                             // On success, auto select the created training program and navigate to its details page
-                            trainingProgramRepository.updateSelectedTrainingProgram(it)
+                            trainingProgramRepository.updateSelectedTrainingPlan(it)
                             pagerManager.changePageSelection(Page.SelectedTrainingPlan)
                             dialogManager.hideDialog("AddEditTrainingPlanDialog")
                         }
                     }
                 )
             } else {
-                trainingProgram.id = trainingProgramRepository.selectedTrainingProgram.value!!.id
+                trainingProgram.id = trainingProgramRepository.selectedTrainingPlan.value!!.id
 
-                trainingProgramRepository.updateTrainingProgram(
+                trainingProgramRepository.updateTrainingPlan(
                     trainingProgram = trainingProgram,
                     onSuccess = {
                         viewModelScope.launch {
                             // On success, auto select the updated training program
-                            trainingProgramRepository.updateSelectedTrainingProgram(it)
+                            trainingProgramRepository.updateSelectedTrainingPlan(it)
                             dialogManager.hideDialog("AddEditTrainingPlanDialog")
                         }
                     }
@@ -116,11 +116,11 @@ class AddEditTrainingPlanViewModel @Inject constructor(
                 question = Question.DELETE_TRAINING_PLAN,
                 onConfirm = {
                     viewModelScope.launch(Dispatchers.IO) {
-                        trainingProgramRepository.deleteTrainingProgram(
-                            trainingProgramId = trainingProgramRepository.selectedTrainingProgram.value!!.id,
+                        trainingProgramRepository.deleteTrainingPlan(
+                            trainingProgramId = trainingProgramRepository.selectedTrainingPlan.value!!.id,
                             onSuccess = {
                                 viewModelScope.launch {
-                                    trainingProgramRepository.updateSelectedTrainingProgram(null)
+                                    trainingProgramRepository.updateSelectedTrainingPlan(null)
                                     pagerManager.changePageSelection(Page.ManageTrainingPlans)
                                     dialogManager.hideDialog("AddEditTrainingPlanDialog")
                                 }
@@ -128,7 +128,7 @@ class AddEditTrainingPlanViewModel @Inject constructor(
                         )
                     }
                 },
-                formatQValues = listOf(trainingProgramRepository.selectedTrainingProgram.value!!.name)
+                formatQValues = listOf(trainingProgramRepository.selectedTrainingPlan.value!!.name)
             ))
         }
     }

@@ -40,7 +40,7 @@ import com.example.workouttracker.viewmodel.SelectedTrainingPlanViewModel
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SelectedTrainingPlanScreen(vm: SelectedTrainingPlanViewModel = hiltViewModel()) {
-    val selected by vm.trainingProgramRepository.selectedTrainingProgram.collectAsStateWithLifecycle()
+    val selected by vm.trainingProgramRepository.selectedTrainingPlan.collectAsStateWithLifecycle()
     val selectedTrainingProgram = selected ?: return
 
     val lazyListState = rememberLazyListState()

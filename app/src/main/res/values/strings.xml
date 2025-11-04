@@ -171,15 +171,15 @@
     <string name="question_grant_permissions_text">To make sure the app works smoothly and gives you the best experience, we need to request some permissions. These will help us provide essential features like notifications, camera access and images access.\nYour privacy is important to us, and we will never share your data without your consent.\nWould you like to grant these permissions now?</string>
     <string name="view_permissions_btn">View permissions</string>
     <string name="maybe_later_btn">Maybe later</string>
-    <string name="assign_workout_action">Assign workout</string>
+    <string name="assign_workout_action">Assign workouts</string>
     <string name="assigned_workouts_action">Assigned</string>
     <string name="view_assigned_workouts_action">View assigned workouts</string>
     <string name="select_team_lbl">Select team</string>
     <string name="select_members_lbl">Select members</string>
-    <string name="select_workout_lbl">Add workout</string>
+    <string name="select_workout_lbl">Select workout</string>
     <string name="exercise_summary">%s x %d set(s)</string>
     <string name="no_members_selected">Select members first</string>
-    <string name="question_assign_workout_title">Assign workout</string>
+    <string name="question_assign_workout_title">Assign workouts</string>
     <string name="question_assign_workout_text">Are you sure you want to assign \n\"%s\" \n\ to the selected members</string>
     <string name="assign_btn">Assign</string>
     <string name="no_templates">You don\'t have any workout templates. Start a workout and save it to create your first workout template</string>
@@ -219,5 +219,16 @@
     <string name="training_program_len">Training days: %d</string>
     <string name="question_delete_training_day_title">Delete Training Day</string>
     <string name="question_delete_training_day_text">Are you sure you want to delete training this day ?</string>
+    <string name="single_workout_selection">Single workout</string>
+    <string name="training_plan_selection">Training plan</string>
+    <string name="start_workouts_on">Start workout on %s</string>
+    <string name="scheduled_for_date">Scheduled for: </string>
+    <string name="scheduled_for_date_same_row">Scheduled for: %s</string>
+    <string name="question_scheduled_w_date_miss_match_title">Workout schedule</string>
+    <string name="question_scheduled_w_date_miss_match_text">The current workout is scheduled for %s. Are you sure you want to start it now ?</string>
+    <string name="finished_before">completed %d day(s) ahead of schedule</string>
+    <string name="finished_after">completed %d day(s) after schedule</string>
+    <string name="team_name">Team: %s</string>
+    <string name="member_name">Member: %s</string>
 
 </resources>

@@ -5,9 +5,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +19,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -34,20 +37,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.R
+import com.example.workouttracker.data.models.BaseModel
 import com.example.workouttracker.data.models.TeamMemberModel
 import com.example.workouttracker.data.models.TeamModel
+import com.example.workouttracker.data.models.TrainingPlanModel
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.components.MemberItem
-import com.example.workouttracker.ui.components.SelectWorkoutComponent
 import com.example.workouttracker.ui.components.TeamItem
+import com.example.workouttracker.ui.components.TrainingPlanItem
+import com.example.workouttracker.ui.components.WorkoutItem
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
+import com.example.workouttracker.ui.reusable.TwoTextsSwitch
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingLarge
+import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.labelMediumGrey
+import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AssignWorkoutViewModel.Mode
+import com.example.workouttracker.viewmodel.AssignWorkoutViewModel.WorkoutSelection
 import kotlinx.coroutines.flow.StateFlow
+import java.util.Date
 
 /** The screen to allow coaches to assign workouts to team members */
 @OptIn(ExperimentalAnimationApi::class)
@@ -61,6 +72,13 @@ fun AssignWorkoutScreen(vm: AssignWorkoutViewModel = hiltViewModel()) {
     val selectedTeam by vm.teamRepository.selectedTeam.collectAsStateWithLifecycle()
     val teamMembers by vm.teamRepository.teamMembers.collectAsStateWithLifecycle()
     val templates by vm.templatesRepository.templates.collectAsStateWithLifecycle()
+    val trainingPlans by vm.trainingPlanRepository.trainingPlans.collectAsStateWithLifecycle()
+    val selectedWorkoutSelection by vm.selectedWorkoutSelection.collectAsStateWithLifecycle()
+    val startDate by vm.startDate.collectAsStateWithLifecycle()
+    val data = when (selectedWorkoutSelection) {
+        WorkoutSelection.SINGLE_WORKOUT -> templates
+        WorkoutSelection.TRAINING_PLAN -> trainingPlans
+    }
 
     AnimatedContent(
         targetState = mode,
@@ -92,9 +110,13 @@ fun AssignWorkoutScreen(vm: AssignWorkoutViewModel = hiltViewModel()) {
                     SelectWorkoutScreen(
                         team = selectedTeam!!,
                         members = teamMembers.filter { it.selectedForAssign },
-                        templates = templates,
-                        onClick = { vm.selectWorkoutTemplate(it) },
+                        data = data,
+                        selectedWorkoutSelection = selectedWorkoutSelection,
+                        startDate = startDate,
+                        onClick = { vm.selectWorkouts(it) },
                         onBack = { vm.updateSelectedMode(Mode.SELECT_MEMBERS) },
+                        onWorkoutSelectionTypeChange = { vm.updateSelectedWorkoutSelection(it) },
+                        showDatePicker = { vm.showDatePicker() }
                     )
                 }
             }
@@ -223,18 +245,27 @@ private fun SelectMembersScreen(
  * Screen to select workout
  * @param team the selected team
  * @param members the team members
- * @param templates the user templates
+ * @param data the user templates / user training plans
+ * @param selectedWorkoutSelection the selected workout selection type
+ * @param startDate the selected start date
  * @param onClick callback to execute on workout click
  * @param onBack callback to execute on arrow back click
+ * @param onWorkoutSelectionTypeChange callback to execute on workout selection type change
+ * @param showDatePicker callback to show the date picker
  */
 @Composable
 private fun SelectWorkoutScreen(
     team: TeamModel,
     members: List<TeamMemberModel>,
-    templates: List<WorkoutModel>,
-    onClick: (WorkoutModel) -> Unit,
+    data: List<BaseModel>,
+    selectedWorkoutSelection: WorkoutSelection,
+    startDate: Date,
+    onClick: (BaseModel) -> Unit,
     onBack: () -> Unit,
+    onWorkoutSelectionTypeChange: (String) -> Unit,
+    showDatePicker: () -> Unit
 ) {
+    val lazyListState = rememberLazyListState()
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -263,10 +294,69 @@ private fun SelectWorkoutScreen(
                     thickness = 1.dp
                 )
 
-                SelectWorkoutComponent(
-                    templates = templates,
-                    onClick = { onClick(it) }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Label(
+                        text = String.format(
+                            stringResource(id = R.string.start_workouts_on),
+                            Utils.defaultFormatDate(startDate)
+                        ),
+                    )
+
+                    ImageButton(
+                        onClick = { showDatePicker() },
+                        image = Icons.Default.DateRange
+                    )
+                }
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = PaddingSmall),
+                    color = ColorBorder,
+                    thickness = 1.dp
                 )
+
+                TwoTextsSwitch(
+                    modifier = Modifier.padding(start = PaddingMedium, end = PaddingMedium, bottom = PaddingSmall),
+                    selectedValue = stringResource(id = selectedWorkoutSelection.getStringId()),
+                    leftText = stringResource(id = WorkoutSelection.SINGLE_WORKOUT.getStringId()),
+                    rightText = stringResource(id = WorkoutSelection.TRAINING_PLAN.getStringId()),
+                    onSelectionChanged = { onWorkoutSelectionTypeChange(it) }
+                )
+
+                if (data.isEmpty()) {
+                    Label(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.no_templates),
+                        textAlign = TextAlign.Center,
+                        style = labelMediumGrey,
+                        maxLines = 5
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = lazyListState,
+                        contentPadding = PaddingValues(bottom = LazyListBottomPadding)
+                    ) {
+                        if (selectedWorkoutSelection == WorkoutSelection.SINGLE_WORKOUT) {
+                            items(data) { item ->
+                                WorkoutItem(
+                                    workout = item as WorkoutModel,
+                                    onClick = { onClick(it) }
+                                )
+                            }
+                        } else {
+                            items(data) { item ->
+                                TrainingPlanItem(
+                                    trainingPlan = item as TrainingPlanModel,
+                                    onClick = { onClick(it) }
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             ImageButton(

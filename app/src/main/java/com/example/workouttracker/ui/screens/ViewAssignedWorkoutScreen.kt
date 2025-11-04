@@ -52,6 +52,7 @@ import com.example.workouttracker.ui.theme.labelLargeBold
 import com.example.workouttracker.ui.theme.labelMediumAccent
 import com.example.workouttracker.ui.theme.labelMediumGreen
 import com.example.workouttracker.ui.theme.labelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumItalic
 import com.example.workouttracker.ui.theme.labelMediumOrange
 import com.example.workouttracker.utils.Utils
 import java.util.Date
@@ -70,6 +71,7 @@ fun ViewAssignedWorkoutScreen(assignedWorkout: AssignedWorkoutModel) {
     } else {
         painterResource(id = R.drawable.icon_team_default_picture)
     }
+    val completed = assignedWorkout.workoutModel.finishDateTime != null
 
     Column(
         modifier = Modifier
@@ -86,19 +88,20 @@ fun ViewAssignedWorkoutScreen(assignedWorkout: AssignedWorkoutModel) {
                     .padding(end = PaddingVerySmall)
             ) {
                 Label(
-                    text = assignedWorkout.teamName,
-                    style = labelLargeBold,
+                    text = String.format(stringResource(id = R.string.team_name), assignedWorkout.teamName),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start,
+                    maxLines = 2,
                 )
                 Label(
-                    text = assignedWorkout.userFullName,
-                    style = labelLargeBold,
+                    text = String.format(stringResource(id = R.string.member_name), assignedWorkout.userFullName),
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    maxLines = 2,
                 )
                 Label(
-                    text = Utils.defaultFormatDateTime(assignedWorkout.dateTimeAssigned),
+                    text = String.format(stringResource(id = R.string.scheduled_for_date_same_row),
+                                Utils.defaultFormatDate(assignedWorkout.scheduledForDate)),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
@@ -167,17 +170,17 @@ fun ViewAssignedWorkoutScreen(assignedWorkout: AssignedWorkoutModel) {
                     style = labelMediumGrey
                 )
 
-                if (assignedWorkout.workoutModel.finishDateTime == null) {
-                    Label(
-                        text = if (assignedWorkout.workoutModel.startDateTime == null)
-                                    stringResource(R.string.not_started_lbl) else
-                                    stringResource(R.string.in_progress_lbl),
-                        style = labelMediumOrange
-                    )
-                } else {
+                if (completed) {
                     Label(
                         text = stringResource(R.string.finished_lbl),
                         style = labelMediumGreen
+                    )
+                } else {
+                    Label(
+                        text = if (assignedWorkout.workoutModel.startDateTime == null)
+                            stringResource(R.string.not_started_lbl) else
+                            stringResource(R.string.in_progress_lbl),
+                        style = labelMediumOrange
                     )
                 }
             }
@@ -198,12 +201,33 @@ fun ViewAssignedWorkoutScreen(assignedWorkout: AssignedWorkoutModel) {
             }
         }
 
+        if (completed) {
+            val daysDifference = Utils.getDateDifferenceInDays(
+                assignedWorkout.scheduledForDate,
+                assignedWorkout.workoutModel.finishDateTime!!
+            )
+
+            if (daysDifference > 0) {
+                Label(
+                    modifier = Modifier.padding(top = PaddingVerySmall),
+                    text = String.format(stringResource(R.string.finished_before), daysDifference),
+                    style = labelMediumItalic,
+                )
+            } else if (daysDifference < 0) {
+                Label(
+                    modifier = Modifier.padding(top = PaddingVerySmall),
+                    text = String.format(stringResource(R.string.finished_after), daysDifference),
+                    style = labelMediumItalic,
+                )
+            }
+        }
+
         AnimatedVisibility(
             visible = showNotes,
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically()
         ) {
-            Row {
+            Row(modifier = Modifier.padding(top = PaddingVerySmall)) {
                 Label(
                     modifier = Modifier.padding(end = PaddingVerySmall),
                     text = stringResource(id = R.string.notes_lbl),

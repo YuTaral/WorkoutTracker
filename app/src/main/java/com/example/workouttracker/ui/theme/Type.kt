@@ -78,6 +78,16 @@ val labelMediumGreyItalic = TextStyle(
     color = ColorSecondary
 )
 
+val labelMediumItalic = TextStyle(
+    fontStyle = FontStyle.Italic,
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Normal,
+    fontSize = labelMediumSize,
+    lineHeight = labelMediumLineHeight,
+    letterSpacing = labelMediumLetterSpacing,
+    color = ColorWhite
+)
+
 val labelMediumBold = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Bold,

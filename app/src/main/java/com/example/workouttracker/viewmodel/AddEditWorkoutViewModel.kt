@@ -14,6 +14,7 @@ import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.ui.managers.Question
 import com.example.workouttracker.ui.managers.VibrationManager
 import com.example.workouttracker.utils.ResourceProvider
+import com.example.workouttracker.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -22,6 +23,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Calendar
+import java.util.Date
 
 /** View model to control the UI state of Add / Edit workout dialog */
 @HiltViewModel
@@ -41,7 +44,8 @@ class AddEditWorkoutViewModel @Inject constructor(
         val name: String = "",
         val notes: String = "",
         val weightUnit: String = "",
-        val nameError: String? = null
+        val nameError: String? = null,
+        val scheduledForDate: Date? = null
     )
 
     /** The dialog modes */
@@ -65,8 +69,9 @@ class AddEditWorkoutViewModel @Inject constructor(
      * HiltViewModel and is created only once per activity lifetime
      * @param workout the selected workout / template if any, null otherwise
      * @param dialogMode the dialog mode
+     * @param scheduledForDate the scheduled for date if any (used when workout is assigned)
      */
-    fun initialize(workout: WorkoutModel?, dialogMode: Mode) {
+    fun initialize(workout: WorkoutModel?, dialogMode: Mode, scheduledForDate: Date?) {
         mode = dialogMode
         selectedWorkout = workout
 
@@ -74,10 +79,13 @@ class AddEditWorkoutViewModel @Inject constructor(
             updateName("")
             updateNotes("")
             updateWeightUnit(userRepository.user.value!!.defaultValues.weightUnit)
+            updateScheduledForDate(null)
         } else {
             updateName(workout.name)
             updateNotes(workout.notes)
             updateWeightUnit(workout.weightUnit)
+            updateWeightUnit(workout.weightUnit)
+            updateScheduledForDate(scheduledForDate)
         }
     }
 
@@ -96,9 +104,14 @@ class AddEditWorkoutViewModel @Inject constructor(
         _uiState.update { it.copy(nameError = value) }
     }
 
-    /** Update the elected weight unit in the UI with the provided value */
+    /** Update the selected weight unit in the UI with the provided value */
     fun updateWeightUnit(value: String) {
         _uiState.update { it.copy(weightUnit = value) }
+    }
+
+    /** Update the scheduled for date with the provided value */
+    fun updateScheduledForDate(date: Date?) {
+        _uiState.update { it.copy(scheduledForDate = date) }
     }
 
     /**
@@ -111,23 +124,7 @@ class AddEditWorkoutViewModel @Inject constructor(
         }
 
         if (mode == Mode.ADD) {
-            val newWorkout: WorkoutModel = if (selectedWorkout == null) {
-                // Create new workout
-                WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0, _uiState.value.weightUnit)
-            } else {
-                // Create new workout from the template
-                WorkoutModel(0, _uiState.value.name, true, selectedWorkout!!.exercises, _uiState.value.notes, null, 0, _uiState.value.weightUnit)
-            }
-
-            viewModelScope.launch(Dispatchers.IO) {
-                workoutsRepository.addWorkout(
-                    workout = newWorkout,
-                    assignedWorkoutId = assignedWorkoutId,
-                    onSuccess = { createdWorkout ->
-                        onWorkoutActionSuccess(createdWorkout, Page.SelectedWorkout)
-                    }
-                )
-            }
+            startWorkout(assignedWorkoutId = assignedWorkoutId)
         } else {
             val workout = selectedWorkout!!
             workout.name = _uiState.value.name
@@ -135,25 +132,9 @@ class AddEditWorkoutViewModel @Inject constructor(
             workout.weightUnit = _uiState.value.weightUnit
 
             if (workout.template) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    workoutTemplatesRepository.updateWorkoutTemplate(
-                        template = workout,
-                        onSuccess = {
-                            viewModelScope.launch {
-                                dialogManager.hideDialog("AddEditWorkoutDialog")
-                            }
-                        }
-                    )
-                }
+                updateWorkoutTemplate(template = workout)
             } else {
-                viewModelScope.launch(Dispatchers.IO) {
-                    workoutsRepository.updateWorkout (
-                        workout = workout,
-                        onSuccess = { updatedWorkout ->
-                            onWorkoutActionSuccess(updatedWorkout, Page.SelectedWorkout)
-                        }
-                    )
-                }
+                updateWorkout(workout = workout)
             }
         }
     }
@@ -176,6 +157,95 @@ class AddEditWorkoutViewModel @Inject constructor(
                     }
                 },
                 formatQValues = listOf(workoutsRepository.selectedWorkout.value!!.name)
+            ))
+        }
+    }
+
+    /**
+     * Start new workout
+     * @param assignedWorkoutId the assigned workout id (if any)
+     */
+    private fun startWorkout(assignedWorkoutId: Long) {
+        val newWorkout: WorkoutModel = if (selectedWorkout == null) {
+            // Create new workout
+            WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0, _uiState.value.weightUnit)
+        } else {
+            // Create new workout from the template
+            WorkoutModel(0, _uiState.value.name, true, selectedWorkout!!.exercises, _uiState.value.notes, null, 0, _uiState.value.weightUnit)
+        }
+
+        if (_uiState.value.scheduledForDate != null && Utils.getDateDifferenceInDays(_uiState.value.scheduledForDate!!, Date()) != 0L) {
+            showScheduledDateNotToday(newWorkout = newWorkout, assignedWorkoutId = assignedWorkoutId)
+        } else {
+            startWorkout(newWorkout = newWorkout, assignedWorkoutId = assignedWorkoutId)
+        }
+    }
+
+    /**
+     * Start new workout
+     * @param newWorkout the workout data
+     * @param assignedWorkoutId the assigned workout id (if any)
+     */
+    private fun startWorkout(newWorkout: WorkoutModel, assignedWorkoutId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            workoutsRepository.addWorkout(
+                workout = newWorkout,
+                assignedWorkoutId = assignedWorkoutId,
+                onSuccess = { createdWorkout ->
+                    onWorkoutActionSuccess(createdWorkout, Page.SelectedWorkout)
+                }
+            )
+        }
+    }
+
+    /**
+     * Send request to update the workout
+     * @param workout the workout to update
+     */
+    private fun updateWorkout(workout: WorkoutModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            workoutsRepository.updateWorkout (
+                workout = workout,
+                onSuccess = { updatedWorkout ->
+                    onWorkoutActionSuccess(updatedWorkout, Page.SelectedWorkout)
+                }
+            )
+        }
+    }
+
+    /**
+     * Send request to update the workout template
+     * @param template the workout template to update
+     */
+    private fun updateWorkoutTemplate(template: WorkoutModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            workoutTemplatesRepository.updateWorkoutTemplate(
+                template = template,
+                onSuccess = {
+                    viewModelScope.launch {
+                        dialogManager.hideDialog("AddEditWorkoutDialog")
+                    }
+                }
+            )
+        }
+    }
+
+    /**
+     * Show message that scheduled date is not today
+     * @param newWorkout the workout data
+     * @param assignedWorkoutId the assigned workout id (if any)
+     */
+    private fun showScheduledDateNotToday(newWorkout: WorkoutModel, assignedWorkoutId: Long) {
+        viewModelScope.launch {
+            askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
+                question = Question.SCHEDULED_WORKOUT_DATE_MISS_MATCH,
+                onConfirm = {
+                    startWorkout(
+                        newWorkout = newWorkout,
+                        assignedWorkoutId = assignedWorkoutId
+                    )
+                },
+                formatQValues = listOf(Utils.defaultFormatDate(_uiState.value.scheduledForDate!!))
             ))
         }
     }

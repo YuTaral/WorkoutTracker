@@ -34,7 +34,8 @@ class AddEditTemplateViewModel @Inject constructor(
     data class UIState(
         val name: String = "",
         val notes: String = "",
-        val nameError: String? = null
+        val nameError: String? = null,
+        val weightUnit: String = ""
     )
 
     /** Dialog state */
@@ -54,6 +55,7 @@ class AddEditTemplateViewModel @Inject constructor(
         mode = dialogMode
         updateName(template.name)
         updateNotes(template.notes)
+        updateWeightUnit(template.weightUnit)
     }
 
     /** Update the name in the UI with the provided value */
@@ -69,6 +71,11 @@ class AddEditTemplateViewModel @Inject constructor(
     /** Update the name error in the UI with the provided value */
     fun updateNameError(value: String?) {
         _uiState.update { it.copy(nameError = value) }
+    }
+
+    /** Update the weight unit with the provided value */
+    fun updateWeightUnit(value: String) {
+        _uiState.update { it.copy(weightUnit = value) }
     }
 
     /** Add/edit the template if it's valid */
@@ -102,7 +109,8 @@ class AddEditTemplateViewModel @Inject constructor(
         // Create template, changing the name and notes
         val template = WorkoutModel(idVal = 0, nameVal = _uiState.value.name, templateVal = true,
                                     exercisesVal = workoutRepository.selectedWorkout.value!!.exercises,
-                                    notesVal = uiState.value.notes, finishDateTimeVal = null, durationVal = null
+                                    notesVal = uiState.value.notes, finishDateTimeVal = null, durationVal = null,
+                                    weightUnitTextVal = uiState.value.weightUnit,
         )
 
         // Mark all sets as uncompleted

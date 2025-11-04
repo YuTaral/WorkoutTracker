@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.TrainingDayModel
-import com.example.workouttracker.data.network.repositories.TrainingProgramRepository
+import com.example.workouttracker.data.network.repositories.TrainingPlanRepository
 import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
 import com.example.workouttracker.ui.dialogs.AddEditTrainingPlanDialog
 import com.example.workouttracker.ui.dialogs.AddEditTrainingDayDialog
@@ -19,7 +19,7 @@ import javax.inject.Inject
 /** View model to control the UI state of Training Program screen */
 @HiltViewModel
 class SelectedTrainingPlanViewModel @Inject constructor(
-    var trainingProgramRepository: TrainingProgramRepository,
+    var trainingProgramRepository: TrainingPlanRepository,
     private var templatesRepository: WorkoutTemplatesRepository,
     private var dialogManager: DialogManager,
     private var resourceProvider: ResourceProvider
@@ -43,8 +43,8 @@ class SelectedTrainingPlanViewModel @Inject constructor(
 
         if (model == null) {
             // Create new training day, using the current days + 1 for number
-            rowNumber = trainingProgramRepository.selectedTrainingProgram.value!!.trainingDays.size + 1
-            model = TrainingDayModel(trainingProgramRepository.selectedTrainingProgram.value!!.id)
+            rowNumber = trainingProgramRepository.selectedTrainingPlan.value!!.trainingDays.size + 1
+            model = TrainingDayModel(trainingProgramRepository.selectedTrainingPlan.value!!.id)
         }
 
         viewModelScope.launch(Dispatchers.IO) {

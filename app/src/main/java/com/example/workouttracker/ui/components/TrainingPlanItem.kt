@@ -13,22 +13,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workouttracker.R
-import com.example.workouttracker.data.models.TrainingProgramModel
+import com.example.workouttracker.data.models.TrainingPlanModel
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelLargeBold
+import com.example.workouttracker.ui.theme.labelMediumItalic
 
 /**
  * Single training program displayed in the manage training programs screen
- * @param trainingProgram the training program model
+ * @param trainingPlan the training program model
  * @param onClick callback to execute on training program click
  */
 @Composable
 fun TrainingPlanItem(
-    trainingProgram: TrainingProgramModel,
-    onClick: (TrainingProgramModel) -> Unit
+    trainingPlan: TrainingPlanModel,
+    onClick: (TrainingPlanModel) -> Unit
 ) {
 
     Column(
@@ -38,7 +39,7 @@ fun TrainingPlanItem(
             .clickable(
                 enabled = true,
                 onClick = {
-                    onClick(trainingProgram)
+                    onClick(trainingPlan)
                 }
             ),
     ) {
@@ -46,28 +47,41 @@ fun TrainingPlanItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = PaddingVerySmall),
-            text = trainingProgram.name,
+            text = trainingPlan.name,
             style = labelLargeBold,
             maxLines = 2,
             textAlign = TextAlign.Left
         )
 
-        if (trainingProgram.trainingDays.isNotEmpty()) {
-            Label(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = PaddingVerySmall),
-                text = String.format(stringResource(id = R.string.training_program_len), trainingProgram.trainingDays.size),
-                textAlign = TextAlign.Left,
-            )
+        if (trainingPlan.trainingDays.isNotEmpty()) {
+            for (day in trainingPlan.trainingDays) {
+                if (day.workouts.isEmpty()) {
+                    Label(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = PaddingVerySmall),
+                        text = "- " + stringResource(id = R.string.rest),
+                        textAlign = TextAlign.Left,
+                        style = labelMediumItalic
+                    )
+                } else {
+                    Label(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = PaddingVerySmall),
+                        text = "- " + day.workouts.joinToString(", ") { workout -> workout.name },
+                        textAlign = TextAlign.Left
+                    )
+                }
+            }
         }
 
-        if (trainingProgram.description.isNotEmpty()) {
+        if (trainingPlan.description.isNotEmpty()) {
             Label(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = PaddingVerySmall, end = PaddingVerySmall, top = PaddingVerySmall),
-                text = trainingProgram.description,
+                text = trainingPlan.description,
                 maxLines = 4,
                 textAlign = TextAlign.Left,
                 style = MaterialTheme.typography.labelSmall
@@ -87,7 +101,7 @@ fun TrainingPlanItem(
 fun TrainingProgramItemPreview() {
     WorkoutTrackerTheme {
         TrainingPlanItem(
-            TrainingProgramModel(1, "The best program ever", "A description"),
+            TrainingPlanModel(1, "The best program ever", "A description"),
             onClick = {}
         )
     }

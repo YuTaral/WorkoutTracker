@@ -128,7 +128,11 @@ fun StartTimerDialog(onStart: (Long) -> Unit) {
                     .weight(1f),
                 text = stringResource(R.string.start_timer_lbl),
                 onClick = {
-                    onStart((selectedHour * 3600 + selectedMinute * 60 + selectedSecond).toLong())
+                    val seconds = (selectedHour * 3600 + selectedMinute * 60 + selectedSecond).toLong()
+
+                    if (seconds > 0) {
+                        onStart(seconds)
+                    }
                 }
             )
         }

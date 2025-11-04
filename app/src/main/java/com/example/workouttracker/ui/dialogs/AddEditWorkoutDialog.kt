@@ -19,6 +19,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,8 +35,10 @@ import com.example.workouttracker.ui.reusable.TwoTextsSwitch
 import com.example.workouttracker.ui.theme.DialogFooterSize
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
+import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelMediumGrey
+import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel
 import java.util.Date
@@ -44,13 +47,15 @@ import java.util.Date
  * Add / edit workout dialog content
  * @param workout the workout to edit if in edit mode, null otherwise
  * @param mode the dialog mode
- * @param assignedWorkoutId larger than 0 if the workout is not started from assignment
+ * @param assignedWorkoutId larger than 0 if the workout is not started from assignment (optional)
+ * @param scheduledFor scheduled for date if assignedWorkoutId is used (optional)
  */
 @Composable
 fun AddEditWorkoutDialog(
     workout: WorkoutModel?,
     mode: Mode,
     assignedWorkoutId: Long = 0,
+    scheduledFor: Date? = null,
     vm: AddEditWorkoutViewModel = hiltViewModel()
 ) {
     val notesFocusReq = remember { FocusRequester() }
@@ -66,13 +71,36 @@ fun AddEditWorkoutDialog(
 
     LaunchedEffect(workout, mode) {
         // Initialize the fields
-        vm.initialize(workout = workout, dialogMode = mode)
+        vm.initialize(
+            workout = workout,
+            dialogMode = mode,
+            scheduledForDate = scheduledFor
+        )
     }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(PaddingMedium)
     ) {
+
+        if (uiState.scheduledForDate != null) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = PaddingSmall)
+            ) {
+                Label(
+                    modifier = Modifier.padding(end = PaddingVerySmall),
+                    text = stringResource(id = R.string.scheduled_for_date),
+                    style = labelMediumGrey,
+                    textAlign = TextAlign.Left
+                )
+                Label(
+                    text = Utils.defaultFormatDate(uiState.scheduledForDate!!),
+                    textAlign = TextAlign.Left
+                )
+            }
+        }
+
         InputField(
             modifier = Modifier.padding(horizontal = PaddingSmall),
             label = stringResource(id = nameInputId),

@@ -190,16 +190,16 @@ interface IAPIService {
 
     /** TRAINING PROGRAMS REQUESTS
      * -------------------------------------------------------------------------------- */
-    @GET(Constants.RequestEndPoints.TRAINING_PROGRAMS)
+    @GET(Constants.RequestEndPoints.TRAINING_PLANS)
     fun refreshTrainingProgram(): Call<CustomResponse>
 
-    @POST(Constants.RequestEndPoints.TRAINING_PROGRAMS)
+    @POST(Constants.RequestEndPoints.TRAINING_PLANS)
     fun addTrainingProgram(@Body params: Map<String, String>): Call<CustomResponse>
 
-    @PATCH(Constants.RequestEndPoints.TRAINING_PROGRAMS)
+    @PATCH(Constants.RequestEndPoints.TRAINING_PLANS)
     fun updateTrainingProgram(@Body params: Map<String, String>): Call<CustomResponse>
 
-    @DELETE(Constants.RequestEndPoints.TRAINING_PROGRAMS)
+    @DELETE(Constants.RequestEndPoints.TRAINING_PLANS)
     fun deleteTrainingProgram(@Query("trainingProgramId") teamId: Long): Call<CustomResponse>
 
     @POST(Constants.RequestEndPoints.TRAINING_DAYS)
@@ -210,6 +210,9 @@ interface IAPIService {
 
     @DELETE(Constants.RequestEndPoints.TRAINING_DAYS)
     fun deleteTrainingDay(@Query("trainingDayId") teamId: Long): Call<CustomResponse>
+
+    @POST(Constants.RequestEndPoints.TRAINING_PLAN_ASSIGN)
+    fun assignTrainingPlan(@Body params: Map<String, String>): Call<CustomResponse>
 
     /** SYSTEM LOGS  REQUESTS
      * -------------------------------------------------------------------------------- */

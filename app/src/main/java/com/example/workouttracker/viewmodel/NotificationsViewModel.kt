@@ -104,7 +104,7 @@ class NotificationsViewModel @Inject constructor(
             }
 
             teamRepository.getAssignedWorkout(
-                assignedWorkoutId = notification.assignedWorkoutId!!,
+                assignedWorkoutId = notification.assignedWorkout!!.id,
                 onSuccess = {
                     viewModelScope.launch {
                         pagerManager.changePageSelection(
@@ -173,7 +173,7 @@ class NotificationsViewModel @Inject constructor(
     private fun startWorkoutAssignment(notification: NotificationModel) {
         viewModelScope.launch(Dispatchers.IO) {
             templateRepository.getTemplate(
-                assignedWorkoutId = notification.assignedWorkoutId!!,
+                assignedWorkoutId = notification.assignedWorkout!!.id,
                 onSuccess = {
                     viewModelScope.launch {
                         dialogManager.showDialog(
@@ -182,7 +182,8 @@ class NotificationsViewModel @Inject constructor(
                             content = { AddEditWorkoutDialog(
                                 workout = it,
                                 mode = Mode.ADD,
-                                assignedWorkoutId = notification.assignedWorkoutId
+                                assignedWorkoutId = notification.assignedWorkout.id,
+                                scheduledFor = notification.assignedWorkout.scheduledForDate
                             ) }
                         )
 
