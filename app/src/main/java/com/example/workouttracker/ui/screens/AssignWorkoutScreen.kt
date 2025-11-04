@@ -24,12 +24,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.AssignWorkoutViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,7 +41,6 @@ import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.R
 import com.example.workouttracker.data.models.BaseModel
 import com.example.workouttracker.data.models.TeamMemberModel
-import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.models.TrainingPlanModel
 import com.example.workouttracker.data.models.WorkoutModel
 import com.example.workouttracker.ui.components.MemberItem
@@ -57,8 +58,6 @@ import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AssignWorkoutViewModel.Mode
 import com.example.workouttracker.viewmodel.AssignWorkoutViewModel.WorkoutSelection
-import kotlinx.coroutines.flow.StateFlow
-import java.util.Date
 
 /** The screen to allow coaches to assign workouts to team members */
 @OptIn(ExperimentalAnimationApi::class)
@@ -69,74 +68,32 @@ fun AssignWorkoutScreen(vm: AssignWorkoutViewModel = hiltViewModel()) {
     }
 
     val mode by vm.mode.collectAsStateWithLifecycle()
-    val selectedTeam by vm.teamRepository.selectedTeam.collectAsStateWithLifecycle()
-    val teamMembers by vm.teamRepository.teamMembers.collectAsStateWithLifecycle()
-    val templates by vm.templatesRepository.templates.collectAsStateWithLifecycle()
-    val trainingPlans by vm.trainingPlanRepository.trainingPlans.collectAsStateWithLifecycle()
-    val selectedWorkoutSelection by vm.selectedWorkoutSelection.collectAsStateWithLifecycle()
-    val startDate by vm.startDate.collectAsStateWithLifecycle()
-    val data = when (selectedWorkoutSelection) {
-        WorkoutSelection.SINGLE_WORKOUT -> templates
-        WorkoutSelection.TRAINING_PLAN -> trainingPlans
-    }
 
     AnimatedContent(
         targetState = mode,
-        transitionSpec = {
-            fadeIn().togetherWith(fadeOut())
-        },
+        transitionSpec = { fadeIn().togetherWith(fadeOut()) },
         label = "Screen Transition"
-    ) { mode ->
-        when (mode) {
-            Mode.SELECT_TEAM -> {
-                SelectTeamScreen(
-                    teamsStateFlow = vm.teamRepository.teams,
-                    onClick = { vm.selectTeam(it) }
-                )
-            }
-            Mode.SELECT_MEMBERS -> {
-                if (selectedTeam != null) {
-                    SelectMembersScreen(
-                        team = selectedTeam!!,
-                        members = teamMembers,
-                        onClick = { vm.selectMember(it) },
-                        onBack = { vm.selectTeam(null) },
-                        onForward = { vm.updateSelectedMode(Mode.SELECT_WORKOUT) }
-                    )
-                }
-            }
-            else -> {
-                if (selectedTeam != null && teamMembers.isNotEmpty()) {
-                    SelectWorkoutScreen(
-                        team = selectedTeam!!,
-                        members = teamMembers.filter { it.selectedForAssign },
-                        data = data,
-                        selectedWorkoutSelection = selectedWorkoutSelection,
-                        startDate = startDate,
-                        onClick = { vm.selectWorkouts(it) },
-                        onBack = { vm.updateSelectedMode(Mode.SELECT_MEMBERS) },
-                        onWorkoutSelectionTypeChange = { vm.updateSelectedWorkoutSelection(it) },
-                        showDatePicker = { vm.showDatePicker() }
-                    )
-                }
-            }
+    ) { currentMode ->
+        when (currentMode) {
+            Mode.SELECT_TEAM -> SelectTeamScreen(vm)
+            Mode.SELECT_MEMBERS -> SelectMembersScreen(vm)
+            Mode.SELECT_WORKOUT -> SelectWorkoutScreen(vm)
         }
     }
 }
 
 /**
  * Screen to select team
- * @param teamsStateFlow state flow value with the teams
- * @param onClick callback to execute on team click
  */
 @Composable
-private fun SelectTeamScreen(teamsStateFlow: StateFlow<MutableList<TeamModel>>, onClick: (TeamModel) -> Unit) {
-    var lazyListState = rememberLazyListState()
-    val teams by teamsStateFlow.collectAsStateWithLifecycle()
+private fun SelectTeamScreen(vm: AssignWorkoutViewModel) {
+    val teams by vm.teamRepository.teams.collectAsStateWithLifecycle()
+    val lazyListState = rememberLazyListState()
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = PaddingSmall)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = PaddingSmall)
     ) {
         Label(
             modifier = Modifier
@@ -160,10 +117,10 @@ private fun SelectTeamScreen(teamsStateFlow: StateFlow<MutableList<TeamModel>>, 
                 state = lazyListState,
                 contentPadding = PaddingValues(bottom = LazyListBottomPadding)
             ) {
-                items(teams) {
+                items(teams, key = { it.id }) {
                     TeamItem(
                         team = it,
-                        onClick = { onClick(it) }
+                        onClick = { vm.selectTeam(it) }
                     )
                 }
             }
@@ -173,35 +130,31 @@ private fun SelectTeamScreen(teamsStateFlow: StateFlow<MutableList<TeamModel>>, 
 
 /**
  * Screen to select members
- * @param team the selected team
- * @param members the team members
- * @param onClick callback to execute on member click
- * @param onBack callback to execute on arrow back click
- * @param onForward callback to execute on arrow forward click
  */
 @Composable
-private fun SelectMembersScreen(
-    team: TeamModel,
-    members: List<TeamMemberModel>,
-    onClick: (TeamMemberModel) -> Unit,
-    onBack: () -> Unit,
-    onForward: () -> Unit,
-) {
-    val teamMembersListState = rememberLazyListState()
+private fun SelectMembersScreen(vm: AssignWorkoutViewModel) {
+    val selectedTeam by vm.teamRepository.selectedTeam.collectAsStateWithLifecycle()
+    val members by vm.teamRepository.teamMembers.collectAsStateWithLifecycle()
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = PaddingSmall)
+    if (selectedTeam == null) return
+
+    val teamMembersListState = rememberLazyListState()
+    val onClick = remember { { member: TeamMemberModel -> vm.selectMember(member) } }
+    val onBack = remember { { vm.selectTeam(null) } }
+    val onForward = remember { { vm.updateSelectedMode(Mode.SELECT_WORKOUT) } }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = PaddingSmall)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = PaddingSmall / 2))
-            {
-                TeamItem(
-                    team = team,
-                    onClick = {}
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = PaddingSmall / 2)
+            ) {
+                TeamItem(team = selectedTeam!!, onClick = {})
 
                 Label(
                     modifier = Modifier
@@ -215,7 +168,7 @@ private fun SelectMembersScreen(
                     modifier = Modifier.padding(bottom = PaddingLarge, start = PaddingSmall, end = PaddingSmall),
                     state = teamMembersListState,
                 ) {
-                    items(members) {
+                    items(members, key = { it.id }) {
                         MemberItem(
                             member = it,
                             showButton = false,
@@ -234,7 +187,7 @@ private fun SelectMembersScreen(
 
             ImageButton(
                 modifier = Modifier.align(Alignment.BottomEnd),
-                onClick = { onForward()  },
+                onClick = { onForward() },
                 image = Icons.AutoMirrored.Filled.ArrowForward
             )
         }
@@ -243,47 +196,51 @@ private fun SelectMembersScreen(
 
 /**
  * Screen to select workout
- * @param team the selected team
- * @param members the team members
- * @param data the user templates / user training plans
- * @param selectedWorkoutSelection the selected workout selection type
- * @param startDate the selected start date
- * @param onClick callback to execute on workout click
- * @param onBack callback to execute on arrow back click
- * @param onWorkoutSelectionTypeChange callback to execute on workout selection type change
- * @param showDatePicker callback to show the date picker
  */
 @Composable
-private fun SelectWorkoutScreen(
-    team: TeamModel,
-    members: List<TeamMemberModel>,
-    data: List<BaseModel>,
-    selectedWorkoutSelection: WorkoutSelection,
-    startDate: Date,
-    onClick: (BaseModel) -> Unit,
-    onBack: () -> Unit,
-    onWorkoutSelectionTypeChange: (String) -> Unit,
-    showDatePicker: () -> Unit
-) {
+private fun SelectWorkoutScreen(vm: AssignWorkoutViewModel) {
+    val selectedTeam by vm.teamRepository.selectedTeam.collectAsStateWithLifecycle()
+    val members by vm.teamRepository.teamMembers.collectAsStateWithLifecycle()
+    val templates by vm.templatesRepository.templates.collectAsStateWithLifecycle()
+    val trainingPlans by vm.trainingPlanRepository.trainingPlans.collectAsStateWithLifecycle()
+    val selectedWorkoutSelection by vm.selectedWorkoutSelection.collectAsStateWithLifecycle()
+    val startDate by vm.startDate.collectAsStateWithLifecycle()
+
+    if (selectedTeam == null || members.isEmpty()) return
+
+    val data by remember(selectedWorkoutSelection, templates, trainingPlans) {
+        derivedStateOf {
+            when (selectedWorkoutSelection) {
+                WorkoutSelection.SINGLE_WORKOUT -> templates
+                WorkoutSelection.TRAINING_PLAN -> trainingPlans
+            }
+        }
+    }
+
     val lazyListState = rememberLazyListState()
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = PaddingSmall / 2)
+    val onClick = remember { { item: BaseModel -> vm.selectWorkouts(item) } }
+    val onBack = remember { { vm.updateSelectedMode(Mode.SELECT_MEMBERS) } }
+    val onWorkoutSelectionTypeChange = remember { { type: String -> vm.updateSelectedWorkoutSelection(type) } }
+    val showDatePicker = remember { { vm.showDatePicker() } }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = PaddingSmall / 2)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = PaddingSmall)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = PaddingSmall)
             ) {
-                TeamItem(
-                    team = team,
-                    onClick = {}
-                )
+                TeamItem(team = selectedTeam!!, onClick = {})
 
                 Label(
                     modifier = Modifier.fillMaxWidth(),
-                    text = members.joinToString(", ") { it.fullName },
+                    text = members.filter { it.selectedForAssign }
+                        .joinToString(", ") { it.fullName },
                     textAlign = TextAlign.Left,
                     maxLines = 5
                 )
@@ -306,10 +263,7 @@ private fun SelectWorkoutScreen(
                         ),
                     )
 
-                    ImageButton(
-                        onClick = { showDatePicker() },
-                        image = Icons.Default.DateRange
-                    )
+                    ImageButton(onClick = showDatePicker, image = Icons.Default.DateRange)
                 }
 
                 HorizontalDivider(
@@ -323,7 +277,7 @@ private fun SelectWorkoutScreen(
                     selectedValue = stringResource(id = selectedWorkoutSelection.getStringId()),
                     leftText = stringResource(id = WorkoutSelection.SINGLE_WORKOUT.getStringId()),
                     rightText = stringResource(id = WorkoutSelection.TRAINING_PLAN.getStringId()),
-                    onSelectionChanged = { onWorkoutSelectionTypeChange(it) }
+                    onSelectionChanged = onWorkoutSelectionTypeChange
                 )
 
                 if (data.isEmpty()) {
@@ -341,18 +295,12 @@ private fun SelectWorkoutScreen(
                         contentPadding = PaddingValues(bottom = LazyListBottomPadding)
                     ) {
                         if (selectedWorkoutSelection == WorkoutSelection.SINGLE_WORKOUT) {
-                            items(data) { item ->
-                                WorkoutItem(
-                                    workout = item as WorkoutModel,
-                                    onClick = { onClick(it) }
-                                )
+                            items(data, key = { it.id }) { item ->
+                                WorkoutItem(workout = item as WorkoutModel, onClick = { onClick(it) })
                             }
                         } else {
-                            items(data) { item ->
-                                TrainingPlanItem(
-                                    trainingPlan = item as TrainingPlanModel,
-                                    onClick = { onClick(it) }
-                                )
+                            items(data, key = { it.id }) { item ->
+                                TrainingPlanItem(trainingPlan = item as TrainingPlanModel, onClick = { onClick(it) })
                             }
                         }
                     }
@@ -367,6 +315,7 @@ private fun SelectWorkoutScreen(
         }
     }
 }
+
 
 @Preview(widthDp = 360, heightDp = 640)
 @Preview
