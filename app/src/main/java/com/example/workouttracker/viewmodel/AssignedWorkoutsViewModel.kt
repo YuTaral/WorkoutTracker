@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.workouttracker.data.models.AssignedWorkoutModel
 import com.example.workouttracker.data.models.TeamModel
 import com.example.workouttracker.data.network.repositories.TeamRepository
-import com.example.workouttracker.ui.managers.DatePickerDialogManager
 import com.example.workouttracker.utils.ResourceProvider
 import com.example.workouttracker.utils.Utils
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +17,7 @@ import javax.inject.Inject
 import com.example.workouttracker.R
 import com.example.workouttracker.data.network.repositories.WorkoutRepository
 import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.dialogs.AssignedWorkoutsFiltersDialog
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.PagerManager
 import com.example.workouttracker.utils.Constants.ViewTeamAs
@@ -29,14 +29,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 class AssignedWorkoutsViewModel @Inject constructor(
     var teamRepository: TeamRepository,
     private var workoutsRepository: WorkoutRepository,
-    private var datePickerDialog: DatePickerDialogManager,
     private var resourceProvider: ResourceProvider,
     private var pagerManager: PagerManager,
     private var dialogManager: DialogManager
 ): ViewModel() {
 
     /** The assigned workouts */
-    private var _assignedWorkouts = MutableStateFlow<MutableList<AssignedWorkoutModel>>(mutableListOf())
+    private var _assignedWorkouts = MutableStateFlow<List<AssignedWorkoutModel>>(listOf())
     var assignedWorkouts = _assignedWorkouts.asStateFlow()
 
     /** Selected assigned workouts start date */
@@ -64,6 +63,50 @@ class AssignedWorkoutsViewModel @Inject constructor(
     }
 
     /**
+     * Update the workouts start date
+     * @param newDate the new start date
+     */
+    fun updateStartDate(newDate: Date) {
+        viewModelScope.launch(Dispatchers.IO) {
+            teamRepository.getAssignedWorkouts(
+                teamType = _selectedTeamType.value.name,
+                startDate = Utils.formatDateToISO8601(newDate),
+                teamId = teamFilter.value.id,
+                onSuccess = {
+                    _assignedWorkouts.value = it
+                    _startDate.value = newDate
+                },
+                onFail = {
+                    _assignedWorkouts.value = listOf()
+                    _startDate.value = newDate
+                }
+            )
+        }
+    }
+
+    /**
+     * Update the selected team filter
+     * @param teamId the team id to filter by
+     */
+    fun updateTeamFilter(teamId: String) {
+        _teamFilter.value = teamRepository.teams.value.firstOrNull { it.id.toString() == teamId } ?: getDefaultTeamFilter()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            teamRepository.getAssignedWorkouts(
+                teamType = _selectedTeamType.value.name,
+                startDate = Utils.formatDateToISO8601(_startDate.value),
+                teamId = _teamFilter.value.id,
+                onSuccess = {
+                    _assignedWorkouts.value = it.toMutableList()
+                },
+                onFail = {
+                    _assignedWorkouts.value = mutableListOf()
+                }
+            )
+        }
+    }
+
+    /**
      * Initialize the data when the screen is displayed
      * @param team the initially selected team, null if not used
      */
@@ -74,26 +117,6 @@ class AssignedWorkoutsViewModel @Inject constructor(
             _teamFilter.value = team
         }
         refreshData()
-    }
-
-    /** Display the date picker dialog */
-    fun showDatePicker() {
-        viewModelScope.launch {
-            datePickerDialog.showDialog(
-                onCancel = {
-                    viewModelScope.launch {
-                        datePickerDialog.hideDialog()
-                    }
-                },
-                onDatePick = { newDate ->
-                    viewModelScope.launch {
-                        datePickerDialog.hideDialog()
-                    }
-
-                    updateStartDate(newDate, _selectedTeamType.value.name)
-                }
-            )
-        }
     }
 
     /**
@@ -126,54 +149,59 @@ class AssignedWorkoutsViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Update the workouts start date
-     * @param newDate the new start date
-     */
-    private fun updateStartDate(newDate: Date, teamType: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            teamRepository.getAssignedWorkouts(
-                teamType = teamType,
-                startDate = Utils.formatDateToISO8601(newDate),
-                teamId = teamFilter.value.id,
-                onSuccess = {
-                    _assignedWorkouts.value = it.toMutableList()
-                    _startDate.value = newDate
-                },
-                onFail = {
-                    _assignedWorkouts.value = mutableListOf()
-                    _startDate.value = newDate
+
+    /** Show the dialog to change filters */
+    fun showFiltersDialog() {
+        val viewTeamAs = _selectedTeamType.value
+        val startDate = _startDate.value
+        val teamFilter = _teamFilter.value
+
+        viewModelScope.launch {
+            dialogManager.showDialog(
+                title = resourceProvider.getString(R.string.filters),
+                dialogName = "AssignedWorkoutsFiltersDialog",
+                content = {
+                    AssignedWorkoutsFiltersDialog(
+                        viewTeamAs = viewTeamAs,
+                        startDate = startDate,
+                        teamFilter = teamFilter,
+                        onApply = { selectedTeamTypeValue, startDateValue, teamFilterValue ->
+                            applyFilters(
+                                startDateValue = startDateValue,
+                                teamFilterValue = teamFilterValue,
+                                selectedTeamTypeValue = selectedTeamTypeValue
+                            )
+                        }
+                    )
                 }
             )
         }
     }
 
-    /**
-     * Update the selected team filter
-     * @param teamId the team id to filter by
-     */
-    fun updateTeamFilter(teamId: String) {
-        _teamFilter.value = teamRepository.teams.value.firstOrNull { it.id.toString() == teamId } ?: getDefaultTeamFilter()
+    /** Apply the filters from the dialog */
+    fun applyFilters(startDateValue: Date, teamFilterValue: TeamModel, selectedTeamTypeValue: ViewTeamAs) {
 
-        viewModelScope.launch(Dispatchers.IO) {
-            teamRepository.getAssignedWorkouts(
-                teamType = _selectedTeamType.value.name,
-                startDate = Utils.formatDateToISO8601(_startDate.value),
-                teamId = _teamFilter.value.id,
-                onSuccess = {
-                    _assignedWorkouts.value = it.toMutableList()
-                },
-                onFail = {
-                    _assignedWorkouts.value = mutableListOf()
-                }
-            )
+        if (_selectedTeamType.value != selectedTeamTypeValue) {
+            updateSelectedTeamType(resourceProvider.getString(selectedTeamTypeValue.getStringId()))
+        }
+
+        if (_startDate.value != startDateValue) {
+            updateStartDate(startDateValue)
+        }
+
+        if (_teamFilter.value.id != teamFilterValue.id) {
+            updateTeamFilter(teamFilterValue.id.toString())
+        }
+
+        viewModelScope.launch {
+            dialogManager.hideDialog("AssignedWorkoutsFiltersDialog")
         }
     }
 
-    /** Return the default assigned workouts start date - 1 month backwards */
+    /** Return the default assigned workouts start date - 1 week backwards */
     private fun getDefaultStartDate(): Date {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MONTH, -1)
+        calendar.add(Calendar.DATE, -7)
         return calendar.time
     }
 

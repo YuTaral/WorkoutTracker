@@ -35,6 +35,7 @@
     <string name="select_date_btn">Select</string>
     <string name="cancel_btn">Cancel</string>
     <string name="save_btn">Save</string>
+    <string name="apply_btn">Apply</string>
     <string name="delete_btn">Delete</string>
     <string name="start_btn">Start</string>
     <string name="pause_btn">Pause</string>
@@ -230,5 +231,9 @@
     <string name="finished_after">completed %d day(s) after schedule</string>
     <string name="team_name">Team: %s</string>
     <string name="member_name">Member: %s</string>
+    <string name="member_names">Members: %s</string>
+    <string name="selected_filters">Filters:</string>
+    <string name="selected_filters_from_date">after %s</string>
+    <string name="filters">Filters</string>
 
 </resources>

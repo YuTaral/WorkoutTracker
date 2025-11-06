@@ -5,6 +5,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,10 +51,10 @@ import com.example.workouttracker.ui.components.WorkoutItem
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.reusable.TwoTextsSwitch
-import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingLarge
 import com.example.workouttracker.ui.theme.PaddingMedium
+import com.example.workouttracker.ui.theme.labelMediumBold
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AssignWorkoutViewModel.Mode
@@ -235,24 +236,19 @@ private fun SelectWorkoutScreen(vm: AssignWorkoutViewModel) {
                     .fillMaxWidth()
                     .padding(top = PaddingSmall)
             ) {
-                TeamItem(team = selectedTeam!!, onClick = {})
-
                 Label(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = members.filter { it.selectedForAssign }
-                        .joinToString(", ") { it.fullName },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = selectedTeam!!.name + " - " + members.filter { it.selectedForAssign }.joinToString(", ") { it.fullName },
                     textAlign = TextAlign.Left,
-                    maxLines = 5
-                )
-
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = PaddingSmall),
-                    color = ColorBorder,
-                    thickness = 1.dp
+                    style = labelMediumBold,
+                    maxLines = 3
                 )
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(enabled = true, onClick = showDatePicker),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -261,19 +257,18 @@ private fun SelectWorkoutScreen(vm: AssignWorkoutViewModel) {
                             stringResource(id = R.string.start_workouts_on),
                             Utils.defaultFormatDate(startDate)
                         ),
+                        style = MaterialTheme.typography.labelSmall
                     )
 
-                    ImageButton(onClick = showDatePicker, image = Icons.Default.DateRange)
+                    ImageButton(
+                        modifier = Modifier.size(30.dp),
+                        onClick = showDatePicker,
+                        image = Icons.Default.DateRange
+                    )
                 }
 
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = PaddingSmall),
-                    color = ColorBorder,
-                    thickness = 1.dp
-                )
-
                 TwoTextsSwitch(
-                    modifier = Modifier.padding(start = PaddingMedium, end = PaddingMedium, bottom = PaddingSmall),
+                    modifier = Modifier.padding(horizontal = PaddingMedium, vertical = PaddingSmall),
                     selectedValue = stringResource(id = selectedWorkoutSelection.getStringId()),
                     leftText = stringResource(id = WorkoutSelection.SINGLE_WORKOUT.getStringId()),
                     rightText = stringResource(id = WorkoutSelection.TRAINING_PLAN.getStringId()),

@@ -158,7 +158,6 @@ fun AddExerciseToWorkoutDialog(mGExercise: MGExerciseModel,
                 onClick = { vm.save() }
             )
         }
-
     }
 }
 

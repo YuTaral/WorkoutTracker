@@ -19,7 +19,8 @@ import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelLargeBold
-import com.example.workouttracker.ui.theme.labelMediumItalic
+import com.example.workouttracker.ui.theme.labelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumGreyItalic
 
 /**
  * Single training program displayed in the manage training programs screen
@@ -62,7 +63,7 @@ fun TrainingPlanItem(
                             .padding(horizontal = PaddingVerySmall),
                         text = "- " + stringResource(id = R.string.rest),
                         textAlign = TextAlign.Left,
-                        style = labelMediumItalic
+                        style = labelMediumGreyItalic
                     )
                 } else {
                     Label(
@@ -70,7 +71,8 @@ fun TrainingPlanItem(
                             .fillMaxWidth()
                             .padding(horizontal = PaddingVerySmall),
                         text = "- " + day.workouts.joinToString(", ") { workout -> workout.name },
-                        textAlign = TextAlign.Left
+                        textAlign = TextAlign.Left,
+                        style = labelMediumGrey,
                     )
                 }
             }

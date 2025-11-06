@@ -46,4 +46,12 @@ open class TeamModel: BaseModel {
         viewTeamAs = ViewTeamAs.COACH.toString()
         selectedInPanel = false
     }
+
+    constructor(): super(0) {
+        image = ""
+        name = ""
+        description = ""
+        viewTeamAs = ViewTeamAs.COACH.toString()
+        selectedInPanel = false
+    }
 }

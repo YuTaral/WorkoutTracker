@@ -25,7 +25,7 @@ import com.example.workouttracker.R
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.theme.ColorAccent
-import com.example.workouttracker.ui.theme.MediumImageButtonSize
+import com.example.workouttracker.ui.theme.LargeImageButtonSize
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 
 /**
@@ -70,7 +70,7 @@ fun MuscleGroupItem(muscleGroup: MuscleGroupModel, onClick: (Long) -> Unit) {
         ImageButton(
             onClick = {},
             image = Icons.AutoMirrored.Filled.ArrowForward,
-            size = MediumImageButtonSize,
+            size = LargeImageButtonSize,
             buttonColor = Color.Transparent,
             imageColor = ColorAccent
         )
