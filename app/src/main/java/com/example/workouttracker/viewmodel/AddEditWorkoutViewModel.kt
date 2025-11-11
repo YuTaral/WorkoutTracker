@@ -264,7 +264,7 @@ class AddEditWorkoutViewModel @Inject constructor(
         workoutsRepository.updateSelectedWorkout(workout)
 
         viewModelScope.launch(Dispatchers.IO) {
-            workoutsRepository.updateWorkouts(null)
+            workoutsRepository.updateWorkouts(null, null)
 
             withContext(Dispatchers.Main) {
                 dialogManager.hideDialog("AddEditWorkoutDialog")

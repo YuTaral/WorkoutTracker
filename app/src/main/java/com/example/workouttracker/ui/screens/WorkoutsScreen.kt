@@ -28,11 +28,13 @@ import com.example.workouttracker.R
 import com.example.workouttracker.ui.reusable.ImageButton
 import com.example.workouttracker.ui.reusable.Label
 import com.example.workouttracker.ui.components.WorkoutItem
+import com.example.workouttracker.ui.reusable.CustomCheckbox
 import com.example.workouttracker.ui.theme.ColorBorder
 import com.example.workouttracker.ui.theme.labelMediumGrey
 import com.example.workouttracker.ui.theme.LazyListBottomPadding
 import com.example.workouttracker.ui.theme.PaddingMedium
 import com.example.workouttracker.ui.theme.PaddingSmall
+import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.WorkoutsViewModel
 
@@ -43,6 +45,7 @@ import com.example.workouttracker.viewmodel.WorkoutsViewModel
 fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
     val workouts by vm.workoutRepository.workouts.collectAsStateWithLifecycle()
     val startDate by vm.startDate.collectAsStateWithLifecycle()
+    val showScheduled by vm.showScheduled.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -68,6 +71,18 @@ fun WorkoutsScreen(vm: WorkoutsViewModel = hiltViewModel()) {
                 ImageButton(
                     onClick = { vm.showDatePicker() },
                     image = Icons.Default.DateRange
+                )
+            }
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = PaddingVerySmall, start = PaddingSmall, bottom = PaddingVerySmall),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                CustomCheckbox(
+                    checked = showScheduled,
+                    onValueChange = { vm.updateShowScheduled(it) },
+                    text = stringResource(id = R.string.show_scheduled_lbl),
                 )
             }
 

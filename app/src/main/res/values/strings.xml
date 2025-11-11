@@ -241,5 +241,6 @@
     <string name="scheduled_start">Scheduled start on %s</string>
     <string name="start_on">Start on %s</string>
     <string name="scheduled_on">Scheduled for %s</string>
+    <string name="show_scheduled_lbl">Show scheduled</string>
 
 </resources>

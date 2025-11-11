@@ -68,7 +68,7 @@ interface IAPIService {
     fun deleteWorkout(@Query("workoutId") workoutId: Long): Call<CustomResponse>
 
     @GET(Constants.RequestEndPoints.WORKOUTS)
-    fun getWorkouts(@Query("startDate") startDate: String): Call<CustomResponse>
+    fun getWorkouts(@Query("startDate") startDate: String, @Query("showScheduled") showScheduled: Boolean): Call<CustomResponse>
 
     /** EXERCISE REQUESTS
      * -------------------------------------------------------------------------------- */

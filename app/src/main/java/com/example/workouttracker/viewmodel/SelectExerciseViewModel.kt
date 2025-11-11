@@ -217,7 +217,7 @@ class SelectExerciseViewModel @Inject constructor(
                             if (updateWorkout) {
                                 workoutRepository.updateSelectedWorkout(WorkoutModel(data[0]))
                                 viewModelScope.launch(Dispatchers.IO) {
-                                    workoutRepository.updateWorkouts(null)
+                                    workoutRepository.updateWorkouts(null, null)
                                 }
                             } else {
                                 populateMGExercises(data.map { MGExerciseModel(it) })

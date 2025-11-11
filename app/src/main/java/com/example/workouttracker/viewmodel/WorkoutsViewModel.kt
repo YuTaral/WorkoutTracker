@@ -34,9 +34,22 @@ class WorkoutsViewModel @Inject constructor(
     private var _startDate = MutableStateFlow(getDefaultStartDate())
     var startDate = _startDate.asStateFlow()
 
+    /** Flow to control the visibility of reviewed notifications */
+    private var _showScheduled = MutableStateFlow<Boolean>(false)
+    var showScheduled = _showScheduled.asStateFlow()
+
+    /** Update the visibility of future workouts */
+    fun updateShowScheduled(value: Boolean) {
+        _showScheduled.value = value
+
+        viewModelScope.launch(Dispatchers.IO) {
+            workoutRepository.updateWorkouts(_startDate.value, _showScheduled.value)
+        }
+    }
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            workoutRepository.updateWorkouts(_startDate.value)
+            workoutRepository.updateWorkouts(_startDate.value, _showScheduled.value)
         }
         workoutRepository.updateSelectedWorkout(null)
     }
@@ -49,7 +62,7 @@ class WorkoutsViewModel @Inject constructor(
         _startDate.value = newDate
 
         viewModelScope.launch(Dispatchers.IO) {
-            workoutRepository.updateWorkouts(_startDate.value)
+            workoutRepository.updateWorkouts(_startDate.value, _showScheduled.value)
         }
     }
 

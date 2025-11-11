@@ -94,7 +94,7 @@ class AddExerciseToWorkoutViewModel @Inject constructor(
                     workoutRepository.updateSelectedWorkout(updatedWorkout)
 
                     viewModelScope.launch(Dispatchers.IO) {
-                        workoutRepository.updateWorkouts(null)
+                        workoutRepository.updateWorkouts(null, null)
                     }
 
                     viewModelScope.launch {

@@ -79,7 +79,7 @@ class AssignedTRPlanViewModel @Inject constructor(
                 trainingPlan = _selectedTrainingPlan.value,
                 onSuccess = {
                     viewModelScope.launch {
-                        workoutsRepository.updateWorkouts(null)
+                        workoutsRepository.updateWorkouts(null, null)
                         pagerManager.changePageSelection(Page.Workouts)
                         dialogManager.hideDialog("AssignedTRPlanDialog")
                     }

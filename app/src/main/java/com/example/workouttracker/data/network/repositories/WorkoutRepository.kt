@@ -25,6 +25,9 @@ class WorkoutRepository @Inject constructor(
     /** The workout start date. Optionally updated when update workouts is called */
     private lateinit var startDate: Date
 
+    /** The workout show scheduled flag. Optionally updated when update workouts is called */
+    private var showScheduled: Boolean = false
+
     /** Add new workout
      * @param workout the workout data
      * @param assignedWorkoutId larger than 0 if the workout is not started from assignment
@@ -79,14 +82,19 @@ class WorkoutRepository @Inject constructor(
 
     /** Update the latest the workouts
      * @param newStartDate the start date
+     * @param newShowScheduled true to show scheduled, false otherwise (may be null - no change is needed)
      */
-    suspend fun updateWorkouts(newStartDate: Date?) {
+    suspend fun updateWorkouts(newStartDate: Date?, newShowScheduled: Boolean?) {
         if (newStartDate != null) {
             startDate = newStartDate
         }
 
+        if (newShowScheduled != null) {
+            showScheduled = newShowScheduled
+        }
+
         networkManager.sendRequest(
-            request = { apiService.getInstance().getWorkouts(Utils.formatDateToISO8601(startDate)) },
+            request = { apiService.getInstance().getWorkouts(Utils.formatDateToISO8601(startDate), showScheduled) },
             onSuccessCallback = { response ->
                 _workouts.value = response.data.map { WorkoutModel(it) }.toMutableList()
             }

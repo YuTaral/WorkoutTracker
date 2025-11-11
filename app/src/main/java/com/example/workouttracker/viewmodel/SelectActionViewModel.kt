@@ -128,7 +128,7 @@ class SelectActionViewModel @Inject constructor(
                     onSuccess = {
                         workoutRepository.updateSelectedWorkout(it)
                         viewModelScope.launch(Dispatchers.IO) {
-                            workoutRepository.updateWorkouts(null)
+                            workoutRepository.updateWorkouts(null, null)
 
                             withContext(Dispatchers.Default) {
                                 pagerManager.changePageSelection(Page.SelectedWorkout)

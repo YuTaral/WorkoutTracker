@@ -113,7 +113,7 @@ class SelectedWorkoutViewModel @Inject constructor(
                                     workoutRepository.updateSelectedWorkout(it)
 
                                     viewModelScope.launch(Dispatchers.IO) {
-                                        workoutRepository.updateWorkouts(null)
+                                        workoutRepository.updateWorkouts(null, null)
                                     }
 
                                     viewModelScope.launch {
