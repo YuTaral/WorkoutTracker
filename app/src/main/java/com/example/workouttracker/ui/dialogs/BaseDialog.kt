@@ -79,9 +79,11 @@ fun BaseDialog(
                 Label(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = PaddingSmall)
                         .align(Alignment.CenterStart),
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
+                    maxLines = 2
                 )
 
                 Button(

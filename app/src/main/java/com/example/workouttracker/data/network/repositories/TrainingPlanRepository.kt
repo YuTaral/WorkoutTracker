@@ -7,6 +7,7 @@ import com.example.workouttracker.data.network.APIService
 import com.example.workouttracker.utils.Utils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.Date
 import javax.inject.Inject
 
 /** TrainingPlanRepository class, used to execute all requests related to programs */
@@ -25,7 +26,7 @@ class TrainingPlanRepository@Inject constructor(
     /** Refresh the data for training programs */
     suspend fun refreshTrainingPlans() {
         networkManager.sendRequest(
-            request = { apiService.getInstance().refreshTrainingProgram() },
+            request = { apiService.getInstance().refreshTrainingPlans() },
             onSuccessCallback = { response ->
                 _trainingPlans.value = response.data.map { TrainingPlanModel(it) }.toMutableList()
             }
@@ -38,10 +39,10 @@ class TrainingPlanRepository@Inject constructor(
      * @param onSuccess callback to execute on success
      */
     suspend fun addTrainingPlan(trainingProgram: TrainingPlanModel, onSuccess: (TrainingPlanModel) -> Unit) {
-        val params = mapOf("trainingProgram" to Utils.serializeObject(trainingProgram))
+        val params = mapOf("trainingPlan" to Utils.serializeObject(trainingProgram))
 
         return networkManager.sendRequest(
-            request = { apiService.getInstance().addTrainingProgram(params) },
+            request = { apiService.getInstance().addTrainingPlan(params) },
             onSuccessCallback = { onSuccess(TrainingPlanModel(it.data[0])) }
         )
     }
@@ -52,10 +53,10 @@ class TrainingPlanRepository@Inject constructor(
      * @param onSuccess callback to execute on success
      */
     suspend fun updateTrainingPlan(trainingProgram: TrainingPlanModel, onSuccess: (TrainingPlanModel) -> Unit) {
-        val params = mapOf("trainingProgram" to Utils.serializeObject(trainingProgram))
+        val params = mapOf("trainingPlan" to Utils.serializeObject(trainingProgram))
 
         return networkManager.sendRequest(
-            request = { apiService.getInstance().updateTrainingProgram(params) },
+            request = { apiService.getInstance().updateTrainingPlan(params) },
             onSuccessCallback = { onSuccess(TrainingPlanModel(it.data[0])) }
         )
     }
@@ -67,7 +68,7 @@ class TrainingPlanRepository@Inject constructor(
      */
     suspend fun deleteTrainingPlan(trainingProgramId: Long, onSuccess: () -> Unit) {
         return networkManager.sendRequest(
-            request = { apiService.getInstance().deleteTrainingProgram(trainingProgramId) },
+            request = { apiService.getInstance().deleteTrainingPlan(trainingProgramId) },
             onSuccessCallback = { onSuccess() }
         )
     }
@@ -81,7 +82,7 @@ class TrainingPlanRepository@Inject constructor(
         val params = mapOf("trainingDay" to Utils.serializeObject(trainingDay))
 
         return networkManager.sendRequest(
-            request = { apiService.getInstance().addTrainingDayToProgram(params) },
+            request = { apiService.getInstance().addTrainingDayToPlan(params) },
             onSuccessCallback = { onSuccess(TrainingPlanModel(it.data[0])) }
         )
     }
@@ -95,7 +96,7 @@ class TrainingPlanRepository@Inject constructor(
         val params = mapOf("trainingDay" to Utils.serializeObject(trainingDay))
 
         return networkManager.sendRequest(
-            request = { apiService.getInstance().updateTrainingDayToProgram(params) },
+            request = { apiService.getInstance().updateTrainingDayToPlan(params) },
             onSuccessCallback = { onSuccess(TrainingPlanModel(it.data[0])) }
         )
     }
@@ -115,14 +116,42 @@ class TrainingPlanRepository@Inject constructor(
     /**
      * Assign the training plan to the members
      * @param trainingPlanId the training id
+     * @param startDate the start date
      * @param memberIds the member ids
      * @param onSuccess callback to execute on success
      */
-    suspend fun assignTrainingPlan(trainingPlanId: Long, memberIds: List<Long>, onSuccess: () -> Unit) {
-        val params = mapOf("trainingPlanId" to trainingPlanId.toString(), "memberIds" to memberIds.toString())
+    suspend fun assignTrainingPlan(trainingPlanId: Long, startDate: Date, memberIds: List<Long>, onSuccess: () -> Unit) {
+        val params = mapOf("trainingPlanId" to trainingPlanId.toString(), "startDate" to Utils.formatDateToISO8601(startDate),
+                            "memberIds" to memberIds.toString())
 
         networkManager.sendRequest(
             request = { apiService.getInstance().assignTrainingPlan(params) },
+            onSuccessCallback = { onSuccess() }
+        )
+    }
+
+    /**
+     * Get the training plan by id
+     * @param assignedTrainingPlanId the assigned training plan id
+     * @param onSuccess callback to execute on success
+     */
+    suspend fun getTrainingPlan(assignedTrainingPlanId: Long, onSuccess: (TrainingPlanModel) -> Unit) {
+        return networkManager.sendRequest(
+            request = { apiService.getInstance().getTrainingPlan(assignedTrainingPlanId) },
+            onSuccessCallback = { onSuccess(TrainingPlanModel(it.data[0])) }
+        )
+    }
+
+    /**
+     * Start the training plan
+     * @param trainingPlan the training plan
+     * @param onSuccess callback to execute on success
+     */
+    suspend fun startTrainingPlan(trainingPlan: TrainingPlanModel, onSuccess: () -> Unit) {
+        val params = mapOf("trainingPlan" to Utils.serializeObject(trainingPlan))
+
+        return networkManager.sendRequest(
+            request = { apiService.getInstance().startTrainingPlan(params) },
             onSuccessCallback = { onSuccess() }
         )
     }

@@ -224,6 +224,7 @@ class AssignWorkoutViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             trainingPlanRepository.assignTrainingPlan(
                 trainingPlanId = trainingPlanId,
+                startDate = _startDate.value,
                 memberIds = selectedMembers,
                 onSuccess = {
                     viewModelScope.launch {
@@ -249,9 +250,9 @@ class AssignWorkoutViewModel @Inject constructor(
     private fun selectTrainingPlan(selection: TrainingPlanModel) {
         viewModelScope.launch {
             askQuestionManager.askQuestion(DisplayAskQuestionDialogEvent(
-                question = Question.ASSIGN_WORKOUT,
+                question = Question.ASSIGN_TRAINING_PLAN,
                 onConfirm = { assignTrainingPlan(selection.id) },
-                formatQValues = listOf(selection.name),
+                formatQValues = listOf(selection.trainingDays.size.toString(), selection.name),
             ))
         }
     }

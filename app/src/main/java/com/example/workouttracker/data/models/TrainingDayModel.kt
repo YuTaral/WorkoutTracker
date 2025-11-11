@@ -8,8 +8,8 @@ import com.google.gson.annotations.SerializedName
  */
 class TrainingDayModel: BaseModel {
 
-    @SerializedName("ProgramId")
-    var programId: Long
+    @SerializedName("TrainingPlanId")
+    var trainingPlanId: Long
 
     @SerializedName("Workouts")
     var workouts: List<WorkoutModel>
@@ -21,13 +21,13 @@ class TrainingDayModel: BaseModel {
         val gson = Gson()
         val model: TrainingDayModel = gson.fromJson(data, TrainingDayModel::class.java)
 
-        programId = model.programId
+        trainingPlanId = model.trainingPlanId
         workouts = model.workouts
     }
 
     /** Constructor used when new training day is created */
     constructor(programIdVal: Long) : super(0) {
-        programId = programIdVal
+        trainingPlanId = programIdVal
         workouts = listOf()
     }
 }

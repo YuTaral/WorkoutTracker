@@ -14,6 +14,9 @@ class WorkoutModel: BaseModel {
     @SerializedName("StartDateTime")
     val startDateTime: Date?
 
+    @SerializedName("ScheduledDateTime")
+    val scheduledDateTime: Date?
+
     @SerializedName("FinishDateTime")
     var finishDateTime: Date?
 
@@ -32,6 +35,9 @@ class WorkoutModel: BaseModel {
     @SerializedName("WeightUnit")
     var weightUnit: String
 
+    @SerializedName("AssignedWorkoutId")
+    var assignedWorkoutId: Long
+
     /** Constructor to accept serialized object
      * @param data serialized WorkoutModel object
      */
@@ -41,12 +47,14 @@ class WorkoutModel: BaseModel {
 
         name = model.name
         startDateTime = model.startDateTime
+        scheduledDateTime = model.scheduledDateTime
         finishDateTime = model.finishDateTime
         template = model.template
         exercises = model.exercises
         durationSeconds = model.durationSeconds
         notes = model.notes
         weightUnit = model.weightUnit
+        assignedWorkoutId = model.assignedWorkoutId
     }
 
     /** Constructor used when new workout is created / or workout is being edited */
@@ -55,10 +63,12 @@ class WorkoutModel: BaseModel {
     ) : super (idVal) {
         name = nameVal
 
-        startDateTime = if (templateVal) {
-            null
+        if (templateVal) {
+            startDateTime = null
+            scheduledDateTime = null
         } else {
-            Date()
+            startDateTime = Date()
+            scheduledDateTime = Date()
         }
 
         finishDateTime = finishDateTimeVal
@@ -67,5 +77,6 @@ class WorkoutModel: BaseModel {
         durationSeconds = durationVal
         notes = notesVal
         weightUnit = weightUnitTextVal
+        assignedWorkoutId = 0L
     }
 }

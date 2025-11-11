@@ -47,12 +47,14 @@ import kotlinx.coroutines.launch
  * @param trainingDay the training day model
  * @param trainingDayIndex the day index in the program
  * @param onEditClick callback to execute on training day edit click
+ * @param showEdit true to show the dit button, false otherwise
  */
 @Composable
 fun TrainingDayItem(
     trainingDay: TrainingDayModel,
     trainingDayIndex: Int,
-    onEditClick: (TrainingDayModel, Int) -> Unit
+    onEditClick: (TrainingDayModel, Int) -> Unit,
+    showEdit: Boolean = true
 ) {
     val scope = rememberCoroutineScope()
     var showWorkouts by rememberSaveable { mutableStateOf(true) }
@@ -77,12 +79,14 @@ fun TrainingDayItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            ImageButton(
-                modifier = Modifier.size(SmallImageButtonSize),
-                onClick = { scope.launch { onEditClick(trainingDay, trainingDayIndex + 1) } },
-                image = Icons.Default.Edit,
-                size = SmallImageButtonSize - 5.dp
-            )
+            if (showEdit) {
+                ImageButton(
+                    modifier = Modifier.size(SmallImageButtonSize),
+                    onClick = { scope.launch { onEditClick(trainingDay, trainingDayIndex + 1) } },
+                    image = Icons.Default.Edit,
+                    size = SmallImageButtonSize - 5.dp
+                )
+            }
 
             Label(
                 modifier = Modifier

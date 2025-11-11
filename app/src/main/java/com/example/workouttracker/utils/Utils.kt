@@ -17,7 +17,8 @@ import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -184,24 +185,10 @@ object Utils {
      * @param date2 the second date
      */
     fun getDateDifferenceInDays(date1: Date, date2: Date): Long {
-        val cal1 = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        cal1.time = date1
-        cal1.set(Calendar.HOUR_OF_DAY, 0)
-        cal1.set(Calendar.MINUTE, 0)
-        cal1.set(Calendar.SECOND, 0)
-        cal1.set(Calendar.MILLISECOND, 0)
-
-        val cal2 = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        cal2.time = date2
-        cal2.set(Calendar.HOUR_OF_DAY, 0)
-        cal2.set(Calendar.MINUTE, 0)
-        cal2.set(Calendar.SECOND, 0)
-        cal2.set(Calendar.MILLISECOND, 0)
-
-        val diffMillis = cal1.timeInMillis - cal2.timeInMillis
-        return diffMillis / (24 * 60 * 60 * 1000)
+        val localDate1 = date1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val localDate2 = date2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        return ChronoUnit.DAYS.between(localDate2, localDate1)
     }
-
 
     /** Calculate a sample size to scale down the image.
      * @param rawWidth the actual image width

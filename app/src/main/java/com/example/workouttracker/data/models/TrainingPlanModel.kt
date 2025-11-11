@@ -2,8 +2,9 @@ package com.example.workouttracker.data.models
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import java.util.Date
 
-/** TrainingPlanModel class representing a training day as port of training plan.
+/** TrainingPlanModel class representing a training plan.
  * Must correspond with server-side TrainingPlanModel
  */
 class TrainingPlanModel: BaseModel {
@@ -16,6 +17,12 @@ class TrainingPlanModel: BaseModel {
     @SerializedName("TrainingDays")
     var trainingDays: MutableList<TrainingDayModel>
 
+    @SerializedName("ScheduledStartDate")
+    var scheduledStartDate: Date?
+
+    @SerializedName("AssignedTrainingPlanId")
+    var assignedTrainingPlanId: Long?
+
     /** Constructor to deserialized TrainingDayModel object
      * @param data serialized TrainingDayModel object
      */
@@ -26,6 +33,8 @@ class TrainingPlanModel: BaseModel {
         name = model.name
         description = model.description
         trainingDays = model.trainingDays
+        scheduledStartDate = model.scheduledStartDate
+        assignedTrainingPlanId = model.assignedTrainingPlanId
     }
 
     /** Constructor to create new objects with id = 0 */
@@ -33,5 +42,15 @@ class TrainingPlanModel: BaseModel {
         name = nameVal
         description = descriptionVal
         trainingDays = mutableListOf()
+        scheduledStartDate = null
+        assignedTrainingPlanId = null
+    }
+
+    constructor(): super(0) {
+        name = ""
+        description = ""
+        trainingDays = mutableListOf()
+        scheduledStartDate = null
+        assignedTrainingPlanId = null
     }
 }

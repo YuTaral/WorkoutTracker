@@ -191,28 +191,34 @@ interface IAPIService {
     /** TRAINING PROGRAMS REQUESTS
      * -------------------------------------------------------------------------------- */
     @GET(Constants.RequestEndPoints.TRAINING_PLANS)
-    fun refreshTrainingProgram(): Call<CustomResponse>
+    fun refreshTrainingPlans(): Call<CustomResponse>
 
     @POST(Constants.RequestEndPoints.TRAINING_PLANS)
-    fun addTrainingProgram(@Body params: Map<String, String>): Call<CustomResponse>
+    fun addTrainingPlan(@Body params: Map<String, String>): Call<CustomResponse>
 
     @PATCH(Constants.RequestEndPoints.TRAINING_PLANS)
-    fun updateTrainingProgram(@Body params: Map<String, String>): Call<CustomResponse>
+    fun updateTrainingPlan(@Body params: Map<String, String>): Call<CustomResponse>
 
     @DELETE(Constants.RequestEndPoints.TRAINING_PLANS)
-    fun deleteTrainingProgram(@Query("trainingProgramId") teamId: Long): Call<CustomResponse>
+    fun deleteTrainingPlan(@Query("trainingProgramId") teamId: Long): Call<CustomResponse>
 
     @POST(Constants.RequestEndPoints.TRAINING_DAYS)
-    fun addTrainingDayToProgram(@Body params: Map<String, String>): Call<CustomResponse>
+    fun addTrainingDayToPlan(@Body params: Map<String, String>): Call<CustomResponse>
 
     @PATCH(Constants.RequestEndPoints.TRAINING_DAYS)
-    fun updateTrainingDayToProgram(@Body params: Map<String, String>): Call<CustomResponse>
+    fun updateTrainingDayToPlan(@Body params: Map<String, String>): Call<CustomResponse>
 
     @DELETE(Constants.RequestEndPoints.TRAINING_DAYS)
     fun deleteTrainingDay(@Query("trainingDayId") teamId: Long): Call<CustomResponse>
 
     @POST(Constants.RequestEndPoints.TRAINING_PLAN_ASSIGN)
     fun assignTrainingPlan(@Body params: Map<String, String>): Call<CustomResponse>
+
+    @GET(Constants.RequestEndPoints.TRAINING_PLAN_BY_ASSIGNED_ID)
+    fun getTrainingPlan(@Query("assignedTrainingPlanId") assignedTrainingPlanId: Long): Call<CustomResponse>
+
+    @POST(Constants.RequestEndPoints.TRAINING_PLAN_START)
+    fun startTrainingPlan(@Body params: Map<String, String>): Call<CustomResponse>
 
     /** SYSTEM LOGS  REQUESTS
      * -------------------------------------------------------------------------------- */

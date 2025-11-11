@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Calendar
 import java.util.Date
 
 /** View model to control the UI state of Add / Edit workout dialog */
@@ -51,7 +50,8 @@ class AddEditWorkoutViewModel @Inject constructor(
     /** The dialog modes */
     enum class Mode {
         ADD,
-        EDIT
+        EDIT,
+        START_ASSIGNED
     }
 
     /** Dialog state */
@@ -123,7 +123,7 @@ class AddEditWorkoutViewModel @Inject constructor(
             return
         }
 
-        if (mode == Mode.ADD) {
+        if (mode == Mode.ADD || mode == Mode.START_ASSIGNED) {
             startWorkout(assignedWorkoutId = assignedWorkoutId)
         } else {
             val workout = selectedWorkout!!
@@ -170,11 +170,16 @@ class AddEditWorkoutViewModel @Inject constructor(
             // Create new workout
             WorkoutModel(0, _uiState.value.name, false, mutableListOf(), _uiState.value.notes, null, 0, _uiState.value.weightUnit)
         } else {
-            // Create new workout from the template
-            WorkoutModel(0, _uiState.value.name, true, selectedWorkout!!.exercises, _uiState.value.notes, null, 0, _uiState.value.weightUnit)
+            if (mode == Mode.START_ASSIGNED) {
+                // Send the workout id to mark it as started
+                WorkoutModel(selectedWorkout!!.id, _uiState.value.name, true, selectedWorkout!!.exercises, _uiState.value.notes, null, 0, _uiState.value.weightUnit)
+            } else {
+                // Create new workout from the template
+                WorkoutModel(0, _uiState.value.name, true, selectedWorkout!!.exercises, _uiState.value.notes, null, 0, _uiState.value.weightUnit)
+            }
         }
 
-        if (_uiState.value.scheduledForDate != null && Utils.getDateDifferenceInDays(_uiState.value.scheduledForDate!!, Date()) != 0L) {
+        if (mode == Mode.START_ASSIGNED && Utils.getDateDifferenceInDays(_uiState.value.scheduledForDate!!, Date()) != 0L) {
             showScheduledDateNotToday(newWorkout = newWorkout, assignedWorkoutId = assignedWorkoutId)
         } else {
             startWorkout(newWorkout = newWorkout, assignedWorkoutId = assignedWorkoutId)

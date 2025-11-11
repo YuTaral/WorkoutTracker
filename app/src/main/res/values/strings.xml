@@ -222,7 +222,7 @@
     <string name="question_delete_training_day_text">Are you sure you want to delete training this day ?</string>
     <string name="single_workout_selection">Single workout</string>
     <string name="training_plan_selection">Training plan</string>
-    <string name="start_workouts_on">Start workout on %s</string>
+    <string name="start_workouts_on">Starting %s</string>
     <string name="scheduled_for_date">Scheduled for: </string>
     <string name="scheduled_for_date_same_row">Scheduled for: %s</string>
     <string name="question_scheduled_w_date_miss_match_title">Workout schedule</string>
@@ -235,5 +235,11 @@
     <string name="selected_filters">Filters:</string>
     <string name="selected_filters_from_date">after %s</string>
     <string name="filters">Filters</string>
+    <string name="question_assign_training_plan_title">Assign training plan</string>
+    <string name="question_assign_training_plan_text">The selected training plan will be automatically reassigned on each %s days. Are you sure you want to assign \n\"%s\" \n\ to the selected members</string>
+    <string name="assigned_training_plan">Training plan</string>
+    <string name="scheduled_start">Scheduled start on %s</string>
+    <string name="start_on">Start on %s</string>
+    <string name="scheduled_on">Scheduled for %s</string>
 
 </resources>

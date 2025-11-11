@@ -74,6 +74,12 @@ fun WorkoutItem(
                             text = Utils.defaultFormatDateTime(workout.startDateTime),
                             style = MaterialTheme.typography.labelSmall
                         )
+                    } else if (workout.scheduledDateTime != null) {
+                        Label(
+                            text = String.format(stringResource(id = R.string.scheduled_on),
+                                Utils.defaultFormatDate(workout.scheduledDateTime)),
+                            style = MaterialTheme.typography.labelSmall
+                        )
                     }
 
                     if (workout.finishDateTime != null) {
@@ -108,10 +114,19 @@ fun WorkoutItem(
                     )
 
                     if (workout.finishDateTime == null) {
-                        Label(
-                            text = notFinishedStr,
-                            style = labelMediumOrange
-                        )
+                        if (workout.startDateTime == null && workout.scheduledDateTime != null) {
+                            Label(
+                                text = String.format(stringResource(id = R.string.scheduled_on),
+                                    Utils.defaultFormatDate(workout.scheduledDateTime)),
+                                style = labelMediumGrey
+                            )
+                        } else {
+                            Label(
+                                text = notFinishedStr,
+                                style = labelMediumOrange
+                            )
+                        }
+
                     } else {
                         Label(
                             text = stringResource(R.string.finished_lbl),

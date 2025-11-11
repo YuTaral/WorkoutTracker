@@ -89,11 +89,40 @@ class WorkoutsViewModel @Inject constructor(
      * @param workout selected workout, may be null (when deleted)
      */
     fun selectWorkout(workout: WorkoutModel?) {
-        workoutRepository.updateSelectedWorkout(workout)
+        if (workout != null) {
+            if (workout.startDateTime != null) {
+                // Select the workout
+                workoutRepository.updateSelectedWorkout(workout)
 
-        viewModelScope.launch {
-            pagerManager.changePageSelection(Page.SelectedWorkout)
+                viewModelScope.launch {
+                    pagerManager.changePageSelection(Page.SelectedWorkout)
+                }
+            } else if (workout.assignedWorkoutId > 0) {
+                // Show start workout dialog
+                viewModelScope.launch {
+                    dialogManager.showDialog(
+                        title = resourceProvider.getString(R.string.start_workout_title),
+                        dialogName = "AddEditWorkoutDialog",
+                        content = {
+                            AddEditWorkoutDialog(
+                                workout = workout,
+                                mode = Mode.START_ASSIGNED,
+                                assignedWorkoutId = workout.assignedWorkoutId,
+                                scheduledFor = workout.scheduledDateTime
+                            )
+                        }
+                    )
+                }
+            }
+        } else {
+            // Remove the selected workout
+            workoutRepository.updateSelectedWorkout(null)
+            viewModelScope.launch {
+                pagerManager.changePageSelection(Page.SelectedWorkout)
+            }
         }
+
+
     }
 
     /** Return the default workouts start date - 1 month backwards */

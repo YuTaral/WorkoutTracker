@@ -68,6 +68,15 @@ val labelMediumGrey = TextStyle(
     color = ColorSecondary
 )
 
+val labelMediumRed = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Normal,
+    fontSize = labelMediumSize,
+    lineHeight = labelMediumLineHeight,
+    letterSpacing = labelMediumLetterSpacing,
+    color = ColorRed
+)
+
 val labelMediumGreyItalic = TextStyle(
     fontStyle = FontStyle.Italic,
     fontFamily = FontFamily.Default,
@@ -167,4 +176,13 @@ val  labelSmallOrange = TextStyle(
     lineHeight = labelSmallLineHeight,
     letterSpacing = labelSmallLetterSpacing,
     color = ColorOrange
+)
+
+val  labelSmallRed = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = labelSmallSize,
+    lineHeight = labelSmallLineHeight,
+    letterSpacing = labelSmallLetterSpacing,
+    color = ColorRed
 )

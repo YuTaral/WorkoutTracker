@@ -30,7 +30,7 @@ import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.viewmodel.AddEditTrainingDayViewModel
 
 
-/** Edit profile dialog to allow the user to change name / profile picture */
+/** Edit profile dialog to allow the user to add / edit training day */
 @Composable
 fun AddEditTrainingDayDialog(model: TrainingDayModel, vm: AddEditTrainingDayViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {

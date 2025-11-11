@@ -32,7 +32,8 @@ object Constants {
         DECLINED_TEAM_INVITATION,
         WORKOUT_ASSIGNED,
         WORKOUT_ASSIGNMENT_COMPLETED,
-        WORKOUT_ASSIGNMENT_DECLINED
+        WORKOUT_ASSIGNMENT_DECLINED,
+        TRAINING_PLAN_ASSIGNED
     }
 
     /** Enum with team types when fetching teams */
@@ -100,6 +101,7 @@ object Constants {
 
         const val TRAINING_DAYS = "$TRAINING_PLANS/days"
         const val TRAINING_PLAN_ASSIGN = "$TRAINING_PLANS/assign"
-
+        const val TRAINING_PLAN_START = "$TRAINING_PLANS/start"
+        const val TRAINING_PLAN_BY_ASSIGNED_ID = "$TRAINING_PLANS/get-by-assigned-id"
     }
 }

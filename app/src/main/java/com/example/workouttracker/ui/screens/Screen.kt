@@ -160,7 +160,7 @@ private fun AskQuestion(askQuestionDialogManager: AskQuestionDialogManager) {
 @Composable
 private fun ShowDatePicker(datePickerDialog: DatePickerDialogManager) {
     var showDatePickEvent by remember {
-        mutableStateOf(DisplayDatePickerEvent(false) {})
+        mutableStateOf(DisplayDatePickerEvent(false))
     }
 
     LaunchedEffect(Unit) {
@@ -174,7 +174,8 @@ private fun ShowDatePicker(datePickerDialog: DatePickerDialogManager) {
             onDismiss = showDatePickEvent.onCancel,
             onDatePick = { date ->
                 showDatePickEvent.onDatePick(date)
-            }
+            },
+            allowPastDates = showDatePickEvent.allowPastDates
         )
     }
 }

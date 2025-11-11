@@ -6,9 +6,11 @@ import com.example.workouttracker.R
 import com.example.workouttracker.data.models.NotificationModel
 import com.example.workouttracker.data.network.repositories.NotificationRepository
 import com.example.workouttracker.data.network.repositories.TeamRepository
+import com.example.workouttracker.data.network.repositories.TrainingPlanRepository
 import com.example.workouttracker.data.network.repositories.UserRepository
 import com.example.workouttracker.data.network.repositories.WorkoutTemplatesRepository
 import com.example.workouttracker.ui.dialogs.AddEditWorkoutDialog
+import com.example.workouttracker.ui.dialogs.AssignedTRPlanDialog
 import com.example.workouttracker.ui.managers.AskQuestionDialogManager
 import com.example.workouttracker.ui.managers.DialogManager
 import com.example.workouttracker.ui.managers.DisplayAskQuestionDialogEvent
@@ -33,6 +35,7 @@ class NotificationsViewModel @Inject constructor(
     private var teamRepository: TeamRepository,
     private var userRepository: UserRepository,
     private var templateRepository: WorkoutTemplatesRepository,
+    private var trainingPlanRepository: TrainingPlanRepository,
     private var askQuestionManager: AskQuestionDialogManager,
     private val pagerManager: PagerManager,
     private val dialogManager: DialogManager,
@@ -90,6 +93,10 @@ class NotificationsViewModel @Inject constructor(
                     notificationRepository.refreshNotifications(_showReviewed.value)
                 }
             }
+
+            NotificationType.TRAINING_PLAN_ASSIGNED.toString() -> {
+                reviewAndRedirectToAssignment(notification)
+            }
         }
     }
 
@@ -103,16 +110,35 @@ class NotificationsViewModel @Inject constructor(
                 notificationRepository.reviewNotification(id = notification.id)
             }
 
-            teamRepository.getAssignedWorkout(
-                assignedWorkoutId = notification.assignedWorkout!!.id,
-                onSuccess = {
-                    viewModelScope.launch {
-                        pagerManager.changePageSelection(
-                            Page.ViewAssignedWorkout(assignedWorkout = it)
-                        )
+            if (notification.assignedWorkoutId != null) {
+                teamRepository.getAssignedWorkout(
+                    assignedWorkoutId = notification.assignedWorkoutId,
+                    onSuccess = {
+                        viewModelScope.launch {
+                            pagerManager.changePageSelection(
+                                Page.ViewAssignedWorkout(assignedWorkout = it)
+                            )
+                        }
                     }
+                )
+            } else if (notification.trainingPlanId != null) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    trainingPlanRepository.getTrainingPlan(
+                        assignedTrainingPlanId =  notification.trainingPlanId,
+                        onSuccess = {
+                            viewModelScope.launch {
+                                viewModelScope.launch {
+                                    dialogManager.showDialog(
+                                        title = it.name,
+                                        dialogName = "AssignedTRPlanDialog",
+                                        content = { AssignedTRPlanDialog(model = it) }
+                                    )
+                                }
+                            }
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 
@@ -173,7 +199,7 @@ class NotificationsViewModel @Inject constructor(
     private fun startWorkoutAssignment(notification: NotificationModel) {
         viewModelScope.launch(Dispatchers.IO) {
             templateRepository.getTemplate(
-                assignedWorkoutId = notification.assignedWorkout!!.id,
+                assignedWorkoutId = notification.assignedWorkoutId!!,
                 onSuccess = {
                     viewModelScope.launch {
                         dialogManager.showDialog(
@@ -182,8 +208,8 @@ class NotificationsViewModel @Inject constructor(
                             content = { AddEditWorkoutDialog(
                                 workout = it,
                                 mode = Mode.ADD,
-                                assignedWorkoutId = notification.assignedWorkout.id,
-                                scheduledFor = notification.assignedWorkout.scheduledForDate
+                                assignedWorkoutId = notification.assignedWorkoutId,
+                                scheduledFor = it.scheduledDateTime
                             ) }
                         )
 

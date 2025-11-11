@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,6 +39,7 @@ import com.example.workouttracker.ui.theme.PaddingSmall
 import com.example.workouttracker.ui.theme.PaddingVerySmall
 import com.example.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.example.workouttracker.ui.theme.labelMediumGrey
+import com.example.workouttracker.ui.theme.labelMediumRed
 import com.example.workouttracker.utils.Utils
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel.Mode
 import com.example.workouttracker.viewmodel.AddEditWorkoutViewModel
@@ -88,6 +90,12 @@ fun AddEditWorkoutDialog(
                 .fillMaxWidth()
                 .padding(horizontal = PaddingSmall)
             ) {
+                var textStyle = MaterialTheme.typography.labelMedium
+
+                if (Utils.getDateDifferenceInDays(uiState.scheduledForDate!!, Date()) > 0) {
+                    textStyle = labelMediumRed
+                }
+
                 Label(
                     modifier = Modifier.padding(end = PaddingVerySmall),
                     text = stringResource(id = R.string.scheduled_for_date),
@@ -96,7 +104,8 @@ fun AddEditWorkoutDialog(
                 )
                 Label(
                     text = Utils.defaultFormatDate(uiState.scheduledForDate!!),
-                    textAlign = TextAlign.Left
+                    style = textStyle,
+                    textAlign = TextAlign.Left,
                 )
             }
         }
@@ -198,7 +207,7 @@ fun AddEditWorkoutDialog(
                 )
             }
 
-            if (mode == Mode.ADD) {
+            if (mode == Mode.ADD || mode == Mode.START_ASSIGNED) {
                 startSaveBtnId = R.string.start_btn
             }
 

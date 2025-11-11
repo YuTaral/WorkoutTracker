@@ -41,7 +41,7 @@ import com.example.workouttracker.viewmodel.SelectedTrainingPlanViewModel
 @Composable
 fun SelectedTrainingPlanScreen(vm: SelectedTrainingPlanViewModel = hiltViewModel()) {
     val selected by vm.trainingProgramRepository.selectedTrainingPlan.collectAsStateWithLifecycle()
-    val selectedTrainingProgram = selected ?: return
+    val selectedTrainingPlan = selected ?: return
 
     val lazyListState = rememberLazyListState()
 
@@ -52,17 +52,17 @@ fun SelectedTrainingPlanScreen(vm: SelectedTrainingPlanViewModel = hiltViewModel
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(PaddingSmall),
-                text = selectedTrainingProgram.name,
+                text = selectedTrainingPlan.name,
                 style = labelLargeBold,
                 maxLines = 4
             )
 
-            if (selectedTrainingProgram.description.isNotEmpty()) {
+            if (selectedTrainingPlan.description.isNotEmpty()) {
                 Label(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = PaddingSmall, end = PaddingSmall, bottom = PaddingSmall),
-                    text = selectedTrainingProgram.description,
+                    text = selectedTrainingPlan.description,
                     textAlign = TextAlign.Left,
                     maxLines = 5
                 )
@@ -90,7 +90,7 @@ fun SelectedTrainingPlanScreen(vm: SelectedTrainingPlanViewModel = hiltViewModel
                 verticalArrangement = Arrangement.spacedBy(PaddingSmall)
             ) {
 
-                itemsIndexed(selectedTrainingProgram.trainingDays) { index, item ->
+                itemsIndexed(selectedTrainingPlan.trainingDays) { index, item ->
                     TrainingDayItem(
                         trainingDay = item,
                         trainingDayIndex = index,
